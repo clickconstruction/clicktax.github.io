@@ -109,6 +109,16 @@ export interface ReturnInput {
   schedule3?: Values;
   /** Optional Schedule B inputs (interest and dividend payers); line 4 → 1040 line 2b, line 6 → 1040 line 3b. */
   scheduleB?: Values;
+  /** Optional Schedule D inputs; Forms 8949 totals are added by box, line 16 (or the line 21 loss) goes to 1040 line 7. */
+  scheduleD?: Values;
+  /** Optional Forms 8949, one per box combination; totals flow to Schedule D rows 1b/2/3 and 8b/9/10. */
+  form8949?: Values[];
+  /** Optional Form 2441 (child and dependent care): line 11 → Schedule 3 line 2; taxable benefits → 1040 line 1e. */
+  form2441?: Values;
+  /** Optional Form 8863 (education credits): line 19 → Schedule 3 line 3; line 8 → 1040 line 29. */
+  form8863?: Values;
+  /** Optional Form 8880 (saver's credit): line 12 → Schedule 3 line 4. */
+  form8880?: Values;
   /** Optional Schedule A inputs (itemized deductions); used on 1040 line 12 when larger than the standard deduction, elected (line18), or required (MFS spouse itemizes). */
   scheduleA?: Values;
 }
@@ -265,6 +275,43 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     warnings.push("Taxable interest or ordinary dividends exceed $1,500: Schedule B is required; supply scheduleB with each payer.");
   }
   if (f8959 && n(f8959.values["line24"]) > 0) f1040Values["line25c"] = n(tp["line25c"]) + n(f8959.values["line24"]);
+
+  // Form 8949 / Schedule D: capital gains and losses to Form 1040 line 7 (before AGI).
+  const f8949s: PreparedForm[] = [];
+  let sD: PreparedForm | undefined;
+  if (input.form8949?.length || input.scheduleD) {
+    const dValues: Values = { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], ...(input.scheduleD ?? {}) };
+    const rowFor: Record<string, string> = { A: "1b", G: "1b", B: "2", H: "2", C: "3", I: "3", D: "8b", J: "8b", E: "9", K: "9", F: "10", L: "10" };
+    if (input.form8949?.length) {
+      const fed = Object.keys(dValues).filter((k) => /^line(1b|2|3|8b|9|10)_[deg]$/.test(k));
+      if (fed.length) warnings.push(`scheduleD ${fed.join(", ")} were supplied; they are replaced by the Form 8949 totals.`);
+      for (const k of fed) delete dValues[k];
+    }
+    for (const [i, v] of (input.form8949 ?? []).entries()) {
+      const p = prepareFormValues("f8949", year, { name: jointName, ssn: tp["ssn"], ...v }, rounding);
+      if ((input.form8949?.length ?? 0) > 1) p.title = `${p.title} (${i + 1})`;
+      f8949s.push(p);
+      for (const [boxKey, prefix] of [["short_term_box", "line2_"], ["long_term_box", "line2_long_"]] as const) {
+        const row = rowFor[String(v[boxKey] ?? "")];
+        if (!row) continue;
+        for (const [k, col] of [["proceeds", "d"], ["cost", "e"], ["adjustment", "g"]] as const) dValues[`line${row}_${col}`] = n(dValues[`line${row}_${col}`]) + n(p.values[`${prefix}${k}`]);
+      }
+    }
+    sD = prepareFormValues("f1040sd", year, dValues, rounding);
+    const l16 = n(sD.values["line16"]);
+    if (tp["line7"] !== undefined) warnings.push("form1040.line7 was supplied; it is replaced by Schedule D.");
+    f1040Values["line7"] = l16 > 0 ? l16 : l16 < 0 ? n(sD.values["line21"]) : 0;
+    if (l16 > 0 && n(sD.values["line15"]) > 0) f1040Values["schedule_d_gain"] = Math.min(l16, n(sD.values["line15"]));
+  }
+
+  // Form 2441 Part III: taxable dependent care benefits raise Form 1040 line 1e before AGI is figured.
+  if (input.form2441 && (input.form2441["line12"] !== undefined || input.form2441["line13"] !== undefined)) {
+    const pre = prepareFormValues("f2441", year, { filing_status: tp["filing_status"], line4: Math.max(0, n(tp["line1a"]) + totalSchC - seDeduction), ...input.form2441 }, rounding);
+    if (n(pre.values["line26"]) > 0) {
+      if (tp["line1e"] !== undefined) warnings.push("form1040.line1e was supplied; it is replaced by Form 2441 line 26.");
+      f1040Values["line1e"] = pre.values["line26"];
+    }
+  }
   if (s1Needed) {
     f1040Values["line8"] = s1.values["line10"];
     f1040Values["line10"] = s1.values["line26"];
@@ -336,10 +383,40 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
   }
 
+  // Credit forms, each limited by the tax left after the credits ahead of it on Schedule 3:
+  // Form 2441 (line 2), Form 8863 (line 3 and the refundable part on 1040 line 29), Form 8880 (line 4).
+  const s3Input: Values = { ...(input.schedule3 ?? {}) };
+  let f2441: PreparedForm | undefined;
+  let f8863: PreparedForm | undefined;
+  let f8880: PreparedForm | undefined;
+  if (input.form2441 || input.form8863 || input.form8880) {
+    const agi = n(f1040.values["line11"]);
+    const taxBeforeCredits = n(f1040.values["line18"]);
+    const earned = Math.max(0, n(f1040.values["line1z"]) + totalSchC - seDeduction);
+    if (input.form2441) {
+      f2441 = prepareFormValues("f2441", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line4: earned, line7: agi, line10: Math.max(0, taxBeforeCredits - n(s3Input["line1"])), ...input.form2441 }, rounding);
+      if (s3Input["line2"] !== undefined) warnings.push("schedule3.line2 was supplied; it is replaced by Form 2441 line 11.");
+      s3Input["line2"] = f2441.values["line11"];
+    }
+    if (input.form8863) {
+      f8863 = prepareFormValues("f8863", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line3: agi, credit_limit: Math.max(0, taxBeforeCredits - n(s3Input["line1"]) - n(s3Input["line2"])), ...input.form8863 }, rounding);
+      if (s3Input["line3"] !== undefined) warnings.push("schedule3.line3 was supplied; it is replaced by Form 8863 line 19.");
+      s3Input["line3"] = f8863.values["line19"];
+      if (tp["line29"] !== undefined) warnings.push("form1040.line29 was supplied; it is replaced by Form 8863 line 8.");
+      f1040Values["line29"] = f8863.values["line8"];
+    }
+    if (input.form8880) {
+      const ws2 = ["line1", "line2", "line3", "line6d", "line6l"].reduce((a, k) => a + n(s3Input[k]), 0);
+      f8880 = prepareFormValues("f8880", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line8: agi, ws_line1: taxBeforeCredits, ws_line2: ws2, ...input.form8880 }, rounding);
+      if (s3Input["line4"] !== undefined) warnings.push("schedule3.line4 was supplied; it is replaced by Form 8880 line 12.");
+      s3Input["line4"] = f8880.values["line12"];
+    }
+  }
+
   // Schedule 3: other credits and payments (1040 lines 20 and 31).
   let s3: PreparedForm | undefined;
-  if (input.schedule3) {
-    s3 = prepareFormValues("f1040s3", year, { name: jointName, ssn: tp["ssn"], ...input.schedule3 }, rounding);
+  if (input.schedule3 || f2441 || f8863 || f8880) {
+    s3 = prepareFormValues("f1040s3", year, { name: jointName, ssn: tp["ssn"], ...s3Input }, rounding);
     if (tp["line20"] !== undefined) warnings.push("form1040.line20 was supplied; it is replaced by Schedule 3 line 8.");
     if (tp["line31"] !== undefined) warnings.push("form1040.line31 was supplied; it is replaced by Schedule 3 line 15.");
     f1040Values["line20"] = s3.values["line8"];
@@ -410,8 +487,13 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (s2Needed) forms.push(s2);
   if (sB) forms.push(sB);
   if (sA) forms.push(sA);
+  if (sD) forms.push(sD);
+  for (const p of f8949s) forms.push(p);
   if (s1a && n(s1a.values["line38"]) > 0) forms.push(s1a);
   if (s3) forms.push(s3);
+  if (f2441) forms.push(f2441);
+  if (f8863) forms.push(f8863);
+  if (f8880) forms.push(f8880);
   if (s8) forms.push(s8);
   if (f8995) forms.push(f8995);
   if (f8889) forms.push(f8889);
