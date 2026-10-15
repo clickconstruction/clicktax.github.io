@@ -30,6 +30,10 @@ tools            schema tooling    – dump IRS fields, draft labels, generate a
 
 Every `fill_form` / `prepare_return` result returns the **form** (computed values plus the render link) and the **notes** (plain-language guidance, computations with formulas, warnings, and input issues) as separate objects, so an agent can show the person the notes without the numbers and vice versa.
 
+## Try it without an agent
+
+Every supported form on https://clicktax.org has a **Test** button (and there is **Test a full return**). It builds the same link an agent would receive, from invented sample figures, entirely in your browser, then renders the official PDF and lists every computed line with its formula. Because it exercises the same engine and field maps, a Test that reports "All N fields placed" is also a check that the form still matches the IRS PDF.
+
 ## MCP tools
 
 | Tool | Purpose |

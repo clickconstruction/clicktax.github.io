@@ -22,6 +22,8 @@ export interface PrepareOptions {
   /** Base URL of the web renderer, e.g. https://clicktax.org */
   renderBase: string;
   title?: string;
+  /** Mark the link as sample data (shown as a banner on the render page). */
+  sample?: boolean;
 }
 
 /** Validate, compute, and map one form. Pure; no I/O. */
@@ -53,7 +55,15 @@ export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: Prepar
     v: 1,
     year,
     ...(opts.title ? { title: opts.title } : {}),
-    forms: forms.map((f) => ({ form: f.form, fields: f.pdfFields, summary: f.summary })),
+    ...(opts.sample ? { sample: true } : {}),
+    forms: forms.map((f) => ({
+      form: f.form,
+      fields: f.pdfFields,
+      summary: f.summary,
+      ...(f.computations.length || f.warnings.length
+        ? { notes: { computations: f.computations.map((c) => ({ ...(c.line ? { line: c.line } : {}), label: c.label, value: c.value, formula: c.formula })), warnings: f.warnings } }
+        : {}),
+    })),
   };
   return renderUrl(opts.renderBase, await encodePayload(payload));
 }

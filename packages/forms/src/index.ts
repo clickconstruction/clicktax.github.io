@@ -7,6 +7,7 @@ export { FIELD_MAPS, getFieldMap } from "./fieldmaps/index.ts";
 export { validateValues, fieldsForYear } from "./engine/validate.ts";
 export { toPdfFields, maskId, type FillOutput, type SummaryLine } from "./engine/fill.ts";
 export { encodePayload, decodePayload, renderUrl, type RenderPayload, type RenderForm } from "./engine/link.ts";
+export { sampleReturn, sampleValues } from "./samples.ts";
 export { prepareForm, prepareFormValues, prepareReturn, type PreparedForm, type PreparedReturn, type PrepareOptions, type ReturnInput } from "./engine/return.ts";
 
 import { FORMS } from "./forms/index.ts";
