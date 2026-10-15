@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClickTax</title>
+  <meta name="description" content="ClickTax: a free, stateless MCP server and in-browser renderer that fills IRS forms for your agent. Use at your own risk.">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <main class="wrap">
+    <div class="banner">This is a free tool that you should use at your own risk.</div>
+    <h1>Click<span>Tax</span></h1>
+    <p class="muted">Let your AI agent fill IRS forms, check the math, and hand you a printable PDF. Free forever. Nothing is stored.</p>
+
+    <h2>Connect your agent</h2>
+    <div class="card">
+      <p>Add this remote MCP server to Claude, ChatGPT, Cursor, or any MCP client:</p>
+      <pre>https://mcp.clicktax.org/mcp</pre>
+      <p class="muted">In Claude: Settings → Connectors → Add custom connector → paste the URL. No account, no key.</p>
+    </div>
+
+    <h2>How it works</h2>
+    <ol>
+      <li>Your agent asks the server for a form's schema and notes, then collects your numbers.</li>
+      <li>The server validates the entries, computes the arithmetic lines (totals, self-employment tax, taxable income, tax), and returns the computed lines, warnings, and a link.</li>
+      <li>The link opens here. Your browser fills the official IRS PDF locally and lets you download it.</li>
+    </ol>
+
+    <h2>Privacy by construction</h2>
+    <ul>
+      <li>The server keeps nothing: no database, no logs of what you send, no accounts.</li>
+      <li>Your filled-in values travel in the part of the link after <code>#</code>, which browsers never send to any server.</li>
+      <li>The PDF is generated on your machine from the blank IRS form.</li>
+    </ul>
+
+    <h2>Supported forms</h2>
+    <div id="forms" class="card"><p class="muted">Loading…</p></div>
+
+    <h2>What it does not do</h2>
+    <ul>
+      <li>It does not e-file. Print, sign, and mail the return, or hand the PDF to a preparer.</li>
+      <li>It does not compute credits, itemized deductions, the qualified business income deduction, or the capital gains worksheet. It tells you when one of those applies.</li>
+      <li>It is not tax advice. Verify every line against the IRS instructions.</li>
+    </ul>
+
+    <footer>
+      <p>ClickTax is an open project by Click Construction. Forms are the official IRS PDFs for tax years 2024 and 2025.</p>
+    </footer>
+  </main>
+  <script type="module" src="/src/home.ts"></script>
+</body>
+</html>

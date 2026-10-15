@@ -1,0 +1,104 @@
+/**
+ * Resolves each schema field's `locate` rule against the draft labels for every supported year
+ * and writes packages/forms/src/fieldmaps/<year>/<form>.ts. Run: npm run gen:fieldmaps
+ */
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { FORMS, FORM_IDS } from "../packages/forms/src/forms/index.ts";
+import { SUPPORTED_YEARS, type FieldDef, type Locate, type TaxYear } from "../packages/forms/src/types.ts";
+
+interface DraftRow { pdfField: string; type: string; page: number; x: number; y: number; w: number; h: number; maxLen: number | null; leftTok: string; rowText: string; above: string }
+
+const ROOT = join(import.meta.dirname, "..", "packages", "forms");
+let misses = 0;
+
+function resolve(rows: DraftRow[], root: string, rule: Locate, year: TaxYear, label: string): string | undefined {
+  const explicit = rule.names?.[year] ?? rule.name;
+  if (explicit) {
+    const full = `${root}.${explicit}`;
+    if (rows.some((r) => r.pdfField === full)) return full;
+    console.log(`  MISS ${label}: explicit name ${full} not in PDF`);
+    misses++;
+    return undefined;
+  }
+  let cands = rows;
+  const page = typeof rule.page === "number" ? rule.page : rule.page?.[year];
+  if (page) cands = cands.filter((r) => r.page === page);
+  if (rule.kind) cands = cands.filter((r) => r.type === (rule.kind === "check" ? "check" : "text"));
+  const tok = typeof rule.tok === "string" ? rule.tok : rule.tok?.[year];
+  if (rule.tok !== undefined && tok === undefined) {
+    console.log(`  MISS ${label}: no token for ${year}`);
+    misses++;
+    return undefined;
+  }
+  if (tok !== undefined) cands = cands.filter((r) => r.leftTok === tok);
+  if (rule.above) cands = cands.filter((r) => r.above.includes(rule.above!));
+  if (rule.row) cands = cands.filter((r) => r.rowText.includes(rule.row!));
+  if (rule.x) cands = cands.filter((r) => r.x >= rule.x![0] && r.x <= rule.x![1]);
+  if (cands.length === 0) {
+    console.log(`  MISS ${label}: no widget matches ${JSON.stringify(rule)}`);
+    misses++;
+    return undefined;
+  }
+  cands = [...cands].sort((a, b) => a.x - b.x);
+  const pick = rule.pick ?? "rightmost";
+  const chosen = pick === "rightmost" ? cands[cands.length - 1] : pick === "leftmost" ? cands[0] : cands[pick];
+  if (!chosen) {
+    console.log(`  MISS ${label}: pick ${pick} out of range (${cands.length} candidates)`);
+    misses++;
+    return undefined;
+  }
+  if (cands.length > 1 && typeof pick === "string") console.log(`  note ${label}: ${cands.length} candidates, picked ${pick} (${chosen.pdfField.replace(root + ".", "")})`);
+  return chosen.pdfField;
+}
+
+for (const year of SUPPORTED_YEARS) {
+  for (const formId of FORM_IDS) {
+    const form = FORMS[formId];
+    if (!form.years.includes(year)) continue;
+    const draft = JSON.parse(readFileSync(join(ROOT, "pdf", String(year), `${formId}.draft.json`), "utf8")) as DraftRow[];
+    const root = draft[0]!.pdfField.split(".")[0]!;
+    const map: Record<string, string> = {};
+    console.log(`== ${year} ${formId} (root ${root}) ==`);
+    for (const field of form.fields as FieldDef[]) {
+      if (field.years && !field.years.includes(year)) continue;
+      if (field.type === "list") {
+        const ll = field.listLocate?.[year];
+        if (!ll) { console.log(`  MISS ${field.id}: no listLocate for ${year}`); misses++; continue; }
+        for (const [item, names] of Object.entries(ll)) {
+          names.forEach((short, i) => {
+            const full = `${root}.${short}`;
+            if (!draft.some((r) => r.pdfField === full)) { console.log(`  MISS ${field.id}[${i}].${item}: ${full} not in PDF`); misses++; return; }
+            map[`${field.id}[${i}].${item}`] = full;
+          });
+        }
+        continue;
+      }
+      if (!field.locate) continue;
+      const isGroup = field.type === "yesno" || field.type === "choice" || field.type === "date_mdy";
+      if (isGroup) {
+        for (const [part, rule] of Object.entries(field.locate as Record<string, Locate>)) {
+          const full = resolve(draft, root, rule, year, `${field.id}.${part}`);
+          if (full) map[`${field.id}.${part}`] = full;
+        }
+      } else {
+        const full = resolve(draft, root, field.locate as Locate, year, field.id);
+        if (full) map[field.id] = full;
+      }
+    }
+    // sanity: no two semantic keys may point at the same widget (except documented 2024 shared boxes)
+    const seen = new Map<string, string>();
+    for (const [k, v] of Object.entries(map)) {
+      const prev = seen.get(v);
+      if (prev && !(prev === "mfs_spouse_name" && k === "qualifying_child_name")) console.log(`  DUP ${k} and ${prev} both map to ${v.replace(root + ".", "")}`);
+      seen.set(v, k);
+    }
+    const dir = join(ROOT, "src", "fieldmaps", String(year));
+    mkdirSync(dir, { recursive: true });
+    const body = Object.entries(map).map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(v)},`).join("\n");
+    writeFileSync(join(dir, `${formId}.ts`), `// Generated by tools/gen-fieldmaps.ts from pdf/${year}/${formId}.draft.json. Do not edit by hand.\nimport type { FieldMap } from "../../types.ts";\n\nconst map: FieldMap = {\n${body}\n};\n\nexport default map;\n`);
+    console.log(`  wrote ${Object.keys(map).length} entries`);
+  }
+}
+console.log(misses ? `\n${misses} unresolved rule(s)` : "\nAll rules resolved.");
+process.exit(misses ? 1 : 0);

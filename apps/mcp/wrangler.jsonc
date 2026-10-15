@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "clicktax-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  // Free plan: 10 ms CPU per request. This Worker only validates JSON and does arithmetic;
+  // PDFs are rendered in the user's browser from the link it returns.
+  "workers_dev": false,
+  "routes": [{ "pattern": "mcp.clicktax.org", "custom_domain": true }],
+  "vars": { "RENDER_BASE": "https://clicktax.org" },
+  // No logs: nothing a person sends is recorded anywhere.
+  "observability": { "enabled": false }
+}

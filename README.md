@@ -1,7 +1,75 @@
-# clicktax.github.io
+# ClickTax
 
-Source for **https://clicktax.org**, published with GitHub Pages from the `main` branch (root).
+**This is a free tool that you should use at your own risk.**
 
-- `CNAME` pins the custom domain. Do not remove it.
-- `.nojekyll` makes Pages serve files as-is (no Jekyll build).
-- DNS is managed in Cloudflare: `A` records to GitHub Pages IPs (DNS only) and `www` → `clickconstruction.github.io`.
+ClickTax lets a person's AI agent fill IRS forms through an [MCP](https://modelcontextprotocol.io) server at `https://mcp.clicktax.org/mcp`, check the arithmetic, and hand back a printable PDF rendered in the person's own browser at `https://clicktax.org/fill`. Free forever. Stateless by construction.
+
+Supported: tax years **2024** and **2025**; Form **1040**, **Schedule 1**, **Schedule 2**, **Schedule C**, **Schedule SE**.
+
+## How it stays free, stateless, and private
+
+| Concern | Mechanism |
+| --- | --- |
+| Cloudflare Workers free tier allows 10 ms CPU per request | The Worker never touches a PDF. It validates JSON, runs the line arithmetic, and compresses a small payload. Filling the PDF (which costs 100s of ms of CPU) happens in the browser with pdf-lib. |
+| No storage, no logs | The Worker has no bindings, no database, and observability disabled. Every response is `cache-control: no-store`. |
+| The person's figures never sit on a server | The render link carries them in the URL **fragment** (`/fill#v1.…`), which browsers never send over the network. The renderer fetches only the blank IRS PDF. |
+| Nothing to sign up for | No auth. Rate limiting is left to Cloudflare. |
+
+## Layout
+
+```
+packages/forms   @clicktax/forms  – schemas, year parameters, line math, validation, PDF field maps, link codec
+apps/mcp         Cloudflare Worker – MCP server (createMcpHandler, Streamable HTTP, stateless)
+apps/web         Vite static site  – home page and the in-browser renderer (deployed to GitHub Pages)
+tools            schema tooling    – dump IRS fields, draft labels, generate and verify field maps
+```
+
+### Two pieces of data per form
+
+Every `fill_form` / `prepare_return` result returns the **form** (computed values plus the render link) and the **notes** (plain-language guidance, computations with formulas, warnings, and input issues) as separate objects, so an agent can show the person the notes without the numbers and vice versa.
+
+## MCP tools
+
+| Tool | Purpose |
+| --- | --- |
+| `list_forms` | Supported forms, years, disclaimer |
+| `get_form_schema` | Semantic field ids, labels, types, lines, which lines are computed |
+| `get_form_notes` | What the form is for, what is computed, what to verify |
+| `fill_form` | Validate + compute one form; returns form + notes + link |
+| `prepare_return` | Schedule C(s) → Schedule SE → Schedules 1/2 → Form 1040 in one call |
+
+Field ids are the printed line numbers (`line1`, `line27a`) plus descriptive names for header boxes (`business_name`, `filing_status`). Yes/no questions are booleans; choices are strings (`accounting_method: "cash"`); Schedule C Part V and 1040 dependents are arrays of rows.
+
+## What the engine computes
+
+Schedule C totals (lines 3, 5, 7, 28, 29, 31, 40, 42, 48); Schedule SE (net earnings, social security up to the wage base net of W-2 wages, Medicare, the deductible half); Schedule 1 and 2 totals; Form 1040 total income, AGI, standard deduction (with age/blindness and dependent-filer limits), taxable income, the tax (IRS Tax Table reproduced exactly below $100,000, Tax Computation Worksheet above), total tax, payments, refund or amount owed.
+
+Not computed (the engine warns when they apply): credits, itemized deductions, QBI deduction, the Qualified Dividends and Capital Gain Tax Worksheet, Additional Medicare Tax, NIIT, optional SE methods. It does not e-file.
+
+## Develop
+
+```bash
+npm install
+npm test                      # engine tests (vitest)
+npm run typecheck
+npm run verify:fieldmaps      # every mapped widget exists in the real IRS PDF
+npm run dev:web               # http://localhost:5173
+npm run dev:mcp               # http://127.0.0.1:8787/mcp
+```
+
+### Adding a tax year
+
+1. Download the IRS PDFs into `apps/web/public/forms/<year>/` (prior years live at `irs.gov/pub/irs-prior/<form>--<year>.pdf`).
+2. Dump widgets and draft labels into `packages/forms/pdf/<year>/` (see `tools/`; needs `pdftotext` from poppler).
+3. Add the year's parameters to `packages/forms/src/params.ts` and the year to `SUPPORTED_YEARS`.
+4. `npm run gen:fieldmaps` resolves every schema rule against the new PDFs and reports misses; fix rules with per-year `names`/`tok`/`page`.
+5. `npm run verify:fieldmaps` and `npm test`.
+
+## Deploy
+
+- Web: pushed to `main` → GitHub Actions builds `apps/web` and deploys to GitHub Pages (custom domain `clicktax.org`, DNS on Cloudflare).
+- MCP: `cd apps/mcp && npx wrangler deploy` (custom domain `mcp.clicktax.org`), or set the `CLOUDFLARE_API_TOKEN` repository secret and let `deploy-mcp.yml` do it.
+
+## License and warranty
+
+Source is provided as-is for the good of mankind, with no warranty of any kind. Forms are the official IRS PDFs. Nothing here is tax advice.
