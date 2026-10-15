@@ -25,9 +25,9 @@ describe("Form 1040 compute", () => {
     expect(r.values["line16"]).toBe(15194); // >= 100,000 uses the worksheet: 2,385 + 8,772 + 0.22 x (115,300 - 96,950) = 15,194
     expect(r.values["line37"]).toBeGreaterThan(0);
   });
-  it("warns about qualified dividends and missing digital asset answer", () => {
+  it("uses the capital gain worksheet for qualified dividends and warns about the digital asset answer", () => {
     const r = form1040.compute({ filing_status: "single", line3a: 100, line3b: 100 }, { year: 2025, rounding: "whole" });
-    expect(r.warnings.some((w) => w.includes("Qualified Dividends"))).toBe(true);
+    expect(r.computations.find((c) => c.id === "line16")?.label).toContain("Qualified Dividends");
     expect(r.warnings.some((w) => w.includes("digital_assets"))).toBe(true);
   });
 });

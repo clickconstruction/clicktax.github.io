@@ -85,4 +85,4 @@ export function validateValues(form: FormDef, year: TaxYear, values: Values): Va
 }
 
 /** Keys the engine accepts that are not PDF fields. */
-export const INTERNAL_KEYS = new Set(["owner", "earned_income"]);
+export const INTERNAL_KEYS = new Set(["owner", "earned_income", "filing_status", "other_nonrefundable_credits", "schedule3_line11"]);

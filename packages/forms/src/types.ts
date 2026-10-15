@@ -6,7 +6,7 @@ export const SUPPORTED_YEARS: readonly TaxYear[] = [2024, 2025];
 export type FilingStatus = "single" | "mfj" | "mfs" | "hoh" | "qss";
 export const FILING_STATUSES: readonly FilingStatus[] = ["single", "mfj", "mfs", "hoh", "qss"];
 
-export type FormId = "f1040" | "f1040sc" | "f1040sse" | "f1040s1" | "f1040s2";
+export type FormId = "f1040" | "f1040sc" | "f1040sse" | "f1040s1" | "f1040s2" | "f1040s8";
 
 /**
  * Field types. `money` and `integer` are numbers; `checkbox` is a boolean that maps to one PDF

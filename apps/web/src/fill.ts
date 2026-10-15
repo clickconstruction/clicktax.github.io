@@ -10,6 +10,7 @@ const TITLES: Record<string, string> = {
   f1040s2: "Schedule 2",
   f1040sc: "Schedule C",
   f1040sse: "Schedule SE",
+  f1040s8: "Schedule 8812",
 };
 
 function esc(s: string): string {

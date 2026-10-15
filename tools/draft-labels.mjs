@@ -9,7 +9,7 @@ const year = process.argv[2];
 if (!year) { console.error("usage: draft-labels.mjs <year>"); process.exit(1); }
 const ROOT = join(import.meta.dirname, "..");
 const tmp = mkdtempSync(join(tmpdir(), "clicktax-"));
-for (const form of ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse"]) {
+for (const form of ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse", "f1040s8"]) {
   const pdf = join(ROOT, "apps", "web", "public", "forms", year, form + ".pdf");
   const html = join(tmp, `${form}.html`);
   execFileSync("pdftotext", ["-bbox-layout", pdf, html]);

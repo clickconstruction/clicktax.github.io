@@ -1,6 +1,6 @@
 import { FORMS } from "../forms/index.ts";
 import { getFieldMap } from "../fieldmaps/index.ts";
-import type { Computation, FormId, Rounding, TaxYear, ValidationIssue, Values } from "../types.ts";
+import type { Computation, FormId, ListRow, Rounding, TaxYear, ValidationIssue, Values } from "../types.ts";
 import { toPdfFields, type SummaryLine } from "./fill.ts";
 import { encodePayload, renderUrl, type RenderPayload } from "./link.ts";
 import { validateValues } from "./validate.ts";
@@ -76,6 +76,8 @@ export interface ReturnInput {
   scheduleSESpouse?: Values;
   schedule1?: Values;
   schedule2?: Values;
+  /** Optional Schedule 8812 inputs: line18b, line21, line18a override, other_nonrefundable_credits, schedule3_line11. */
+  schedule8812?: Values;
 }
 
 export interface PreparedReturn {
@@ -161,11 +163,45 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040Values["line17"] = s2.values["line3"];
     f1040Values["line23"] = s2.values["line21"];
   }
-  const f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+  let f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+
+  // Schedule 8812: child tax credit (1040 line 19) and additional child tax credit (1040 line 28).
+  const truthy = (v: unknown) => v === true || v === 1 || (typeof v === "string" && /^(true|yes|y|1|x)$/i.test(v));
+  const depRows = Array.isArray(tp["dependents"]) ? (tp["dependents"] as ListRow[]) : [];
+  const kids = depRows.filter((r) => truthy(r["child_tax_credit"])).length;
+  const others = depRows.filter((r) => truthy(r["other_dependents_credit"])).length;
+  let s8: PreparedForm | undefined;
+  if (kids + others > 0 || input.schedule8812) {
+    const extra = input.schedule8812 ?? {};
+    const otherCredits = n(extra["other_nonrefundable_credits"]);
+    const earned = Math.max(0, n(f1040.values["line1z"]) + totalSchC - seDeduction);
+    const s8Values: Values = {
+      name: jointName,
+      ssn: tp["ssn"],
+      filing_status: tp["filing_status"],
+      line1: f1040.values["line11"],
+      line4: kids,
+      line6: others,
+      line13: Math.max(0, n(f1040.values["line18"]) - otherCredits),
+      line18a: earned,
+      line22: n(s1.values["line15"]) + n(s2.values["line5"]) + n(s2.values["line6"]) + n(s2.values["line13"]),
+      line24: n(tp["line27"]) + n(extra["schedule3_line11"]),
+      ...extra,
+    };
+    delete s8Values["other_nonrefundable_credits"];
+    delete s8Values["schedule3_line11"];
+    s8 = prepareFormValues("f1040s8", year, s8Values, rounding);
+    if (tp["line19"] !== undefined) warnings.push("form1040.line19 was supplied; it is replaced by Schedule 8812 line 14.");
+    if (tp["line28"] !== undefined) warnings.push("form1040.line28 was supplied; it is replaced by Schedule 8812 line 27.");
+    f1040Values["line19"] = s8.values["line14"];
+    f1040Values["line28"] = s8.values["line27"];
+    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+  }
 
   forms.push(f1040);
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
+  if (s8) forms.push(s8);
   for (const s of schedC) forms.push(s.prepared);
   for (const s of seForms) forms.push(s.prepared);
 
@@ -179,6 +215,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       self_employment_tax: seTax,
       adjusted_gross_income: n(f1040.values["line11"]),
       taxable_income: n(f1040.values["line15"]),
+      child_tax_credit: s8 ? n(s8.values["line14"]) : 0,
+      additional_child_tax_credit: s8 ? n(s8.values["line27"]) : 0,
       total_tax: n(f1040.values["line24"]),
       total_payments: n(f1040.values["line33"]),
       refund: n(f1040.values["line35a"]),

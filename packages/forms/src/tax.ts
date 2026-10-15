@@ -47,3 +47,54 @@ export function incomeTax(taxableIncome: number, status: FilingStatus, year: Tax
   if (ti < params(year).taxTableMax) return taxTableTax(ti, status, year);
   return roundWhole(bracketTax(ti, status, year));
 }
+
+export interface QdcgInput {
+  taxableIncome: number;
+  /** Form 1040 line 3a. */
+  qualifiedDividends: number;
+  /** Form 1040 line 7 when Schedule D is not required, else the smaller of Schedule D lines 15 and 16 (not less than zero). */
+  capitalGain: number;
+  status: FilingStatus;
+  year: TaxYear;
+}
+
+export interface QdcgResult {
+  tax: number;
+  /** Worksheet lines 1-25 for the agent's notes. */
+  lines: Record<string, number>;
+}
+
+/**
+ * Qualified Dividends and Capital Gain Tax Worksheet (Form 1040 instructions, line 16).
+ * Taxes the preferential income at 0% / 15% / 20% and the rest at ordinary rates; never more than ordinary tax.
+ */
+export function qdcgWorksheet(i: QdcgInput): QdcgResult {
+  const cg = params(i.year).capitalGains;
+  const L: Record<string, number> = {};
+  L[1] = Math.max(0, i.taxableIncome);
+  L[2] = Math.max(0, i.qualifiedDividends);
+  L[3] = Math.max(0, i.capitalGain);
+  L[4] = L[2]! + L[3]!;
+  L[5] = Math.max(0, L[1]! - L[4]!);
+  L[6] = cg.zeroRateMax[i.status];
+  L[7] = Math.min(L[1]!, L[6]!);
+  L[8] = Math.min(L[5]!, L[7]!);
+  L[9] = L[7]! - L[8]!; // taxed at 0%
+  L[10] = Math.min(L[1]!, L[4]!);
+  L[11] = L[9]!;
+  L[12] = L[10]! - L[11]!;
+  L[13] = cg.fifteenRateMax[i.status];
+  L[14] = Math.min(L[1]!, L[13]!);
+  L[15] = L[5]! + L[9]!;
+  L[16] = Math.max(0, L[14]! - L[15]!);
+  L[17] = Math.min(L[12]!, L[16]!);
+  L[18] = L[17]! * 0.15;
+  L[19] = L[9]! + L[17]!;
+  L[20] = L[10]! - L[19]!;
+  L[21] = L[20]! * 0.2;
+  L[22] = incomeTax(L[5]!, i.status, i.year);
+  L[23] = roundWhole(L[18]! + L[21]! + L[22]!);
+  L[24] = incomeTax(L[1]!, i.status, i.year);
+  L[25] = Math.min(L[23]!, L[24]!);
+  return { tax: L[25]!, lines: L };
+}

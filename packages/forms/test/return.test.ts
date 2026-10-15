@@ -60,3 +60,28 @@ describe("prepareReturn", () => {
     expect(s1.values["line3"]).toBe(35300);
   });
 });
+
+describe("prepareReturn with Schedule 8812", () => {
+  it("feeds the child tax credit and the additional child tax credit into Form 1040", async () => {
+    const r = await prepareReturn(
+      {
+        year: 2025,
+        form1040: { first_name: "A", last_name: "B", ssn: "111111111", filing_status: "hoh", digital_assets: false, line1a: 28000, line25a: 500, dependents: [{ name: "Kid One", ssn: "111223333", relationship: "Daughter", child_tax_credit: true }, { name: "Grandpa", ssn: "111224444", relationship: "Father", other_dependents_credit: true }] },
+        scheduleC: [{ line1: 12000, line22: 2000, accounting_method: "cash", material_participation: true }],
+      },
+      { renderBase: "https://clicktax.org" },
+    );
+    const s8 = r.forms.find((f) => f.form === "f1040s8")!;
+    const f1040 = r.forms.find((f) => f.form === "f1040")!;
+    expect(s8.values["line4"]).toBe(1);
+    expect(s8.values["line6"]).toBe(1);
+    expect(s8.values["line8"]).toBe(2700);
+    expect(s8.values["line13"]).toBe(Number(f1040.values["line18"]));
+    expect(f1040.values["line19"]).toBe(s8.values["line14"]);
+    expect(f1040.values["line28"]).toBe(s8.values["line27"]);
+    expect(Number(s8.values["line14"]) + Number(s8.values["line27"])).toBeGreaterThan(0);
+    expect(Number(s8.values["line18a"])).toBe(28000 + 10000 - Number(r.forms.find((f) => f.form === "f1040sse")!.values["line13"]));
+    expect(r.totals.child_tax_credit).toBe(Number(s8.values["line14"]));
+    expect(r.forms.map((f) => f.form)).toContain("f1040s8");
+  });
+});
