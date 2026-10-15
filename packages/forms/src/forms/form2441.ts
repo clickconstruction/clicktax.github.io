@@ -6,8 +6,8 @@ const P1 = (n: number) => `Page1[0].f1_${n}[0]`;
 const P2 = (n: number) => `Page2[0].f2_${n}[0]`;
 const nm = (y24: string, y25: string): { names: Y<string> } => ({ names: { 2024: y24, 2025: y25 } });
 const line1 = (y24: number, y25: number) => nm(P1(y24), P1(y25));
-const money = (id: string, line: string, label: string, locate: FieldDef["locate"], extra: Partial<FieldDef> = {}): FieldDef => ({ id, line, label, type: "money", locate, ...extra });
-const comp = (id: string, line: string, label: string, locate: FieldDef["locate"], notes: string, extra: Partial<FieldDef> = {}): FieldDef => money(id, line, label, locate, { computed: true, notes, ...extra });
+const money = (id: string, line: string, label: string, locate: FieldDef["locate"] | undefined, extra: Partial<FieldDef> = {}): FieldDef => ({ id, line, label, type: "money", ...(locate ? { locate } : {}), ...extra });
+const comp = (id: string, line: string, label: string, locate: FieldDef["locate"] | undefined, notes: string, extra: Partial<FieldDef> = {}): FieldDef => money(id, line, label, locate, { computed: true, notes, ...extra });
 const rows3 = (fn: (r: number) => string) => [1, 2, 3].map(fn);
 
 /** Line 8 decimal: 35% at AGI up to $15,000, down 1 point per $2,000, floor 20% above $43,000. */
