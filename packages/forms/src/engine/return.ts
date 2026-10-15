@@ -91,6 +91,8 @@ export interface ReturnInput {
   schedule8812?: Values;
   /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
   form8995?: Values;
+  /** Optional Schedule 3 inputs (foreign tax credit, energy credits, premium tax credit, extension payment, excess SS withholding...). */
+  schedule3?: Values;
 }
 
 export interface PreparedReturn {
@@ -210,6 +212,17 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
   }
 
+  // Schedule 3: other credits and payments (1040 lines 20 and 31).
+  let s3: PreparedForm | undefined;
+  if (input.schedule3) {
+    s3 = prepareFormValues("f1040s3", year, { name: jointName, ssn: tp["ssn"], ...input.schedule3 }, rounding);
+    if (tp["line20"] !== undefined) warnings.push("form1040.line20 was supplied; it is replaced by Schedule 3 line 8.");
+    if (tp["line31"] !== undefined) warnings.push("form1040.line31 was supplied; it is replaced by Schedule 3 line 15.");
+    f1040Values["line20"] = s3.values["line8"];
+    f1040Values["line31"] = s3.values["line15"];
+    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+  }
+
   // Schedule 8812: child tax credit (1040 line 19) and additional child tax credit (1040 line 28).
   const truthy = (v: unknown) => v === true || v === 1 || (typeof v === "string" && /^(true|yes|y|1|x)$/i.test(v));
   const depRows = Array.isArray(tp["dependents"]) ? (tp["dependents"] as ListRow[]) : [];
@@ -218,7 +231,10 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   let s8: PreparedForm | undefined;
   if (kids + others > 0 || input.schedule8812) {
     const extra = input.schedule8812 ?? {};
-    const otherCredits = n(extra["other_nonrefundable_credits"]);
+    // Credit Limit Worksheet A: Schedule 3 lines 1, 2, 3, 4, 5b, 6d, 6f, 6l, 6m reduce the tax available for the child credit.
+    const otherCredits = s3
+      ? ["line1", "line2", "line3", "line4", "line5b", "line6d", "line6f", "line6l", "line6m"].reduce((a, k) => a + n(s3!.values[k]), 0)
+      : n(extra["other_nonrefundable_credits"]);
     const earned = Math.max(0, n(f1040.values["line1z"]) + totalSchC - seDeduction);
     const s8Values: Values = {
       name: jointName,
@@ -230,7 +246,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       line13: Math.max(0, n(f1040.values["line18"]) - otherCredits),
       line18a: earned,
       line22: n(s1.values["line15"]) + n(s2.values["line5"]) + n(s2.values["line6"]) + n(s2.values["line13"]),
-      line24: n(tp["line27"]) + n(extra["schedule3_line11"]),
+      line24: n(tp["line27"]) + (s3 ? n(s3.values["line11"]) : n(extra["schedule3_line11"])),
       ...extra,
     };
     delete s8Values["other_nonrefundable_credits"];
@@ -246,6 +262,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   forms.push(f1040);
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
+  if (s3) forms.push(s3);
   if (s8) forms.push(s8);
   if (f8995) forms.push(f8995);
   for (const s of schedC) forms.push(s.prepared);

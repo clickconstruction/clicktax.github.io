@@ -99,6 +99,7 @@ const samples: Partial<Record<FormId, Values>> = {
   f1040s1: { name: NAME, ssn: SSN, line3: 60000, line13: 3500, line15: 4239, line17: 7200, line21: 900 },
   f1040s2: { name: NAME, ssn: SSN, line4: 8478, line8: 600 },
   f1040s8: { name: NAME, ssn: SSN, filing_status: "mfj", line1: 110000, line4: 2, line6: 0, line13: 9000, line18a: 100000 },
+  f1040s3: { name: NAME, ssn: SSN, line1: 120, line2: 600, line3: 1500, line4: 200, line10: 1000, line11: 300 },
   f8995: { name: NAME, ssn: SSN, filing_status: "mfj", businesses: [{ name: "Sample Plumbing", tin: "123456789", qbi: 10420 }], line11: 22990, line12: 150 },
 };
 
