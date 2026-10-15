@@ -93,6 +93,8 @@ export interface ReturnInput {
   form8995?: Values;
   /** Optional Form 8829 inputs (home office, actual expenses) for the first Schedule C unless `business` (1-based) says otherwise. */
   form8829?: Values;
+  /** Optional Form 1040-ES inputs; when present, next year's vouchers are figured from this year's return (overrides allowed). */
+  form1040es?: Values;
   /** Optional Form 4868 inputs; when present the extension voucher is filled from the computed totals. */
   form4868?: Values;
   /** Optional Form 8889 (HSA) inputs: coverage, line2 contributions, line9 employer contributions, line14a/15 distributions, age_55_or_older. */
@@ -336,6 +338,21 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f4868 = prepareFormValues("f4868", year, { name: jointName, address: addr, city: tp["city"], state: tp["state"], zip: tp["zip"], ssn: tp["ssn"], spouse_ssn: tp["spouse_ssn"], line4: f1040.values["line24"], line5: f1040.values["line33"], ...input.form4868 }, rounding);
   }
 
+  // Form 1040-ES: next year's estimated payments from this year's return.
+  let f1040es: PreparedForm | undefined;
+  if (input.form1040es) {
+    const seTax = n(s2.values["line4"]);
+    f1040es = prepareFormValues("f1040es", year, {
+      first_name: tp["first_name"], last_name: tp["last_name"], ssn: tp["ssn"], spouse_first_name: tp["spouse_first_name"], spouse_last_name: tp["spouse_last_name"], spouse_ssn: tp["spouse_ssn"],
+      address: [tp["address"], tp["apt"]].filter(Boolean).join(" "), city: tp["city"], state: tp["state"], zip: tp["zip"],
+      filing_status: tp["filing_status"],
+      line1: f1040.values["line11"], line2a: f1040.values["line12"], line2b: f1040.values["line13"], ...(year === 2025 ? { line2c_additional: f1040.values["line13b"] } : {}),
+      line5: s2.values["line2"], line7: f1040.values["line21"], line9: seTax, line10: Math.max(0, n(s2.values["line21"]) - seTax), line11b: f1040.values["line32"],
+      prior_year_tax: f1040.values["line24"], prior_year_agi: f1040.values["line11"], line13: f1040.values["line25d"], overpayment_applied: tp["line36"],
+      ...input.form1040es,
+    }, rounding);
+  }
+
   forms.push(f1040);
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
@@ -349,6 +366,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8829) forms.push(f8829);
   for (const s of seForms) forms.push(s.prepared);
   if (f4868) forms.push(f4868);
+  if (f1040es) forms.push(f1040es);
 
   const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` });
   return {
