@@ -24,12 +24,12 @@ pre { background: var(--card); border: 1px solid var(--border); border-radius: 8
 /* Quiet inline action: smaller than body text, muted until hovered. */
 .btn.quiet {
   background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 999px;
-  font-size: .72em; font-weight: 500; letter-spacing: .02em; text-transform: uppercase;
+  font-size: .78em; font-weight: 500; letter-spacing: 0; text-transform: none;
   padding: 1px 8px 2px; margin-left: 6px; vertical-align: 2px; line-height: 1.4; cursor: pointer;
 }
 .btn.quiet:hover, .btn.quiet:focus-visible { color: var(--accent); border-color: var(--accent); outline: none; }
 .btn.quiet.wide { font-size: .8em; padding: 3px 12px; margin-left: 0; }
-.year-toggle .btn.quiet { font-size: .78em; text-transform: none; letter-spacing: 0; margin-left: 4px; }
+.year-toggle .btn.quiet { margin-left: 4px; }
 .year-toggle .btn.quiet[aria-pressed="true"] { color: var(--fg); border-color: var(--fg); }
 .btn[disabled] { opacity: .6; cursor: wait; }
 .banner.sample { background: #e3f0ff; color: #0b3d91; }
