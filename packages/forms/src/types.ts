@@ -55,8 +55,10 @@ export interface Locate {
 export interface ListItemDef {
   id: string;
   label: string;
-  type: "text" | "money" | "checkbox" | "ssn";
+  type: "text" | "money" | "checkbox" | "ssn" | "yesno" | "percent" | "integer";
   maxLen?: number;
+  /** True when the engine computes this item. */
+  computed?: boolean;
   /** Years in which this item exists (defaults to all years of the form). */
   years?: readonly TaxYear[];
 }

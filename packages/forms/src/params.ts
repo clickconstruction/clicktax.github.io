@@ -21,6 +21,8 @@ export interface YearParams {
   };
   /** Qualified Dividends and Capital Gain Tax Worksheet breakpoints (taxable income at which 0% and 15% rates end). */
   capitalGains: { zeroRateMax: Record<FilingStatus, number>; fifteenRateMax: Record<FilingStatus, number> };
+  /** Section 179 (Form 4562): maximum deduction, phaseout threshold, SUV limit. */
+  section179: { max: number; threshold: number; suvLimit: number };
   /** Form 8889 HSA contribution limits. */
   hsa: { selfOnly: number; family: number; catchUp: number };
   /** Form 8959 Additional Medicare Tax thresholds. */
@@ -57,6 +59,7 @@ export const PARAMS: Record<TaxYear, YearParams> = {
       zeroRateMax: { single: 47025, mfj: 94050, mfs: 47025, hoh: 63000, qss: 94050 },
       fifteenRateMax: { single: 518900, mfj: 583750, mfs: 291850, hoh: 551350, qss: 583750 },
     },
+    section179: { max: 1220000, threshold: 3050000, suvLimit: 30500 },
     hsa: { selfOnly: 4150, family: 8300, catchUp: 1000 },
     additionalMedicare: { mfj: 250000, mfs: 125000, other: 200000, rate: 0.009 },
     qbiThreshold: { mfj: 383900, other: 191950 },
@@ -74,6 +77,7 @@ export const PARAMS: Record<TaxYear, YearParams> = {
       zeroRateMax: { single: 48350, mfj: 96700, mfs: 48350, hoh: 64750, qss: 96700 },
       fifteenRateMax: { single: 533400, mfj: 600050, mfs: 300000, hoh: 566700, qss: 600050 },
     },
+    section179: { max: 2500000, threshold: 4000000, suvLimit: 31300 },
     hsa: { selfOnly: 4300, family: 8550, catchUp: 1000 },
     additionalMedicare: { mfj: 250000, mfs: 125000, other: 200000, rate: 0.009 },
     qbiThreshold: { mfj: 394600, other: 197300 },

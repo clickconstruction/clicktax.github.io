@@ -162,10 +162,22 @@ export function toPdfFields(form: FormDef, year: TaxYear, values: Values, map: F
             const v = r[item.id];
             if (v === undefined || v === null || v === "") continue;
             const listKey = `${field.id}[${i}].${item.id}`;
+            if (item.type === "yesno") {
+              const yes = truthy(v);
+              const yk = map[`${listKey}.${yes ? "yes" : "no"}`];
+              if (yk) put(yk, true, field.id, `${listKey}.${yes ? "yes" : "no"}`);
+              continue;
+            }
             const key = map[listKey];
             if (!key) continue; // item not on this year's form (e.g. split names)
             let out: string | boolean | undefined;
-            if (item.type === "checkbox") {
+            if (item.type === "percent") {
+              const n = parseMoney(v as Scalar);
+              if (n !== undefined && n !== 0) out = (Math.round(n * 100) / 100).toString();
+            } else if (item.type === "integer") {
+              const n = parseMoney(v as Scalar);
+              if (n !== undefined && n !== 0) out = String(Math.round(n));
+            } else if (item.type === "checkbox") {
               if (truthy(v)) out = true;
             } else if (item.type === "money") {
               const n = parseMoney(v as Scalar);

@@ -20,7 +20,12 @@ for (const [yearStr, byForm] of Object.entries(FIELD_MAPS)) {
       const base = key.replace(/@\d+$/, "").replace(/\[\d+\]\..*$/, "").replace(/\.(yes|no|month|day|year|[a-z_]+)$/, (m) => (form.fields.some((f) => f.id === key) ? m : ""));
       const k0 = key.replace(/@\d+$/, "");
       const field = form.fields.find((f) => f.id === k0 || f.id === base || k0.startsWith(f.id + ".") || k0.startsWith(f.id + "["));
-      const wantsCheck = field && (field.type === "checkbox" || field.type === "yesno" || field.type === "choice" || (field.type === "list" && /\.(child_tax_credit|other_dependents_credit|lived_with_you|lived_in_us|full_time_student|permanently_disabled)$/.test(key)));
+      let wantsCheck = field && (field.type === "checkbox" || field.type === "yesno" || field.type === "choice");
+      if (field?.type === "list") {
+        const m = /^[^[]+\[\d+\]\.([a-z0-9_]+)(\.(yes|no))?$/.exec(k0);
+        const item = m ? field.items?.find((it) => it.id === m[1]) : undefined;
+        wantsCheck = !!item && (item.type === "checkbox" || item.type === "yesno");
+      }
       if (wantsCheck && t !== "checkbox") { console.log(`${year} ${formId}: ${key} -> ${pdfName} is ${t}, expected checkbox`); bad++; continue; }
       if (!wantsCheck && t === "checkbox") { console.log(`${year} ${formId}: ${key} -> ${pdfName} is a checkbox, expected text`); bad++; continue; }
       okCount++;

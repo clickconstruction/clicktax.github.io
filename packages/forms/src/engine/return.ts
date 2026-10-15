@@ -93,6 +93,8 @@ export interface ReturnInput {
   form8995?: Values;
   /** Optional Form 8829 inputs (home office, actual expenses) for the first Schedule C unless `business` (1-based) says otherwise. */
   form8829?: Values;
+  /** Optional Form 4562 inputs (depreciation) for the first Schedule C unless `business` (1-based) says otherwise; line 22 replaces that Schedule C's line 13. */
+  form4562?: Values;
   /** Optional Form 1040-ES inputs; when present, next year's vouchers are figured from this year's return (overrides allowed). */
   form1040es?: Values;
   /** Optional Form 4868 inputs; when present the extension voucher is filled from the computed totals. */
@@ -136,11 +138,26 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
 
   const forms: PreparedForm[] = [];
   let f8829: PreparedForm | undefined;
+  let f4562: PreparedForm | undefined;
   const schedC = (input.scheduleC ?? []).map((v, i) => {
     const owner = v["owner"] === "spouse" ? "spouse" : "you";
     const values: Values = { ...headerFor(owner), ...v };
     delete values["owner"];
     let p = prepareFormValues("f1040sc", year, values, rounding);
+    // Form 4562 (depreciation) replaces this business's line 13.
+    const depTarget = Math.max(1, Math.round(n(input.form4562?.["business"] ?? 1)));
+    if (input.form4562 && depTarget === i + 1) {
+      const v4562: Values = { name: headerFor(owner)["name"], identifying_number: values["ein"] || headerFor(owner)["ssn"], business_activity: values["principal_business"] || values["business_name"] || "Schedule C business", ...input.form4562 };
+      delete v4562["business"];
+      if (v4562["line11"] === undefined) {
+        const preDep = prepareFormValues("f1040sc", year, { ...values, line13: 0 }, rounding);
+        v4562["line11"] = Math.max(0, n(preDep.values["line31"]) + n(tp["line1a"]));
+      }
+      f4562 = prepareFormValues("f4562", year, v4562, rounding);
+      if (values["line13"] !== undefined) warnings.push(`scheduleC[${i}] line 13 is replaced by Form 4562 line 22.`);
+      values["line13"] = f4562.values["line22"];
+      p = prepareFormValues("f1040sc", year, values, rounding);
+    }
     // Form 8829 (actual home-office expenses) replaces the simplified method on this business's line 30.
     const target = Math.max(1, Math.round(n(input.form8829?.["business"] ?? 1)));
     if (input.form8829 && target === i + 1) {
@@ -158,6 +175,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     return { owner, prepared: p };
   });
   if (input.form8829 && !f8829) warnings.push("form8829 was supplied but no matching Schedule C business exists; it was ignored.");
+  if (input.form4562 && !f4562) warnings.push("form4562 was supplied but no matching Schedule C business exists; it was ignored.");
   if (schedC.length > 1 && !["mfj"].includes(String(tp["filing_status"])) && schedC.some((s) => s.owner === "spouse")) {
     warnings.push("A spouse's Schedule C is listed but the filing status is not married filing jointly.");
   }
@@ -364,6 +382,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
   for (const s of schedC) forms.push(s.prepared);
   if (f8829) forms.push(f8829);
+  if (f4562) forms.push(f4562);
   for (const s of seForms) forms.push(s.prepared);
   if (f4868) forms.push(f4868);
   if (f1040es) forms.push(f1040es);
