@@ -4,7 +4,7 @@
 
 ClickTax lets a person's AI agent fill IRS forms through an [MCP](https://modelcontextprotocol.io) server at `https://mcp.clicktax.org/mcp`, check the arithmetic, and hand back a printable PDF rendered in the person's own browser at `https://clicktax.org/fill`. Free forever. Stateless by construction.
 
-Supported: tax years **2024** and **2025**; Form **1040**, **Schedule 1**, **Schedule 2**, **Schedule C**, **Schedule SE**, **Schedule 8812**.
+Supported: tax years **2024** and **2025**; Form **1040**, **Schedules 1, 2, 3, C, SE, 8812**, **Schedule 1-A** (2025), and Forms **8995** (QBI), **8889** (HSA), **8959** (Additional Medicare Tax).
 
 Live: MCP at `https://mcp.clicktax.org/mcp` (Cloudflare Worker, free plan), renderer at `https://clicktax.org/fill` (GitHub Pages).
 
@@ -42,7 +42,7 @@ Every supported form on https://clicktax.org has a **Test** button (and there is
 | `get_form_schema` | Semantic field ids, labels, types, lines, which lines are computed |
 | `get_form_notes` | What the form is for, what is computed, what to verify |
 | `fill_form` | Validate + compute one form; returns form + notes + link |
-| `prepare_return` | Schedule C(s) → Schedule SE → Schedules 1/2 → Schedule 8812 → Form 1040 in one call |
+| `prepare_return` | Schedule C(s) → Schedule SE → Form 8889/8959 → Schedules 1/2 → Schedule 1-A → Form 8995 → Schedule 3 → Schedule 8812 → Form 1040 in one call |
 
 Prompt `prepare_return_interview`: a guided interview the agent runs before calling `prepare_return`.
 
@@ -50,9 +50,9 @@ Field ids are the printed line numbers (`line1`, `line27a`) plus descriptive nam
 
 ## What the engine computes
 
-Schedule C totals (lines 3, 5, 7, 28, 29, 31, 40, 42, 48); Schedule SE (net earnings, social security up to the wage base net of W-2 wages, Medicare, the deductible half); Schedule 1 and 2 totals; Schedule 8812 (child tax credit with the phaseout, the credit limit, and the refundable additional child tax credit including Part II-B for three or more children); Form 1040 total income, AGI, standard deduction (with age/blindness and dependent-filer limits), taxable income, the tax (IRS Tax Table reproduced exactly below $100,000, Tax Computation Worksheet above, and the Qualified Dividends and Capital Gain Tax Worksheet when line 3a or 7 is present), total tax, payments, refund or amount owed.
+Schedule C totals (lines 3, 5, 7, 28, 29, 31, 40, 42, 48); Schedule SE (net earnings, social security up to the wage base net of W-2 wages, Medicare, the deductible half); Schedule 1, 2, and 3 totals; Form 8995 (QBI deduction with the taxable-income limitation and loss carryforwards); Schedule 1-A for 2025 (tips, overtime, car-loan interest, and senior deductions with their phaseouts); Form 8889 (HSA limits, deduction, taxable distributions, additional taxes); Form 8959 (Additional Medicare Tax and its withholding reconciliation); Schedule 8812 (child tax credit with the phaseout, the credit limit, and the refundable additional child tax credit including Part II-B for three or more children); Form 1040 total income, AGI, standard deduction (with age/blindness and dependent-filer limits), taxable income, the tax (IRS Tax Table reproduced exactly below $100,000, Tax Computation Worksheet above, and the Qualified Dividends and Capital Gain Tax Worksheet when line 3a or 7 is present), total tax, payments, refund or amount owed.
 
-Not computed (the engine warns when they apply): other credits (Schedule 3), itemized deductions, QBI deduction, Schedule 1-A (2025), Schedule D's 28% and section 1250 worksheets, Additional Medicare Tax, NIIT, optional SE methods, EIC. It does not e-file.
+Not computed (the engine warns when they apply): credits that have their own forms not yet implemented (2441, 8863, 8880), itemized deductions, Form 8995-A, Schedule D's 28% and section 1250 worksheets, NIIT, optional SE methods, EIC. It does not e-file.
 
 ## Develop
 

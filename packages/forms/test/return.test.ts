@@ -13,7 +13,7 @@ describe("prepareReturn", () => {
       { renderBase: "https://clicktax.org" },
     );
     const ids = r.forms.map((f) => f.form);
-    expect(ids).toEqual(["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse"]);
+    expect(ids).toEqual(["f1040", "f1040s1", "f1040s2", "f8995", "f1040sc", "f1040sse"]);
     const se = r.forms.find((f) => f.form === "f1040sse")!;
     expect(se.values["line2"]).toBe(89100);
     expect(se.values["line12"]).toBe(12589);
@@ -30,12 +30,14 @@ describe("prepareReturn", () => {
     expect(f1040.values["line10"]).toBe(6295);
     expect(f1040.values["line11"]).toBe(82805);
     expect(f1040.values["line12"]).toBe(15750);
-    expect(f1040.values["line15"]).toBe(67055);
+    // QBI: 20% x (89,100 - 6,295) = 16,561, limited to 20% x (82,805 - 15,750) = 13,411
+    expect(f1040.values["line13"]).toBe(13411);
+    expect(f1040.values["line15"]).toBe(67055 - 13411);
     expect(f1040.values["line23"]).toBe(12589);
     expect(r.totals.total_tax).toBe(Number(f1040.values["line24"]));
     expect(r.link.startsWith("https://clicktax.org/fill#v1.")).toBe(true);
     const payload = await decodePayload(new URL(r.link).hash);
-    expect(payload.forms.length).toBe(5);
+    expect(payload.forms.length).toBe(6);
     expect(payload.year).toBe(2025);
     // name and SSN propagate to every schedule header
     for (const f of r.forms) {

@@ -18,7 +18,7 @@ describe("sample data (the website's Test buttons)", () => {
     }
     it(`${year} sample return assembles every schedule`, async () => {
       const r = await prepareReturn(sampleReturn(year), { renderBase: "https://clicktax.org", sample: true });
-      expect(r.forms.map((f) => f.form)).toEqual(["f1040", "f1040s1", "f1040s2", "f1040s8", "f1040sc", "f1040sse"]);
+      expect(r.forms.map((f) => f.form)).toEqual(["f1040", "f1040s1", "f1040s2", "f1040s8", "f8995", "f1040sc", "f1040sse"]);
       for (const f of r.forms) expect(f.issues.filter((i) => i.severity === "error")).toEqual([]);
       expect(r.totals.schedule_c_net_profit).toBeGreaterThan(0);
       expect(r.totals.child_tax_credit).toBeGreaterThan(0);

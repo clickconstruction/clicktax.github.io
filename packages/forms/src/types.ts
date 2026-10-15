@@ -6,7 +6,9 @@ export const SUPPORTED_YEARS: readonly TaxYear[] = [2024, 2025];
 export type FilingStatus = "single" | "mfj" | "mfs" | "hoh" | "qss";
 export const FILING_STATUSES: readonly FilingStatus[] = ["single", "mfj", "mfs", "hoh", "qss"];
 
-export type FormId = "f1040" | "f1040sc" | "f1040sse" | "f1040s1" | "f1040s2" | "f1040s8";
+/** Every supported form id, in catalog order. Adding a form: add it here, write its FormDef, run gen:fieldmaps. */
+export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959"] as const;
+export type FormId = (typeof FORM_ID_LIST)[number];
 
 /**
  * Field types. `money` and `integer` are numbers; `checkbox` is a boolean that maps to one PDF
@@ -120,6 +122,10 @@ export interface FormDef {
   fields: readonly FieldDef[];
   /** Form-level notes shown to the agent and the person (plain Markdown). */
   notes: string;
+  /** Official IRS instructions for this form. */
+  instructionsUrl: string;
+  /** IRS PDF file stem on irs.gov (defaults to the form id), e.g. "f1040s1a". */
+  pdf?: string;
   compute: (values: Values, ctx: ComputeContext) => ComputeResult;
 }
 

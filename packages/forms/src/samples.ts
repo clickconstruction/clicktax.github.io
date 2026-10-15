@@ -92,13 +92,18 @@ const scheduleC: Values = {
   ],
 };
 
-const samples: Record<FormId, Values> = {
+const samples: Partial<Record<FormId, Values>> = {
   f1040: { ...taxpayer, line8: 60000, line10: 11439, line19: 4000, line23: 8478 },
   f1040sc: scheduleC,
   f1040sse: { name: NAME, ssn: SSN, line2: 60000, line8a: 48000 },
   f1040s1: { name: NAME, ssn: SSN, line3: 60000, line13: 3500, line15: 4239, line17: 7200, line21: 900 },
   f1040s2: { name: NAME, ssn: SSN, line4: 8478, line8: 600 },
   f1040s8: { name: NAME, ssn: SSN, filing_status: "mfj", line1: 110000, line4: 2, line6: 0, line13: 9000, line18a: 100000 },
+  f1040s1a: { name: NAME, ssn: SSN, filing_status: "mfj", you_65_or_older: true, line1: 110000, line4a: 8000, line14a: 6000, vehicles: [{ vin: "1HGCM82633A004352", description: "2025 pickup, assembled in U.S.", interest: 2400 }] },
+  f1040s3: { name: NAME, ssn: SSN, line1: 120, line2: 600, line3: 1500, line4: 200, line10: 1000, line11: 300 },
+  f8889: { name: NAME, ssn: SSN, coverage: "family", line2: 6000, line9: 1500, line14a: 2200, line15: 2200 },
+  f8959: { name: NAME, ssn: SSN, filing_status: "mfj", line1: 230000, line8: 60000, line19: 3335 },
+  f8995: { name: NAME, ssn: SSN, filing_status: "mfj", businesses: [{ name: "Sample Plumbing", tin: "123456789", qbi: 10420 }], line11: 22990, line12: 150 },
 };
 
 /** Sample values for one form. The same for every supported year unless a field is year-specific. */

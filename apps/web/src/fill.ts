@@ -12,6 +12,7 @@ const TITLES: Record<string, string> = {
   f1040sse: "Schedule SE",
   f1040s8: "Schedule 8812",
 };
+const titleOf = (f: { form: string; title?: string }) => f.title ?? TITLES[f.form] ?? f.form;
 
 function esc(s: string): string {
   return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -66,7 +67,7 @@ async function main() {
   for (const f of payload.forms) {
     const card = document.createElement("section");
     card.className = "card";
-    const title = `${TITLES[f.form] ?? f.form} (${payload.year})`;
+    const title = `${titleOf(f)} (${payload.year})`;
     card.innerHTML = `<h3>${esc(title)}</h3><p class="muted">Filling…</p>`;
     out.appendChild(card);
     try {
@@ -86,7 +87,7 @@ async function main() {
       card.innerHTML = `
         <h3>${esc(title)}</h3>
         <div class="row">
-          <a class="btn" href="${url}" download="${fileName}">Download ${esc(TITLES[f.form] ?? f.form)}</a>
+          <a class="btn" href="${url}" download="${fileName}">Download ${esc(titleOf(f))}</a>
           <a class="btn secondary" href="${url}" target="_blank" rel="noopener">Open in a new tab</a>
         </div>
         ${placedLine}

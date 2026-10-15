@@ -37,6 +37,7 @@ export const scheduleSE: FormDef = {
   description: "Figures social security and Medicare tax on net self-employment earnings of $400 or more. Line 12 goes to Schedule 2 line 4; line 13 goes to Schedule 1 line 15.",
   years: [2024, 2025],
   fields,
+  instructionsUrl: "https://www.irs.gov/pub/irs-pdf/i1040sse.pdf",
   notes: `**What this form is for.** Self-employment tax is 15.3% of net earnings (12.4% social security up to the annual wage base, plus 2.9% Medicare on everything). Net earnings are 92.35% of net profit.
 
 **What the engine computes.** Lines 3, 4a, 4c, 5b, 6, 8d, 9, 10, 11, 12, and 13 using the year's wage base (2024: $168,600; 2025: $176,100).

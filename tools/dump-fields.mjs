@@ -3,12 +3,13 @@
 // Usage: node tools/dump-fields.mjs 2025   -> packages/forms/pdf/2025/<form>.fields.json
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
+import { FORMS, FORM_IDS } from "../packages/forms/src/forms/index.ts";
 import { PDFDocument, PDFTextField, PDFCheckBox, PDFName } from "pdf-lib";
 const year = process.argv[2];
 if (!year) { console.error("usage: dump-fields.mjs <year>"); process.exit(1); }
 const ROOT = join(import.meta.dirname, "..");
 await mkdir(join(ROOT, "packages", "forms", "pdf", year), { recursive: true });
-for (const form of ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse", "f1040s8"]) {
+for (const form of FORM_IDS.filter((id) => FORMS[id].years.includes(Number(year)))) {
   const f = join(ROOT, "apps", "web", "public", "forms", year, form + ".pdf");
   const outPath = join(ROOT, "packages", "forms", "pdf", year, form + ".fields.json");
   const pdf = await PDFDocument.load(await readFile(f), { ignoreEncryption: true });

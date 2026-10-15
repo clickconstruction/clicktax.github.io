@@ -21,6 +21,12 @@ export interface YearParams {
   };
   /** Qualified Dividends and Capital Gain Tax Worksheet breakpoints (taxable income at which 0% and 15% rates end). */
   capitalGains: { zeroRateMax: Record<FilingStatus, number>; fifteenRateMax: Record<FilingStatus, number> };
+  /** Form 8889 HSA contribution limits. */
+  hsa: { selfOnly: number; family: number; catchUp: number };
+  /** Form 8959 Additional Medicare Tax thresholds. */
+  additionalMedicare: { mfj: number; mfs: number; other: number; rate: number };
+  /** Form 8995 simplified QBI: taxable income (before the deduction) at or below which the simplified form applies. */
+  qbiThreshold: { mfj: number; other: number };
   /** Child tax credit (Schedule 8812). */
   ctc: { perChild: number; perOtherDependent: number; actcMax: number; phaseoutMfj: number; phaseoutOther: number; earnedIncomeFloor: number; threeChildrenAmount: number };
   /** Printed on Form 1040 for reference. */
@@ -51,6 +57,9 @@ export const PARAMS: Record<TaxYear, YearParams> = {
       zeroRateMax: { single: 47025, mfj: 94050, mfs: 47025, hoh: 63000, qss: 94050 },
       fifteenRateMax: { single: 518900, mfj: 583750, mfs: 291850, hoh: 551350, qss: 583750 },
     },
+    hsa: { selfOnly: 4150, family: 8300, catchUp: 1000 },
+    additionalMedicare: { mfj: 250000, mfs: 125000, other: 200000, rate: 0.009 },
+    qbiThreshold: { mfj: 383900, other: 191950 },
     ctc: { perChild: 2000, perOtherDependent: 500, actcMax: 1700, phaseoutMfj: 400000, phaseoutOther: 200000, earnedIncomeFloor: 2500, threeChildrenAmount: 5100 },
     formRevision: "2024",
   },
@@ -65,6 +74,9 @@ export const PARAMS: Record<TaxYear, YearParams> = {
       zeroRateMax: { single: 48350, mfj: 96700, mfs: 48350, hoh: 64750, qss: 96700 },
       fifteenRateMax: { single: 533400, mfj: 600050, mfs: 300000, hoh: 566700, qss: 600050 },
     },
+    hsa: { selfOnly: 4300, family: 8550, catchUp: 1000 },
+    additionalMedicare: { mfj: 250000, mfs: 125000, other: 200000, rate: 0.009 },
+    qbiThreshold: { mfj: 394600, other: 197300 },
     ctc: { perChild: 2200, perOtherDependent: 500, actcMax: 1700, phaseoutMfj: 400000, phaseoutOther: 200000, earnedIncomeFloor: 2500, threeChildrenAmount: 5100 },
     formRevision: "2025",
   },

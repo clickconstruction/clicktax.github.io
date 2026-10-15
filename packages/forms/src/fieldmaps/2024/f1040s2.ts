@@ -28,6 +28,8 @@ const map: FieldMap = {
   "line14": "form1[0].Page1[0].f1_24[0]",
   "line15": "form1[0].Page1[0].f1_25[0]",
   "line16": "form1[0].Page1[0].f1_26[0]",
+  "line17c": "form1[0].Page2[0].f2_04[0]",
+  "line17d": "form1[0].Page2[0].f2_05[0]",
   "line17z_description": "form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0]",
   "line17z": "form1[0].Page2[0].f2_21[0]",
   "line18": "form1[0].Page2[0].f2_22[0]",

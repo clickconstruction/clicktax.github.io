@@ -5,11 +5,12 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { FORMS, FORM_IDS } from "../packages/forms/src/forms/index.ts";
 const year = process.argv[2];
 if (!year) { console.error("usage: draft-labels.mjs <year>"); process.exit(1); }
 const ROOT = join(import.meta.dirname, "..");
 const tmp = mkdtempSync(join(tmpdir(), "clicktax-"));
-for (const form of ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse", "f1040s8"]) {
+for (const form of FORM_IDS.filter((id) => FORMS[id].years.includes(Number(year)))) {
   const pdf = join(ROOT, "apps", "web", "public", "forms", year, form + ".pdf");
   const html = join(tmp, `${form}.html`);
   execFileSync("pdftotext", ["-bbox-layout", pdf, html]);
