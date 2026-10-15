@@ -91,6 +91,10 @@ export interface ReturnInput {
   schedule8812?: Values;
   /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
   form8995?: Values;
+  /** Optional Form 8829 inputs (home office, actual expenses) for the first Schedule C unless `business` (1-based) says otherwise. */
+  form8829?: Values;
+  /** Optional Form 4868 inputs; when present the extension voucher is filled from the computed totals. */
+  form4868?: Values;
   /** Optional Form 8889 (HSA) inputs: coverage, line2 contributions, line9 employer contributions, line14a/15 distributions, age_55_or_older. */
   form8889?: Values;
   /** Optional Form 8959 inputs: line1 Medicare wages (W-2 box 5), line19 Medicare withheld (box 6), line2, line3, line14, line23. */
@@ -129,14 +133,29 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   });
 
   const forms: PreparedForm[] = [];
+  let f8829: PreparedForm | undefined;
   const schedC = (input.scheduleC ?? []).map((v, i) => {
     const owner = v["owner"] === "spouse" ? "spouse" : "you";
     const values: Values = { ...headerFor(owner), ...v };
     delete values["owner"];
-    const p = prepareFormValues("f1040sc", year, values, rounding);
+    let p = prepareFormValues("f1040sc", year, values, rounding);
+    // Form 8829 (actual home-office expenses) replaces the simplified method on this business's line 30.
+    const target = Math.max(1, Math.round(n(input.form8829?.["business"] ?? 1)));
+    if (input.form8829 && target === i + 1) {
+      const v8829: Values = { ...headerFor(owner), ...input.form8829 };
+      delete v8829["business"];
+      if (v8829["line8"] === undefined) v8829["line8"] = p.values["line29"];
+      f8829 = prepareFormValues("f8829", year, v8829, rounding);
+      const withHome: Values = { ...values, line30: f8829.values["line36"] };
+      delete withHome["line30_home_sqft"];
+      delete withHome["line30_business_sqft"];
+      if (values["line30"] !== undefined || values["line30_business_sqft"] !== undefined) warnings.push(`scheduleC[${i}] line 30 is replaced by Form 8829 line 36.`);
+      p = prepareFormValues("f1040sc", year, withHome, rounding);
+    }
     p.title = `${p.title} (business ${i + 1}${owner === "spouse" ? ", spouse" : ""})`;
     return { owner, prepared: p };
   });
+  if (input.form8829 && !f8829) warnings.push("form8829 was supplied but no matching Schedule C business exists; it was ignored.");
   if (schedC.length > 1 && !["mfj"].includes(String(tp["filing_status"])) && schedC.some((s) => s.owner === "spouse")) {
     warnings.push("A spouse's Schedule C is listed but the filing status is not married filing jointly.");
   }
@@ -310,6 +329,13 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
   }
 
+  // Form 4868 extension voucher from the computed totals.
+  let f4868: PreparedForm | undefined;
+  if (input.form4868) {
+    const addr = [tp["address"], tp["apt"]].filter(Boolean).join(" ");
+    f4868 = prepareFormValues("f4868", year, { name: jointName, address: addr, city: tp["city"], state: tp["state"], zip: tp["zip"], ssn: tp["ssn"], spouse_ssn: tp["spouse_ssn"], line4: f1040.values["line24"], line5: f1040.values["line33"], ...input.form4868 }, rounding);
+  }
+
   forms.push(f1040);
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
@@ -320,7 +346,9 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8889) forms.push(f8889);
   if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
   for (const s of schedC) forms.push(s.prepared);
+  if (f8829) forms.push(f8829);
   for (const s of seForms) forms.push(s.prepared);
+  if (f4868) forms.push(f4868);
 
   const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` });
   return {

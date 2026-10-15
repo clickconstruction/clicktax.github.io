@@ -75,7 +75,8 @@ for (const year of SUPPORTED_YEARS) {
         continue;
       }
       if (!field.locate) continue;
-      const isGroup = field.type === "yesno" || field.type === "choice" || field.type === "date_mdy";
+      const RULE_KEYS = ["name", "names", "tok", "above", "row", "page", "kind", "pick", "x"];
+      const isGroup = field.type === "yesno" || field.type === "choice" || field.type === "date_mdy" || !Object.keys(field.locate).some((k) => RULE_KEYS.includes(k));
       if (isGroup) {
         for (const [part, rule] of Object.entries(field.locate as Record<string, Locate>)) {
           const full = resolve(draft, root, rule, year, `${field.id}.${part}`);

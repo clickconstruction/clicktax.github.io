@@ -7,7 +7,7 @@ export type FilingStatus = "single" | "mfj" | "mfs" | "hoh" | "qss";
 export const FILING_STATUSES: readonly FilingStatus[] = ["single", "mfj", "mfs", "hoh", "qss"];
 
 /** Every supported form id, in catalog order. Adding a form: add it here, write its FormDef, run gen:fieldmaps. */
-export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959"] as const;
+export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9"] as const;
 export type FormId = (typeof FORM_ID_LIST)[number];
 
 /**
@@ -26,6 +26,7 @@ export type FieldType =
   | "ssn"
   | "ein"
   | "date_mdy"
+  | "percent"
   | "list";
 
 /**
@@ -75,7 +76,7 @@ export interface FieldDef {
   choices?: readonly string[];
   /** Years in which this field exists (defaults to all supported years). */
   years?: readonly TaxYear[];
-  /** PDF location rule. For yesno: {yes, no}. For choice: one rule per choice. For date_mdy: {month, day, year}. */
+  /** PDF location rule. For yesno: {yes, no}. For choice: one rule per choice. For date_mdy: {month, day, year}. For ssn/ein split across comb boxes: {p1, p2, p3} / {p1, p2}. */
   locate?: Locate | Record<string, Locate>;
   /** For `list` fields. */
   items?: readonly ListItemDef[];

@@ -8,6 +8,9 @@ import { schedule3 } from "./schedule3.ts";
 import { schedule1A } from "./schedule1A.ts";
 import { form8889 } from "./form8889.ts";
 import { form8959 } from "./form8959.ts";
+import { form8829 } from "./form8829.ts";
+import { form4868 } from "./form4868.ts";
+import { formW9 } from "./formW9.ts";
 import { scheduleC } from "./scheduleC.ts";
 import { scheduleSE } from "./scheduleSE.ts";
 
@@ -22,6 +25,9 @@ const FORMS_PARTIAL: Partial<Record<FormId, FormDef>> = {
   f8995: form8995,
   f8889: form8889,
   f8959: form8959,
+  f8829: form8829,
+  f4868: form4868,
+  fw9: formW9,
   f1040sc: scheduleC,
   f1040sse: scheduleSE,
 };

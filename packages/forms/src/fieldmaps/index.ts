@@ -10,6 +10,9 @@ import f1040s8_2024 from "./2024/f1040s8.ts";
 import f8995_2024 from "./2024/f8995.ts";
 import f8889_2024 from "./2024/f8889.ts";
 import f8959_2024 from "./2024/f8959.ts";
+import f8829_2024 from "./2024/f8829.ts";
+import f4868_2024 from "./2024/f4868.ts";
+import fw9_2024 from "./2024/fw9.ts";
 import f1040_2025 from "./2025/f1040.ts";
 import f1040s1_2025 from "./2025/f1040s1.ts";
 import f1040s2_2025 from "./2025/f1040s2.ts";
@@ -21,10 +24,13 @@ import f1040s8_2025 from "./2025/f1040s8.ts";
 import f8995_2025 from "./2025/f8995.ts";
 import f8889_2025 from "./2025/f8889.ts";
 import f8959_2025 from "./2025/f8959.ts";
+import f8829_2025 from "./2025/f8829.ts";
+import f4868_2025 from "./2025/f4868.ts";
+import fw9_2025 from "./2025/fw9.ts";
 
 export const FIELD_MAPS: Record<TaxYear, Partial<Record<FormId, FieldMap>>> = {
-  2024: { f1040: f1040_2024, f1040s1: f1040s1_2024, f1040s2: f1040s2_2024, f1040s3: f1040s3_2024, f1040sc: f1040sc_2024, f1040sse: f1040sse_2024, f1040s8: f1040s8_2024, f8995: f8995_2024, f8889: f8889_2024, f8959: f8959_2024 },
-  2025: { f1040: f1040_2025, f1040s1: f1040s1_2025, f1040s2: f1040s2_2025, f1040s3: f1040s3_2025, f1040s1a: f1040s1a_2025, f1040sc: f1040sc_2025, f1040sse: f1040sse_2025, f1040s8: f1040s8_2025, f8995: f8995_2025, f8889: f8889_2025, f8959: f8959_2025 },
+  2024: { f1040: f1040_2024, f1040s1: f1040s1_2024, f1040s2: f1040s2_2024, f1040s3: f1040s3_2024, f1040sc: f1040sc_2024, f1040sse: f1040sse_2024, f1040s8: f1040s8_2024, f8995: f8995_2024, f8889: f8889_2024, f8959: f8959_2024, f8829: f8829_2024, f4868: f4868_2024, fw9: fw9_2024 },
+  2025: { f1040: f1040_2025, f1040s1: f1040s1_2025, f1040s2: f1040s2_2025, f1040s3: f1040s3_2025, f1040s1a: f1040s1a_2025, f1040sc: f1040sc_2025, f1040sse: f1040sse_2025, f1040s8: f1040s8_2025, f8995: f8995_2025, f8889: f8889_2025, f8959: f8959_2025, f8829: f8829_2025, f4868: f4868_2025, fw9: fw9_2025 },
 };
 
 export function getFieldMap(year: TaxYear, form: FormId): FieldMap {

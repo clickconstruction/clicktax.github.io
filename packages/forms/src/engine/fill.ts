@@ -61,6 +61,11 @@ function scalarText(field: FieldDef, raw: Scalar, rounding: Rounding, warnings: 
       if (n === undefined || n === 0) return undefined;
       return String(Math.round(n));
     }
+    case "percent": {
+      const n = parseMoney(raw);
+      if (n === undefined || (n === 0 && !(field.computed && field.alwaysShow))) return undefined;
+      return (Math.round(n * 100) / 100).toString();
+    }
     case "ssn":
       return fmtSsn(raw, field.maxLen);
     case "ein":
@@ -98,13 +103,19 @@ export function toPdfFields(form: FormDef, year: TaxYear, values: Values, map: F
     switch (field.type) {
       case "money":
       case "integer":
+      case "percent":
       case "ssn":
       case "ein":
       case "text": {
         if (Array.isArray(raw)) break;
         const text = scalarText(field, raw, rounding, warnings);
         if (text === undefined) break;
-        if (field.locate) put(map[mapKey], text, field.id);
+        if ((field.type === "ssn" || field.type === "ein") && map[`${mapKey}.p1`]) {
+          // Split across comb boxes (W-9 style): SSN 3-2-4, EIN 2-7.
+          const d = digits(raw);
+          const parts = field.type === "ssn" ? [d.slice(0, 3), d.slice(3, 5), d.slice(5, 9)] : [d.slice(0, 2), d.slice(2, 9)];
+          parts.forEach((part, i) => put(map[`${mapKey}.p${i + 1}`], part, field.id));
+        } else if (field.locate) put(map[mapKey], text, field.id);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: field.type === "ssn" || field.type === "ein" ? maskId(text) : text });
         break;
       }
