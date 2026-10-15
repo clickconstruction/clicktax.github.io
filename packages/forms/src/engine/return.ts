@@ -91,6 +91,12 @@ export interface ReturnInput {
   schedule8812?: Values;
   /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
   form8995?: Values;
+  /** Optional Form 8889 (HSA) inputs: coverage, line2 contributions, line9 employer contributions, line14a/15 distributions, age_55_or_older. */
+  form8889?: Values;
+  /** Optional Form 8959 inputs: line1 Medicare wages (W-2 box 5), line19 Medicare withheld (box 6), line2, line3, line14, line23. */
+  form8959?: Values;
+  /** Optional Schedule 1-A inputs (2025): line4a tips, line14a overtime, vehicles [{vin, description, interest}], line2a-2d. */
+  schedule1A?: Values;
   /** Optional Schedule 3 inputs (foreign tax credit, energy credits, premium tax credit, extension payment, excess SS withholding...). */
   schedule3?: Values;
 }
@@ -158,7 +164,33 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   const seTax = seForms.reduce((acc, s) => acc + n(s.prepared.values["line12"]), 0);
   const seDeduction = seForms.reduce((acc, s) => acc + n(s.prepared.values["line13"]), 0);
 
+  // Form 8889 (HSA): deduction to Schedule 1 line 13, taxable distributions to Schedule 1 line 8f, additional taxes to Schedule 2.
+  let f8889: PreparedForm | undefined;
+  if (input.form8889) {
+    f8889 = prepareFormValues("f8889", year, { name: fullName, ssn: tp["ssn"], ...input.form8889 }, rounding);
+  }
+
+  // Form 8959 (Additional Medicare Tax): when wages plus self-employment income cross the threshold, or when inputs are supplied.
+  let f8959: PreparedForm | undefined;
+  {
+    const seIncome = seForms.reduce((acc, s) => acc + Math.max(0, n(s.prepared.values["line6"])), 0);
+    const wagesGuess = n(tp["line1a"]);
+    const thr = String(tp["filing_status"]) === "mfj" ? 250000 : String(tp["filing_status"]) === "mfs" ? 125000 : 200000;
+    const supplied = input.form8959 ?? {};
+    const wages = supplied["line1"] !== undefined ? n(supplied["line1"]) : wagesGuess;
+    if (input.form8959 || wages + seIncome > thr) {
+      if (supplied["line1"] === undefined && wagesGuess > 0) warnings.push("Form 8959 line 1 assumed equal to W-2 box 1 wages (Form 1040 line 1a); supply form8959.line1 with Medicare wages from W-2 box 5 if different.");
+      f8959 = prepareFormValues("f8959", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line1: wages, line8: seIncome, ...supplied }, rounding);
+    }
+  }
+
   const s1Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule1 ?? {}) };
+  if (f8889) {
+    if (s1Values["line13"] !== undefined) warnings.push("schedule1.line13 was supplied; it is replaced by Form 8889 line 13.");
+    s1Values["line13"] = f8889.values["line13"];
+    const hsaIncome = n(f8889.values["line16"]) + n(f8889.values["line20"]);
+    if (hsaIncome > 0) s1Values["line8f"] = n(s1Values["line8f"]) + hsaIncome;
+  }
   if (schedC.length) s1Values["line3"] = totalSchC;
   if (seForms.length) s1Values["line15"] = seDeduction;
   const s1 = prepareFormValues("f1040s1", year, s1Values, rounding);
@@ -166,10 +198,19 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
 
   const s2Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule2 ?? {}) };
   if (seForms.length) s2Values["line4"] = seTax;
+  if (f8889) {
+    if (n(f8889.values["line17b"]) > 0) s2Values["line17c"] = f8889.values["line17b"];
+    if (n(f8889.values["line21"]) > 0) s2Values["line17d"] = f8889.values["line21"];
+  }
+  if (f8959) {
+    if (s2Values["line11"] !== undefined) warnings.push("schedule2.line11 was supplied; it is replaced by Form 8959 line 18.");
+    s2Values["line11"] = f8959.values["line18"];
+  }
   const s2 = prepareFormValues("f1040s2", year, s2Values, rounding);
   const s2Needed = n(s2.values["line3"]) !== 0 || n(s2.values["line21"]) !== 0;
 
   const f1040Values: Values = { ...tp };
+  if (f8959 && n(f8959.values["line24"]) > 0) f1040Values["line25c"] = n(tp["line25c"]) + n(f8959.values["line24"]);
   if (s1Needed) {
     f1040Values["line8"] = s1.values["line10"];
     f1040Values["line10"] = s1.values["line26"];
@@ -179,6 +220,16 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040Values["line23"] = s2.values["line21"];
   }
   let f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+
+  // Schedule 1-A (2025): tips, overtime, car loan interest, and senior deductions (1040 line 13b).
+  let s1a: PreparedForm | undefined;
+  const truthyFlag = (v: unknown) => v === true || v === 1 || (typeof v === "string" && /^(true|yes|y|1|x)$/i.test(v));
+  if (year === 2025 && (input.schedule1A || truthyFlag(tp["you_65_or_older"]) || truthyFlag(tp["spouse_65_or_older"]))) {
+    s1a = prepareFormValues("f1040s1a", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], you_65_or_older: tp["you_65_or_older"], spouse_65_or_older: tp["spouse_65_or_older"], line1: f1040.values["line11"], ...(input.schedule1A ?? {}) }, rounding);
+    if (tp["line13b"] !== undefined) warnings.push("form1040.line13b was supplied; it is replaced by Schedule 1-A line 38.");
+    f1040Values["line13b"] = s1a.values["line38"];
+    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+  }
 
   // Form 8995: qualified business income deduction (1040 line 13) from the Schedule C businesses.
   let f8995: PreparedForm | undefined;
@@ -262,9 +313,12 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   forms.push(f1040);
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
+  if (s1a && n(s1a.values["line38"]) > 0) forms.push(s1a);
   if (s3) forms.push(s3);
   if (s8) forms.push(s8);
   if (f8995) forms.push(f8995);
+  if (f8889) forms.push(f8889);
+  if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
   for (const s of schedC) forms.push(s.prepared);
   for (const s of seForms) forms.push(s.prepared);
 
@@ -279,6 +333,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       adjusted_gross_income: n(f1040.values["line11"]),
       taxable_income: n(f1040.values["line15"]),
       qbi_deduction: f8995 ? n(f8995.values["line15"]) : 0,
+      hsa_deduction: f8889 ? n(f8889.values["line13"]) : 0,
+      additional_medicare_tax: f8959 ? n(f8959.values["line18"]) : 0,
       child_tax_credit: s8 ? n(s8.values["line14"]) : 0,
       additional_child_tax_credit: s8 ? n(s8.values["line27"]) : 0,
       total_tax: n(f1040.values["line24"]),

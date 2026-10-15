@@ -11,7 +11,7 @@ export class Calc {
   }
   /** Money input, rounded per context; missing → 0. */
   n(id: string): number {
-    return numValue(this.input, id, this.ctx.rounding);
+    return numValue(this.out[id] !== undefined ? this.out : this.input, id, this.ctx.rounding);
   }
   has(id: string): boolean {
     return hasValue(this.input, id);
