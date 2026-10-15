@@ -107,6 +107,8 @@ export interface ReturnInput {
   schedule1A?: Values;
   /** Optional Schedule 3 inputs (foreign tax credit, energy credits, premium tax credit, extension payment, excess SS withholding...). */
   schedule3?: Values;
+  /** Optional Schedule B inputs (interest and dividend payers); line 4 → 1040 line 2b, line 6 → 1040 line 3b. */
+  scheduleB?: Values;
 }
 
 export interface PreparedReturn {
@@ -249,6 +251,17 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   const s2Needed = n(s2.values["line3"]) !== 0 || n(s2.values["line21"]) !== 0;
 
   const f1040Values: Values = { ...tp };
+  // Schedule B: payer detail for interest and ordinary dividends.
+  let sB: PreparedForm | undefined;
+  if (input.scheduleB) {
+    sB = prepareFormValues("f1040sb", year, { name: jointName, ssn: tp["ssn"], ...input.scheduleB }, rounding);
+    if (tp["line2b"] !== undefined) warnings.push("form1040.line2b was supplied; it is replaced by Schedule B line 4.");
+    if (tp["line3b"] !== undefined) warnings.push("form1040.line3b was supplied; it is replaced by Schedule B line 6.");
+    f1040Values["line2b"] = sB.values["line4"];
+    f1040Values["line3b"] = sB.values["line6"];
+  } else if (n(tp["line2b"]) > 1500 || n(tp["line3b"]) > 1500) {
+    warnings.push("Taxable interest or ordinary dividends exceed $1,500: Schedule B is required; supply scheduleB with each payer.");
+  }
   if (f8959 && n(f8959.values["line24"]) > 0) f1040Values["line25c"] = n(tp["line25c"]) + n(f8959.values["line24"]);
   if (s1Needed) {
     f1040Values["line8"] = s1.values["line10"];
@@ -374,6 +387,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   forms.push(f1040);
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
+  if (sB) forms.push(sB);
   if (s1a && n(s1a.values["line38"]) > 0) forms.push(s1a);
   if (s3) forms.push(s3);
   if (s8) forms.push(s8);
