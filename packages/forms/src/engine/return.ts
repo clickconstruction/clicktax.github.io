@@ -123,7 +123,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     const mine = schedC.filter((s) => s.owner === owner);
     const overrides = owner === "you" ? input.scheduleSE : input.scheduleSESpouse;
     if (mine.length === 0 && !overrides) continue;
-    const net = mine.reduce((acc, s) => acc + n(s.prepared.values["line2"] === undefined ? s.prepared.values["line31"] : s.prepared.values["line31"]), 0);
+    const net = mine.reduce((acc, s) => acc + n(s.prepared.values["line31"]), 0);
     const seValues: Values = { ...headerFor(owner), ...(overrides ?? {}) };
     if (overrides && overrides["line2"] !== undefined) warnings.push(`scheduleSE${owner === "spouse" ? "Spouse" : ""}.line2 was supplied; it is replaced by the Schedule C total (${net}).`);
     seValues["line2"] = net;

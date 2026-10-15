@@ -20,7 +20,8 @@
     "gen:fieldmaps": "tsx tools/gen-fieldmaps.ts",
     "forms:fetch": "node tools/fetch-forms.mjs",
     "forms:dump": "node tools/dump-fields.mjs",
-    "forms:draft": "node tools/draft-labels.mjs"
+    "forms:draft": "node tools/draft-labels.mjs",
+    "render:link": "tsx tools/render-link.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
