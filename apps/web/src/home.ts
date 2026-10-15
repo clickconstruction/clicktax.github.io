@@ -9,17 +9,17 @@ function esc(s: string): string {
 
 function render() {
   if (!el) return;
-  const years = SUPPORTED_YEARS.map((y) => `<button class="btn small ${y === year ? "" : "secondary"}" data-year="${y}" aria-pressed="${y === year}">${y}</button>`).join(" ");
+  const years = SUPPORTED_YEARS.map((y) => `<button class="btn quiet" data-year="${y}" aria-pressed="${y === year}">${y}</button>`).join("");
   const items = FORM_IDS.filter((id) => FORMS[id].years.includes(year))
     .map((id) => {
       const f = FORMS[id];
-      return `<li><strong>${esc(f.shortTitle)}</strong> — ${esc(f.description)} <button class="btn small" data-test="${id}">Test</button></li>`;
+      return `<li><strong>${esc(f.shortTitle)}</strong> — ${esc(f.description)}<button class="btn quiet" data-test="${id}" title="Fill this form with sample figures">test</button></li>`;
     })
     .join("");
   el.innerHTML = `
-    <p class="row"><span class="muted">Tax year:</span> ${years}</p>
+    <p class="row year-toggle"><span class="muted">Tax year:</span>${years}</p>
     <ul>${items}</ul>
-    <p class="row"><button class="btn" data-test-return="1">Test a full return</button> <span class="muted">Married couple, one plumbing business, two children: Form 1040 with every schedule.</span></p>
+    <p class="row"><button class="btn quiet wide" data-test-return="1">test a full return</button> <span class="muted">Married couple, one plumbing business, two children: Form 1040 with every schedule.</span></p>
     <p class="muted">Test fills the form with invented sample figures, in your browser, and shows the result with every computed line explained. It is also how we check that each form still lines up with the IRS PDF.</p>
     <p id="test-status" class="muted" aria-live="polite"></p>`;
   el.querySelectorAll<HTMLButtonElement>("[data-year]").forEach((b) => b.addEventListener("click", () => { year = Number(b.dataset["year"]) as TaxYear; render(); }));
