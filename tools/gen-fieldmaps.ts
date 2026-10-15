@@ -12,25 +12,30 @@ interface DraftRow { pdfField: string; type: string; page: number; x: number; y:
 const ROOT = join(import.meta.dirname, "..", "packages", "forms");
 let misses = 0;
 
-function resolve(rows: DraftRow[], root: string, rule: Locate, year: TaxYear, label: string): string | undefined {
+/** Returns one or more full widget names (several when the rule names copies), or undefined on a miss. "skip" means the field does not exist this year. */
+function resolve(rows: DraftRow[], root: string, rule: Locate, year: TaxYear, label: string): string[] | "skip" | undefined {
+  if (rule.names && !(year in rule.names)) return "skip";
   const explicit = rule.names?.[year] ?? rule.name;
   if (explicit) {
-    const full = `${root}.${explicit}`;
-    if (rows.some((r) => r.pdfField === full)) return full;
-    console.log(`  MISS ${label}: explicit name ${full} not in PDF`);
-    misses++;
-    return undefined;
+    const shorts = Array.isArray(explicit) ? explicit : [explicit];
+    const fulls: string[] = [];
+    for (const short of shorts) {
+      const full = `${root}.${short}`;
+      if (!rows.some((r) => r.pdfField === full)) {
+        console.log(`  MISS ${label}: explicit name ${full} not in PDF`);
+        misses++;
+        return undefined;
+      }
+      fulls.push(full);
+    }
+    return fulls;
   }
   let cands = rows;
   const page = typeof rule.page === "number" ? rule.page : rule.page?.[year];
   if (page) cands = cands.filter((r) => r.page === page);
   if (rule.kind) cands = cands.filter((r) => r.type === (rule.kind === "check" ? "check" : "text"));
   const tok = typeof rule.tok === "string" ? rule.tok : rule.tok?.[year];
-  if (rule.tok !== undefined && tok === undefined) {
-    console.log(`  MISS ${label}: no token for ${year}`);
-    misses++;
-    return undefined;
-  }
+  if (rule.tok !== undefined && tok === undefined) return "skip";
   if (tok !== undefined) cands = cands.filter((r) => r.leftTok === tok);
   if (rule.above) cands = cands.filter((r) => r.above.includes(rule.above!));
   if (rule.row) cands = cands.filter((r) => r.rowText.includes(rule.row!));
@@ -49,7 +54,14 @@ function resolve(rows: DraftRow[], root: string, rule: Locate, year: TaxYear, la
     return undefined;
   }
   if (cands.length > 1 && typeof pick === "string") console.log(`  note ${label}: ${cands.length} candidates, picked ${pick} (${chosen.pdfField.replace(root + ".", "")})`);
-  return chosen.pdfField;
+  return [chosen.pdfField];
+}
+
+function assign(map: Record<string, string>, key: string, result: string[] | "skip" | undefined) {
+  if (!result || result === "skip") return;
+  result.forEach((full, i) => {
+    map[i === 0 ? key : `${key}@${i + 1}`] = full;
+  });
 }
 
 for (const year of SUPPORTED_YEARS) {
@@ -66,31 +78,33 @@ for (const year of SUPPORTED_YEARS) {
         const ll = field.listLocate?.[year];
         if (!ll) { console.log(`  MISS ${field.id}: no listLocate for ${year}`); misses++; continue; }
         for (const [item, names] of Object.entries(ll)) {
-          names.forEach((short, i) => {
-            const full = `${root}.${short}`;
-            if (!draft.some((r) => r.pdfField === full)) { console.log(`  MISS ${field.id}[${i}].${item}: ${full} not in PDF`); misses++; return; }
-            map[`${field.id}[${i}].${item}`] = full;
+          names.forEach((shortOrCopies, i) => {
+            const shorts = Array.isArray(shortOrCopies) ? shortOrCopies : [shortOrCopies as string];
+            shorts.forEach((short, ci) => {
+              const full = `${root}.${short}`;
+              if (!draft.some((r) => r.pdfField === full)) { console.log(`  MISS ${field.id}[${i}].${item}: ${full} not in PDF`); misses++; return; }
+              map[ci === 0 ? `${field.id}[${i}].${item}` : `${field.id}[${i}].${item}@${ci + 1}`] = full;
+            });
           });
         }
         continue;
       }
       if (!field.locate) continue;
-      const isGroup = field.type === "yesno" || field.type === "choice" || field.type === "date_mdy";
+      const RULE_KEYS = ["name", "names", "tok", "above", "row", "page", "kind", "pick", "x"];
+      const isGroup = field.type === "yesno" || field.type === "choice" || field.type === "date_mdy" || !Object.keys(field.locate).some((k) => RULE_KEYS.includes(k));
       if (isGroup) {
         for (const [part, rule] of Object.entries(field.locate as Record<string, Locate>)) {
-          const full = resolve(draft, root, rule, year, `${field.id}.${part}`);
-          if (full) map[`${field.id}.${part}`] = full;
+          assign(map, `${field.id}.${part}`, resolve(draft, root, rule, year, `${field.id}.${part}`));
         }
       } else {
-        const full = resolve(draft, root, field.locate as Locate, year, field.id);
-        if (full) map[field.id] = full;
+        assign(map, field.id, resolve(draft, root, field.locate as Locate, year, field.id));
       }
     }
     // sanity: no two semantic keys may point at the same widget (except documented 2024 shared boxes)
     const seen = new Map<string, string>();
     for (const [k, v] of Object.entries(map)) {
       const prev = seen.get(v);
-      if (prev && !(prev === "mfs_spouse_name" && k === "qualifying_child_name")) console.log(`  DUP ${k} and ${prev} both map to ${v.replace(root + ".", "")}`);
+      if (prev && !(prev === "mfs_spouse_name" && k === "qualifying_child_name") && !k.includes("@") && !prev.includes("@")) console.log(`  DUP ${k} and ${prev} both map to ${v.replace(root + ".", "")}`);
       seen.set(v, k);
     }
     const dir = join(ROOT, "src", "fieldmaps", String(year));

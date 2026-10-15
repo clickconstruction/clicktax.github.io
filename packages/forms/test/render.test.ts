@@ -36,7 +36,8 @@ function sample(formId: FormId, year: TaxYear): Values {
           const row: Record<string, string | number | boolean> = {};
           for (const item of field.items ?? []) {
             if (item.years && !item.years.includes(year)) continue;
-            row[item.id] = item.type === "money" ? 100 * (i + 1) : item.type === "checkbox" ? true : item.type === "ssn" ? "111223333" : `Row ${i + 1} ${item.id}`;
+            if (item.computed) continue;
+            row[item.id] = item.type === "money" ? 100 * (i + 1) : item.type === "checkbox" ? true : item.type === "yesno" ? i % 2 === 0 : item.type === "percent" ? 50 : item.type === "integer" ? 1200 : item.type === "ssn" ? "111223333" : item.id === "date" ? "03/15/2025" : `Row ${i + 1} ${item.id}`;
           }
           return row;
         });

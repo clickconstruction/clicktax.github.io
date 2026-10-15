@@ -61,6 +61,11 @@ function scalarText(field: FieldDef, raw: Scalar, rounding: Rounding, warnings: 
       if (n === undefined || n === 0) return undefined;
       return String(Math.round(n));
     }
+    case "percent": {
+      const n = parseMoney(raw);
+      if (n === undefined || (n === 0 && !(field.computed && field.alwaysShow))) return undefined;
+      return (Math.round(n * 100) / 100).toString();
+    }
     case "ssn":
       return fmtSsn(raw, field.maxLen);
     case "ein":
@@ -84,55 +89,65 @@ export function toPdfFields(form: FormDef, year: TaxYear, values: Values, map: F
   const fields: Record<string, string | boolean> = {};
   const summary: SummaryLine[] = [];
   const warnings: string[] = [];
-  const put = (key: string | undefined, value: string | boolean, fieldId: string) => {
+  const put = (key: string | undefined, value: string | boolean, fieldId: string, mapKey?: string) => {
     if (!key) {
       warnings.push(`No PDF field mapped for "${fieldId}" on the ${year} ${form.shortTitle}; value not placed.`);
       return;
     }
     fields[key] = value;
+    // Copies of the same box (e.g. every 1099-NEC copy, every 1040-ES voucher) are mapped as key@2, key@3...
+    if (mapKey) for (let i = 2; map[`${mapKey}@${i}`]; i++) fields[map[`${mapKey}@${i}`]!] = value;
   };
   for (const field of fieldsForYear(form, year)) {
     const raw = values[field.id];
     if (raw === undefined || raw === null || raw === "") continue;
     const mapKey = field.id;
+    const absentThisYear = field.locate && !Array.isArray(field.locate) && typeof field.locate === "object" && "names" in (field.locate as object) && !((field.locate as { names?: Record<number, unknown> }).names?.[year]);
+    if (absentThisYear && field.type !== "list") continue;
     switch (field.type) {
       case "money":
       case "integer":
+      case "percent":
       case "ssn":
       case "ein":
       case "text": {
         if (Array.isArray(raw)) break;
         const text = scalarText(field, raw, rounding, warnings);
         if (text === undefined) break;
-        if (field.locate) put(map[mapKey], text, field.id);
+        if ((field.type === "ssn" || field.type === "ein") && map[`${mapKey}.p1`]) {
+          // Split across comb boxes (W-9 style): SSN 3-2-4, EIN 2-7.
+          const d = digits(raw);
+          const parts = field.type === "ssn" ? [d.slice(0, 3), d.slice(3, 5), d.slice(5, 9)] : [d.slice(0, 2), d.slice(2, 9)];
+          parts.forEach((part, i) => put(map[`${mapKey}.p${i + 1}`], part, field.id, `${mapKey}.p${i + 1}`));
+        } else if (field.locate) put(map[mapKey], text, field.id, mapKey);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: field.type === "ssn" || field.type === "ein" ? maskId(text) : text });
         break;
       }
       case "checkbox":
         if (truthy(raw)) {
-          put(map[mapKey], true, field.id);
+          put(map[mapKey], true, field.id, mapKey);
           summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: "X" });
         }
         break;
       case "yesno": {
         const yes = truthy(raw);
-        put(map[`${mapKey}.${yes ? "yes" : "no"}`], true, field.id);
+        put(map[`${mapKey}.${yes ? "yes" : "no"}`], true, field.id, `${mapKey}.${yes ? "yes" : "no"}`);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: yes ? "Yes" : "No" });
         break;
       }
       case "choice": {
         const v = String(raw);
         if (!field.choices?.includes(v)) break;
-        put(map[`${mapKey}.${v}`], true, field.id);
+        put(map[`${mapKey}.${v}`], true, field.id, `${mapKey}.${v}`);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: v });
         break;
       }
       case "date_mdy": {
         const d = parseDate(raw);
         if (!d) break;
-        put(map[`${mapKey}.month`], d.month, field.id);
-        put(map[`${mapKey}.day`], d.day, field.id);
-        put(map[`${mapKey}.year`], d.year, field.id);
+        put(map[`${mapKey}.month`], d.month, field.id, `${mapKey}.month`);
+        put(map[`${mapKey}.day`], d.day, field.id, `${mapKey}.day`);
+        put(map[`${mapKey}.year`], d.year, field.id, `${mapKey}.year`);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: `${d.month}/${d.day}/${d.year}` });
         break;
       }
@@ -146,18 +161,33 @@ export function toPdfFields(form: FormDef, year: TaxYear, values: Values, map: F
             if (item.years && !item.years.includes(year)) continue;
             const v = r[item.id];
             if (v === undefined || v === null || v === "") continue;
-            const key = map[`${field.id}[${i}].${item.id}`];
+            const listKey = `${field.id}[${i}].${item.id}`;
+            if (item.type === "yesno") {
+              const yes = truthy(v);
+              const yk = map[`${listKey}.${yes ? "yes" : "no"}`];
+              if (yk) put(yk, true, field.id, `${listKey}.${yes ? "yes" : "no"}`);
+              continue;
+            }
+            const key = map[listKey];
             if (!key) continue; // item not on this year's form (e.g. split names)
-            if (item.type === "checkbox") {
-              if (truthy(v)) fields[key] = true;
+            let out: string | boolean | undefined;
+            if (item.type === "percent") {
+              const n = parseMoney(v as Scalar);
+              if (n !== undefined && n !== 0) out = (Math.round(n * 100) / 100).toString();
+            } else if (item.type === "integer") {
+              const n = parseMoney(v as Scalar);
+              if (n !== undefined && n !== 0) out = String(Math.round(n));
+            } else if (item.type === "checkbox") {
+              if (truthy(v)) out = true;
             } else if (item.type === "money") {
               const n = parseMoney(v as Scalar);
-              if (n !== undefined && n !== 0) fields[key] = fmtMoney(roundTo(n, rounding), rounding);
+              if (n !== undefined && n !== 0) out = fmtMoney(roundTo(n, rounding), rounding);
             } else if (item.type === "ssn") {
-              fields[key] = fmtSsn(v, item.maxLen);
+              out = fmtSsn(v, item.maxLen);
             } else {
-              fields[key] = String(v);
+              out = String(v);
             }
+            if (out !== undefined) put(key, out, field.id, listKey);
           }
           // 2024-style single name box
           const nameKey = map[`${field.id}[${i}].name`];

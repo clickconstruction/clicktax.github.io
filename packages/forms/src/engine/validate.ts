@@ -38,6 +38,9 @@ export function validateValues(form: FormDef, year: TaxYear, values: Values): Va
       case "money":
         if (Array.isArray(raw) || parseMoney(raw) === undefined) issues.push({ field: key, message: `"${key}" must be a number (got ${JSON.stringify(raw)}).`, severity: "error" });
         break;
+      case "percent":
+        if (Array.isArray(raw) || parseMoney(raw) === undefined) issues.push({ field: key, message: `"${key}" must be a number (a percentage without the % sign).`, severity: "error" });
+        break;
       case "integer":
         if (Array.isArray(raw) || parseMoney(raw) === undefined || !Number.isInteger(Number(parseMoney(raw)))) issues.push({ field: key, message: `"${key}" must be a whole number.`, severity: "error" });
         break;
@@ -85,4 +88,4 @@ export function validateValues(form: FormDef, year: TaxYear, values: Values): Va
 }
 
 /** Keys the engine accepts that are not PDF fields. */
-export const INTERNAL_KEYS = new Set(["owner", "earned_income", "filing_status", "other_nonrefundable_credits", "schedule3_line11", "you_65_or_older", "spouse_65_or_older", "age_55_or_older"]);
+export const INTERNAL_KEYS = new Set(["owner", "earned_income", "filing_status", "other_nonrefundable_credits", "schedule3_line11", "you_65_or_older", "spouse_65_or_older", "age_55_or_older", "first_business_use_month", "first_business_use_year", "business", "prior_year_tax", "prior_year_agi"]);
