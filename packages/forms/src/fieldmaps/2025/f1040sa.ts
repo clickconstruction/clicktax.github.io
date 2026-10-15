@@ -2,7 +2,38 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "name": "form1[0].Page1[0].f1_1[0]",
+  "ssn": "form1[0].Page1[0].f1_2[0]",
+  "line1": "form1[0].Page1[0].f1_3[0]",
+  "line2": "form1[0].Page1[0].Line2_ReadOrder[0].f1_4[0]",
+  "line3": "form1[0].Page1[0].f1_5[0]",
+  "line4": "form1[0].Page1[0].f1_6[0]",
+  "line5a_general_sales_tax": "form1[0].Page1[0].c1_1[0]",
+  "line5a": "form1[0].Page1[0].f1_7[0]",
+  "line5b": "form1[0].Page1[0].f1_8[0]",
+  "line5c": "form1[0].Page1[0].f1_9[0]",
+  "line5d": "form1[0].Page1[0].f1_10[0]",
+  "line5e": "form1[0].Page1[0].f1_11[0]",
+  "line6_description": "form1[0].Page1[0].f1_12[0]",
+  "line6": "form1[0].Page1[0].f1_13[0]",
+  "line7": "form1[0].Page1[0].f1_14[0]",
+  "line8_not_all_qualified": "form1[0].Page1[0].Line8_ReadOrder[0].c1_2[0]",
+  "line8a": "form1[0].Page1[0].f1_15[0]",
+  "line8b_payee": "form1[0].Page1[0].Line8b_ReadOrder[0].f1_16[0]",
+  "line8b": "form1[0].Page1[0].f1_17[0]",
+  "line8c": "form1[0].Page1[0].f1_18[0]",
+  "line8e": "form1[0].Page1[0].f1_20[0]",
+  "line9": "form1[0].Page1[0].f1_21[0]",
+  "line10": "form1[0].Page1[0].f1_22[0]",
+  "line11": "form1[0].Page1[0].f1_23[0]",
+  "line12": "form1[0].Page1[0].f1_24[0]",
+  "line13": "form1[0].Page1[0].f1_25[0]",
+  "line14": "form1[0].Page1[0].f1_26[0]",
+  "line15": "form1[0].Page1[0].f1_27[0]",
+  "line16_description": "form1[0].Page1[0].f1_28[0]",
+  "line16": "form1[0].Page1[0].f1_29[0]",
+  "line17": "form1[0].Page1[0].f1_30[0]",
+  "line18": "form1[0].Page1[0].Line18_ReadOrder[0].c1_3[0]",
 };
 
 export default map;

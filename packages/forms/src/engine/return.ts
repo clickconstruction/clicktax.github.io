@@ -109,6 +109,8 @@ export interface ReturnInput {
   schedule3?: Values;
   /** Optional Schedule B inputs (interest and dividend payers); line 4 → 1040 line 2b, line 6 → 1040 line 3b. */
   scheduleB?: Values;
+  /** Optional Schedule A inputs (itemized deductions); used on 1040 line 12 when larger than the standard deduction, elected (line18), or required (MFS spouse itemizes). */
+  scheduleA?: Values;
 }
 
 export interface PreparedReturn {
@@ -273,6 +275,25 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   }
   let f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
 
+  // Schedule A: itemize when it beats the standard deduction, when elected, or when required.
+  let sA: PreparedForm | undefined;
+  if (input.scheduleA) {
+    const a = prepareFormValues("f1040sa", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line2: f1040.values["line11"], ...input.scheduleA }, rounding);
+    const itemized = n(a.values["line17"]);
+    const std = n(f1040.values["line12"]);
+    const elected = a.values["line18"] === true;
+    const required = String(tp["filing_status"]) === "mfs" && tp["spouse_itemizes"] === true;
+    if (itemized > std || elected || required) {
+      sA = a;
+      if (tp["itemized_deductions"] !== undefined) warnings.push("form1040.itemized_deductions was supplied; it is replaced by Schedule A line 17.");
+      f1040Values["itemized_deductions"] = itemized;
+      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+      if (itemized <= std) warnings.push(`Itemizing ${itemized} although the standard deduction (${std}) is larger${elected ? " (line 18 elected)" : " (required: spouse itemizes)"}.`);
+    } else {
+      warnings.push(`Schedule A total (${itemized}) is less than the standard deduction (${std}); the standard deduction is used and Schedule A is omitted.`);
+    }
+  }
+
   // Schedule 1-A (2025): tips, overtime, car loan interest, and senior deductions (1040 line 13b).
   let s1a: PreparedForm | undefined;
   const truthyFlag = (v: unknown) => v === true || v === 1 || (typeof v === "string" && /^(true|yes|y|1|x)$/i.test(v));
@@ -388,6 +409,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
   if (sB) forms.push(sB);
+  if (sA) forms.push(sA);
   if (s1a && n(s1a.values["line38"]) > 0) forms.push(s1a);
   if (s3) forms.push(s3);
   if (s8) forms.push(s8);

@@ -2,7 +2,42 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "name": "topmostSubform[0].Page1[0].f1_1[0]",
+  "ssn": "topmostSubform[0].Page1[0].f1_2[0]",
+  "line1": "topmostSubform[0].Page1[0].f1_3[0]",
+  "line2": "topmostSubform[0].Page1[0].f1_4[0]",
+  "line3": "topmostSubform[0].Page1[0].f1_5[0]",
+  "line4": "topmostSubform[0].Page1[0].f1_6[0]",
+  "line5a_general_sales_tax": "topmostSubform[0].Page1[0].c1_1[0]",
+  "line5a": "topmostSubform[0].Page1[0].f1_7[0]",
+  "line5b": "topmostSubform[0].Page1[0].f1_8[0]",
+  "line5c": "topmostSubform[0].Page1[0].f1_9[0]",
+  "line5d": "topmostSubform[0].Page1[0].f1_10[0]",
+  "line5e": "topmostSubform[0].Page1[0].f1_11[0]",
+  "line6_description": "topmostSubform[0].Page1[0].f1_12[0]",
+  "line6_description_2": "topmostSubform[0].Page1[0].f1_13[0]",
+  "line6": "topmostSubform[0].Page1[0].f1_14[0]",
+  "line7": "topmostSubform[0].Page1[0].f1_15[0]",
+  "line8_not_all_qualified": "topmostSubform[0].Page1[0].Line8_ReadOrder[0].c1_2[0]",
+  "line8a": "topmostSubform[0].Page1[0].f1_16[0]",
+  "line8b_payee": "topmostSubform[0].Page1[0].f1_17[0]",
+  "line8b_payee_2": "topmostSubform[0].Page1[0].f1_18[0]",
+  "line8b": "topmostSubform[0].Page1[0].f1_19[0]",
+  "line8c": "topmostSubform[0].Page1[0].f1_20[0]",
+  "line8e": "topmostSubform[0].Page1[0].f1_22[0]",
+  "line9": "topmostSubform[0].Page1[0].f1_23[0]",
+  "line10": "topmostSubform[0].Page1[0].f1_24[0]",
+  "line11": "topmostSubform[0].Page1[0].f1_25[0]",
+  "line12": "topmostSubform[0].Page1[0].f1_26[0]",
+  "line13": "topmostSubform[0].Page1[0].f1_27[0]",
+  "line14": "topmostSubform[0].Page1[0].f1_28[0]",
+  "line15": "topmostSubform[0].Page1[0].f1_29[0]",
+  "line16_description": "topmostSubform[0].Page1[0].f1_30[0]",
+  "line16_description_2": "topmostSubform[0].Page1[0].f1_31[0]",
+  "line16_description_3": "topmostSubform[0].Page1[0].f1_32[0]",
+  "line16": "topmostSubform[0].Page1[0].f1_33[0]",
+  "line17": "topmostSubform[0].Page1[0].f1_34[0]",
+  "line18": "topmostSubform[0].Page1[0].Line18_ReadOrder[0].c1_3[0]",
 };
 
 export default map;

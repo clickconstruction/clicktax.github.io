@@ -125,20 +125,20 @@ export function toPdfFields(form: FormDef, year: TaxYear, values: Values, map: F
       }
       case "checkbox":
         if (truthy(raw)) {
-          put(map[mapKey], true, field.id, mapKey);
+          if (field.locate) put(map[mapKey], true, field.id, mapKey);
           summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: "X" });
         }
         break;
       case "yesno": {
         const yes = truthy(raw);
-        put(map[`${mapKey}.${yes ? "yes" : "no"}`], true, field.id, `${mapKey}.${yes ? "yes" : "no"}`);
+        if (field.locate) put(map[`${mapKey}.${yes ? "yes" : "no"}`], true, field.id, `${mapKey}.${yes ? "yes" : "no"}`);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: yes ? "Yes" : "No" });
         break;
       }
       case "choice": {
         const v = String(raw);
         if (!field.choices?.includes(v)) break;
-        put(map[`${mapKey}.${v}`], true, field.id, `${mapKey}.${v}`);
+        if (field.locate) put(map[`${mapKey}.${v}`], true, field.id, `${mapKey}.${v}`);
         summary.push({ ...(field.line ? { line: field.line } : {}), label: field.label, value: v });
         break;
       }
