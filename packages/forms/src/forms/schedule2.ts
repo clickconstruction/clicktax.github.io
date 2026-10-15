@@ -32,9 +32,11 @@ const fields: FieldDef[] = [
   amt("line14", "14", "Interest on tax due on installment income from the sale of certain residential lots and timeshares", 1),
   amt("line15", "15", "Interest on the deferred tax on gain from certain installment sales with a sales price over $150,000", 1),
   amt("line16", "16", "Recapture of low-income housing credit (Form 8611)", 1),
+  amt("line17c", "17c", "Additional tax on HSA distributions (Form 8889)", 2, { notes: "Filled from Form 8889 line 17b when preparing a full return." }),
+  amt("line17d", "17d", "Additional tax on an HSA because you did not remain an eligible individual (Form 8889)", 2, { notes: "Filled from Form 8889 line 21 when preparing a full return." }),
   { id: "line17z_description", line: "17z", label: "Any other taxes: type", type: "text", locate: N("Page2[0].Line17z_ReadOrder[0].f2_19[0]") },
   amt("line17z", "17z", "Any other taxes: amount", 2),
-  comp("line18", "18", "Total additional taxes (lines 17a through 17z)", 2, "sum of supplied line 17 amounts"),
+  comp("line18", "18", "Total additional taxes (lines 17a through 17z)", 2, "sum of lines 17c, 17d, and 17z"),
   amt("line20", "20", "Section 965 net tax liability installment from Form 965-A", 2),
   comp("line21", "21", "Add lines 4, 7 through 16, 18, and 20; carried to Form 1040 line 23", 2, "line 4 + 7 + 8 + ... + 16 + 18 + 20"),
 ];
@@ -62,7 +64,7 @@ export const schedule2: FormDef = {
     const l2 = c.n("line2");
     c.set("line3", l1z + l2, "Part I total", `line 1z ${f(l1z)} + line 2 ${f(l2)}`, "3");
     const l7 = c.set("line7", c.n("line5") + c.n("line6"), "Additional social security and Medicare tax", `line 5 ${f(c.n("line5"))} + line 6 ${f(c.n("line6"))}`, "7");
-    const l18 = c.set("line18", c.n("line17z"), "Total additional taxes", `line 17z ${f(c.n("line17z"))}`, "18");
+    const l18 = c.set("line18", c.sum(["line17c", "line17d", "line17z"]), "Total additional taxes", c.show([["17c", c.n("line17c")], ["17d", c.n("line17d")], ["17z", c.n("line17z")]]), "18");
     const ids = ["line4", "line8", "line9", "line10", "line11", "line12", "line13", "line14", "line15", "line16", "line20"];
     const parts: Array<[string, number]> = ids.map((id) => [id.replace("line", ""), c.n(id)]).filter(([, v]) => v !== 0) as Array<[string, number]>;
     if (l7 !== 0) parts.push(["7", l7]);

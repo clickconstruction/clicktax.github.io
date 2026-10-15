@@ -67,7 +67,7 @@ function createServer(env: Env): McpServer {
     { name: "clicktax", version: VERSION, title: "ClickTax" },
     {
       instructions: `${DISCLAIMER}
-ClickTax fills IRS forms for tax years ${SUPPORTED_YEARS.join(" and ")}: Form 1040, Schedule 1, Schedule 2, Schedule C, Schedule SE, and Schedule 8812.
+ClickTax fills IRS forms for tax years ${SUPPORTED_YEARS.join(" and ")}: ${FORM_IDS.map((id) => FORMS[id].shortTitle).join(", ")}.
 Workflow: call list_forms, then get_form_schema and get_form_notes for each form, collect the person's figures using the semantic field ids, then call fill_form (one form) or prepare_return (a whole sole-proprietor return). Every result has two parts: the form (computed values and a link that renders the PDF locally in the person's browser) and the notes (plain-language guidance and what to verify). Give the person the link; the server stores nothing and the link's data never reaches it. Never invent figures; ask the person. The engine computes arithmetic lines only; credits, itemized deductions, QBI, and capital-gain tax need other IRS forms or worksheets. It does not e-file.`,
     },
   );
@@ -141,7 +141,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
     "prepare_return",
     {
       title: "Prepare a sole-proprietor return",
-      description: "Assembles a whole return: each Schedule C feeds Schedule SE, Schedule 1, Schedule 2, Schedule 8812 (when dependents are marked for the child tax credit), and Form 1040 automatically (business profit → self-employment tax → deductions → AGI → taxable income → tax → credits → refund or amount owed). Returns one link that renders every form, plus per-form computations, warnings, and notes. Supply form1040 values (names, SSN, filing status, address, dependents, W-2 wages, withholding, payments...), scheduleC as an array (add owner: \"spouse\" for a spouse's business on a joint return), and optional scheduleSE/scheduleSESpouse (e.g. line8a W-2 social security wages), schedule1, schedule2, schedule8812 (line18b, line21, other_nonrefundable_credits, schedule3_line11) values. Example: {year: 2025, form1040: {first_name: \"Ann\", last_name: \"Lee\", ssn: \"123456789\", filing_status: \"single\", digital_assets: false, line1a: 50000, line25a: 6000}, scheduleC: [{principal_business: \"Consulting\", accounting_method: \"cash\", material_participation: true, line1: 80000, line18: 1200}]}",
+      description: "Assembles a whole return: each Schedule C feeds Schedule SE, Schedule 1, Schedule 2, Form 8995 (QBI deduction), Schedule 8812 (when dependents are marked for the child tax credit), Form 8959 (when income crosses the Additional Medicare Tax threshold), Schedule 1-A (2025 seniors and supplied tips/overtime/car-loan figures), Form 8889 (when HSA figures are supplied), Schedule 3 (when supplied), and Form 1040 automatically (business profit → self-employment tax → deductions → AGI → taxable income → tax → credits → refund or amount owed). Returns one link that renders every form, plus per-form computations, warnings, and notes. Supply form1040 values (names, SSN, filing status, address, dependents, W-2 wages, withholding, payments...), scheduleC as an array (add owner: \"spouse\" for a spouse's business on a joint return), and optional scheduleSE/scheduleSESpouse (e.g. line8a W-2 social security wages), schedule1, schedule2, schedule3, schedule1A, schedule8812, form8995, form8889, form8959 values (see each form's get_form_schema). Example: {year: 2025, form1040: {first_name: \"Ann\", last_name: \"Lee\", ssn: \"123456789\", filing_status: \"single\", digital_assets: false, line1a: 50000, line25a: 6000}, scheduleC: [{principal_business: \"Consulting\", accounting_method: \"cash\", material_participation: true, line1: 80000, line18: 1200}]}",
       inputSchema: z.object({
         year: yearSchema,
         form1040: valuesSchema,
@@ -151,6 +151,11 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
         schedule1: valuesSchema.optional(),
         schedule2: valuesSchema.optional(),
         schedule8812: valuesSchema.optional(),
+        schedule3: valuesSchema.optional(),
+        schedule1A: valuesSchema.optional(),
+        form8995: valuesSchema.optional(),
+        form8889: valuesSchema.optional(),
+        form8959: valuesSchema.optional(),
         rounding: roundingSchema,
         title: z.string().optional(),
       }),
@@ -159,7 +164,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
     async (input) => {
       const { year, rounding, title, ...rest } = input;
       const result = await prepareReturn(
-        { year: year as TaxYear, form1040: rest.form1040 as Values, ...(rest.scheduleC ? { scheduleC: rest.scheduleC as Values[] } : {}), ...(rest.scheduleSE ? { scheduleSE: rest.scheduleSE as Values } : {}), ...(rest.scheduleSESpouse ? { scheduleSESpouse: rest.scheduleSESpouse as Values } : {}), ...(rest.schedule1 ? { schedule1: rest.schedule1 as Values } : {}), ...(rest.schedule2 ? { schedule2: rest.schedule2 as Values } : {}), ...(rest.schedule8812 ? { schedule8812: rest.schedule8812 as Values } : {}), ...(rounding ? { rounding } : {}) },
+        { year: year as TaxYear, form1040: rest.form1040 as Values, ...(rest.scheduleC ? { scheduleC: rest.scheduleC as Values[] } : {}), ...(rest.scheduleSE ? { scheduleSE: rest.scheduleSE as Values } : {}), ...(rest.scheduleSESpouse ? { scheduleSESpouse: rest.scheduleSESpouse as Values } : {}), ...(rest.schedule1 ? { schedule1: rest.schedule1 as Values } : {}), ...(rest.schedule2 ? { schedule2: rest.schedule2 as Values } : {}), ...(rest.schedule8812 ? { schedule8812: rest.schedule8812 as Values } : {}), ...(rest.schedule3 ? { schedule3: rest.schedule3 as Values } : {}), ...(rest.schedule1A ? { schedule1A: rest.schedule1A as Values } : {}), ...(rest.form8995 ? { form8995: rest.form8995 as Values } : {}), ...(rest.form8889 ? { form8889: rest.form8889 as Values } : {}), ...(rest.form8959 ? { form8959: rest.form8959 as Values } : {}), ...(rounding ? { rounding } : {}) },
         { renderBase, ...(title ? { title } : {}) },
       );
       const totals = Object.entries(result.totals).map(([k, v]) => `- ${k.replace(/_/g, " ")}: **${money(v)}**`).join("\n");
