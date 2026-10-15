@@ -55,6 +55,12 @@ async function main() {
     status.innerHTML = `<span class="err">That link could not be read: ${esc((e as Error).message)}</span>`;
     return;
   }
+  if (payload.sample) {
+    const b = document.createElement("div");
+    b.className = "banner sample";
+    b.textContent = "Sample data. These figures are invented for testing; nothing here is yours.";
+    status.before(b);
+  }
   status.textContent = `Filling ${payload.forms.length} form${payload.forms.length === 1 ? "" : "s"} for tax year ${payload.year} in your browser…`;
   const blobs: Array<{ name: string; url: string }> = [];
   for (const f of payload.forms) {
@@ -71,14 +77,22 @@ async function main() {
       const summary = (f.summary ?? [])
         .map((s) => `<tr><td class="muted">${esc(s.line ?? "")}</td><td>${esc(s.label)}</td><td class="num">${esc(s.value)}</td></tr>`)
         .join("");
+      const comps = (f.notes?.computations ?? [])
+        .map((c) => `<tr><td class="muted">${esc(c.line ?? "")}</td><td>${esc(c.label)}<br><span class="muted">${esc(c.formula)}</span></td><td class="num">${esc(typeof c.value === "number" ? c.value.toLocaleString("en-US") : String(c.value))}</td></tr>`)
+        .join("");
+      const warns = (f.notes?.warnings ?? []).map((w) => `<li>${esc(w)}</li>`).join("");
+      const total = Object.keys(f.fields).length;
+      const placedLine = errors.length ? `<p class="err">${total - errors.length} of ${total} fields placed. Could not place: ${esc(errors.slice(0, 5).join("; "))}</p>` : `<p class="ok">All ${total} fields placed on the official PDF.</p>`;
       card.innerHTML = `
         <h3>${esc(title)}</h3>
         <div class="row">
           <a class="btn" href="${url}" download="${fileName}">Download ${esc(TITLES[f.form] ?? f.form)}</a>
           <a class="btn secondary" href="${url}" target="_blank" rel="noopener">Open in a new tab</a>
         </div>
-        ${errors.length ? `<p class="err">${errors.length} field(s) could not be placed: ${esc(errors.slice(0, 5).join("; "))}</p>` : ""}
+        ${placedLine}
         <object class="preview" data="${url}" type="application/pdf"><p>Your browser cannot preview PDFs inline; use the download button.</p></object>
+        ${comps ? `<details open><summary>How each line was computed</summary><table><tbody>${comps}</tbody></table></details>` : ""}
+        ${warns ? `<details open><summary>Warnings (${(f.notes?.warnings ?? []).length})</summary><ul>${warns}</ul></details>` : ""}
         ${summary ? `<details><summary>Values placed on this form</summary><table><tbody>${summary}</tbody></table></details>` : ""}
       `;
     } catch (e) {

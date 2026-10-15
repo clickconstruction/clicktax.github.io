@@ -10,12 +10,16 @@ export interface RenderForm {
   fields: Record<string, string | boolean>;
   /** Optional human summary lines shown next to the preview. */
   summary?: Array<{ line?: string; label: string; value: string }>;
+  /** Optional computed-line explanations and warnings, shown on the render page. */
+  notes?: { computations: Array<{ line?: string; label: string; value: string | number | boolean; formula: string }>; warnings: string[] };
 }
 
 export interface RenderPayload {
   v: 1;
   year: TaxYear;
   title?: string;
+  /** True when the figures are invented sample data (the website's Test buttons). */
+  sample?: boolean;
   forms: RenderForm[];
 }
 
