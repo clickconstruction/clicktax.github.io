@@ -1,0 +1,331 @@
+{
+ "pdf": "apps/web/public/forms/2025/fw9.pdf",
+ "pages": [
+  {
+   "w": 611.976,
+   "h": 791.968
+  },
+  {
+   "w": 611.976,
+   "h": 791.968
+  },
+  {
+   "w": 611.976,
+   "h": 791.968
+  },
+  {
+   "w": 611.976,
+   "h": 791.968
+  },
+  {
+   "w": 611.976,
+   "h": 791.968
+  },
+  {
+   "w": 611.976,
+   "h": 791.968
+  }
+ ],
+ "count": 23,
+ "fields": [
+  {
+   "name": "topmostSubform[0].Page1[0].f1_01[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 58.6,
+   "y": 660,
+   "w": 517.4,
+   "h": 14,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_02[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 58.6,
+   "y": 636,
+   "w": 517.4,
+   "h": 14,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[0]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 73,
+   "y": 603.7,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/1"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[1]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 180,
+   "y": 603.7,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/2"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[2]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 252,
+   "y": 603.7,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/3"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[3]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 324,
+   "y": 603.7,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/4"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[4]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 388.8,
+   "y": 603.7,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/5"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[5]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 73,
+   "y": 590.5,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/6"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].f1_03[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 417.6,
+   "y": 589,
+   "w": 28.8,
+   "h": 11,
+   "maxLen": 1,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_1[6]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 73,
+   "y": 554,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/7"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].f1_04[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 162.4,
+   "y": 552,
+   "w": 284,
+   "h": 12,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Boxes3a-b_ReadOrder[0].c1_2[0]",
+   "widget": 0,
+   "type": "check",
+   "page": 1,
+   "x": 440.6,
+   "y": 521,
+   "w": 8,
+   "h": 8,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": "/1"
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_05[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 543.6,
+   "y": 588,
+   "w": 32.4,
+   "h": 12,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_06[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 500.6,
+   "y": 552,
+   "w": 75.4,
+   "h": 12,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_07[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 58.6,
+   "y": 492,
+   "w": 329.4,
+   "h": 14,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_08[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 58.6,
+   "y": 468,
+   "w": 329.4,
+   "h": 14,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_09[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 389.8,
+   "y": 468,
+   "w": 186.2,
+   "h": 38,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_10[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 58.6,
+   "y": 444,
+   "w": 517.4,
+   "h": 14,
+   "maxLen": null,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_11[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 417.6,
+   "y": 396,
+   "w": 43.2,
+   "h": 24,
+   "maxLen": 3,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_12[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 475.2,
+   "y": 396,
+   "w": 28.8,
+   "h": 24,
+   "maxLen": 2,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_13[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 518.4,
+   "y": 396,
+   "w": 57.6,
+   "h": 24,
+   "maxLen": 4,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_14[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 417.6,
+   "y": 348,
+   "w": 28.8,
+   "h": 24,
+   "maxLen": 2,
+   "tip": null,
+   "exportValues": null
+  },
+  {
+   "name": "topmostSubform[0].Page1[0].f1_15[0]",
+   "widget": 0,
+   "type": "text",
+   "page": 1,
+   "x": 460.8,
+   "y": 348,
+   "w": 100.8,
+   "h": 24,
+   "maxLen": 7,
+   "tip": null,
+   "exportValues": null
+  }
+ ]
+}
