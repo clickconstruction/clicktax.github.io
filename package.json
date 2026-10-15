@@ -18,9 +18,9 @@
     "dev:mcp": "npm run dev -w @clicktax/mcp",
     "verify:fieldmaps": "tsx tools/verify-fieldmaps.ts",
     "gen:fieldmaps": "tsx tools/gen-fieldmaps.ts",
-    "forms:fetch": "node tools/fetch-forms.mjs",
-    "forms:dump": "node tools/dump-fields.mjs",
-    "forms:draft": "node tools/draft-labels.mjs",
+    "forms:fetch": "tsx tools/fetch-forms.mjs",
+    "forms:dump": "tsx tools/dump-fields.mjs",
+    "forms:draft": "tsx tools/draft-labels.mjs",
     "render:link": "tsx tools/render-link.mjs"
   },
   "devDependencies": {

@@ -28,14 +28,6 @@ interface Env {
 }
 
 const VERSION = "0.2.0";
-const INSTRUCTIONS: Record<FormId, string> = {
-  f1040: "https://www.irs.gov/pub/irs-pdf/i1040gi.pdf",
-  f1040s1: "https://www.irs.gov/forms-pubs/about-schedule-1-form-1040",
-  f1040s2: "https://www.irs.gov/forms-pubs/about-schedule-2-form-1040",
-  f1040sc: "https://www.irs.gov/pub/irs-pdf/i1040sc.pdf",
-  f1040sse: "https://www.irs.gov/pub/irs-pdf/i1040sse.pdf",
-  f1040s8: "https://www.irs.gov/pub/irs-pdf/i1040s8.pdf",
-};
 const formIdSchema = z.enum(FORM_IDS as [FormId, ...FormId[]]).describe("Form id: f1040, f1040sc (Schedule C), f1040sse (Schedule SE), f1040s1 (Schedule 1), f1040s2 (Schedule 2)");
 const yearSchema = z.union([z.literal(2024), z.literal(2025)]).describe("Tax year (the year the income was earned): 2024 or 2025");
 const valuesSchema = z.record(z.string(), z.unknown()).describe("Semantic field id → value, per get_form_schema. Money as numbers; checkboxes as true/false; yes/no questions as true/false; lists as arrays of row objects.");
@@ -90,7 +82,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
       annotations: readOnly,
     },
     async () => {
-      const forms = FORM_IDS.map((id) => ({ id, shortTitle: FORMS[id].shortTitle, title: FORMS[id].title, years: FORMS[id].years, description: FORMS[id].description, instructions: INSTRUCTIONS[id] }));
+      const forms = FORM_IDS.map((id) => ({ id, shortTitle: FORMS[id].shortTitle, title: FORMS[id].title, years: FORMS[id].years, description: FORMS[id].description, instructions: FORMS[id].instructionsUrl }));
       const text = [`**${DISCLAIMER}**`, "", ...forms.map((f) => `- \`${f.id}\` ${f.shortTitle} (${f.years.join(", ")}): ${f.description}`), "", `Renderer: ${renderBase}/fill`].join("\n");
       return { content: [{ type: "text", text }], structuredContent: { disclaimer: DISCLAIMER, years: SUPPORTED_YEARS, forms, renderBase } };
     },

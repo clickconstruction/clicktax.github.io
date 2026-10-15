@@ -55,6 +55,7 @@ export const schedule8812: FormDef = {
   description: "Figures the child tax credit and credit for other dependents (Form 1040 line 19) and the refundable additional child tax credit (Form 1040 line 28).",
   years: [2024, 2025],
   fields,
+  instructionsUrl: "https://www.irs.gov/pub/irs-pdf/i1040s8.pdf",
   notes: `**What this form is for.** The child tax credit is $2,000 per qualifying child under 17 for 2024 and $2,200 for 2025, plus $500 per other dependent, reduced by 5% of modified AGI over $200,000 ($400,000 married filing jointly). The nonrefundable part is limited to your tax; up to $1,700 per child can come back as the refundable additional child tax credit based on earned income over $2,500.
 
 **What the engine computes.** Every line except the inputs on lines 2a-2c, 13 (filled from Form 1040 line 18 less other nonrefundable credits), 18a (earned income, filled from wages and self-employment profit), 18b, and 21.

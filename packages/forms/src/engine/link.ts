@@ -6,6 +6,8 @@ import type { FormId, TaxYear } from "../types.ts";
  */
 export interface RenderForm {
   form: FormId;
+  /** Short display title, e.g. "Schedule C". */
+  title?: string;
   /** Full PDF field name → value. Strings for text boxes; true/false for checkboxes. */
   fields: Record<string, string | boolean>;
   /** Optional human summary lines shown next to the preview. */

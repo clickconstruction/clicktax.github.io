@@ -114,6 +114,7 @@ export const scheduleC: FormDef = {
   description: "Reports income and expenses of a business you operated as a sole proprietor (or single-member LLC). Net profit flows to Schedule 1 line 3 and Schedule SE line 2.",
   years: [2024, 2025],
   fields,
+  instructionsUrl: "https://www.irs.gov/pub/irs-pdf/i1040sc.pdf",
   notes: `**What this form is for.** One Schedule C per business. Report gross receipts, subtract returns and cost of goods sold, then list ordinary and necessary expenses by category. Line 31 (net profit or loss) carries to Schedule 1 line 3 and, for self-employment tax, to Schedule SE line 2.
 
 **What the engine computes.** Lines 3, 5, 7, 28, 29, 31, 40, 42 and 48. Line 4 is taken from Part III when lines 35-41 are supplied; line 27b is taken from Part V when other_expenses rows are supplied.

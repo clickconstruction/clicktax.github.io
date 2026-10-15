@@ -46,6 +46,7 @@ export const schedule2: FormDef = {
   description: "Part I carries the alternative minimum tax and credit repayments to Form 1040 line 17. Part II carries self-employment tax and other additional taxes to Form 1040 line 23.",
   years: [2024, 2025],
   fields,
+  instructionsUrl: "https://www.irs.gov/forms-pubs/about-schedule-2-form-1040",
   notes: `**What this form is for.** For a sole proprietor the important line is 4 (self-employment tax from Schedule SE). Line 21 carries to Form 1040 line 23.
 
 **What the engine computes.** Lines 1z, 3, 7, 18, and 21. Line 4 is filled from Schedule SE when preparing a full return.

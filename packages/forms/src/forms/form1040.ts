@@ -130,7 +130,7 @@ const fields: FieldDef[] = [
   comp("line11b", "11b", "Amount from line 11a (adjusted gross income), carried to page 2", 2, "same as line 11a", { years: [2025], alwaysShow: true }),
   { id: "itemized_deductions", label: "Itemized deductions from Schedule A (supply only if itemizing; otherwise the standard deduction is computed)", type: "money" },
   comp("line12", "12", "Standard deduction or itemized deductions", 2, "standard deduction for filing status, plus additional amounts for age/blindness; or itemized_deductions if supplied", { locate: tok({ 2024: "12", 2025: "12e" }, { 2024: 1, 2025: 2 }), alwaysShow: true }),
-  amt("line13", "13", "Qualified business income deduction from Form 8995 or Form 8995-A", 2, { locate: tok({ 2024: "13", 2025: "13a" }, { 2024: 1, 2025: 2 }), notes: "Not computed; usually 20% of qualified business income subject to limits on Form 8995." }),
+  amt("line13", "13", "Qualified business income deduction from Form 8995 or Form 8995-A", 2, { locate: tok({ 2024: "13", 2025: "13a" }, { 2024: 1, 2025: 2 }), notes: "Filled from Form 8995 line 15 when preparing a full return." }),
   amt("line13b", "13b", "Additional deductions from Schedule 1-A, line 38 (tips, overtime, car loan interest, seniors)", 2, { years: [2025] }),
   comp("line14", "14", "Add lines 12 and 13 (and 13b for 2025)", 2, "line 12 + line 13 (+ 13b)", { locate: tok("14", { 2024: 1, 2025: 2 }) }),
   comp("line15", "15", "Taxable income", 2, "line 11 - line 14, not less than zero", { locate: tok("15", { 2024: 1, 2025: 2 }), alwaysShow: true }),
@@ -202,6 +202,7 @@ export const form1040: FormDef = {
   description: "The main individual return. Income lines, adjusted gross income, standard deduction, tax, credits, payments, and the refund or amount owed.",
   years: [2024, 2025],
   fields,
+  instructionsUrl: "https://www.irs.gov/pub/irs-pdf/i1040gi.pdf",
   notes: `**What this form is for.** The summary return. Schedules feed specific lines: Schedule 1 line 10 to line 8, Schedule 1 line 26 to line 10, Schedule 2 line 3 to line 17, Schedule 2 line 21 to line 23.
 
 **What the engine computes.** Lines 1z, 9, 11, 12 (standard deduction unless itemized_deductions is supplied), 14, 15, 16 (tax table or computation worksheet), 18, 21, 22, 24, 25d, 32, 33, 34, 35a and 37.

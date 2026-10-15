@@ -91,6 +91,7 @@ export const schedule1: FormDef = {
   description: "Part I reports income not listed on Form 1040 itself (business income, rentals, unemployment, other income). Part II reports adjustments such as the deductible half of self-employment tax, SE health insurance, and retirement plan contributions.",
   years: [2024, 2025],
   fields,
+  instructionsUrl: "https://www.irs.gov/forms-pubs/about-schedule-1-form-1040",
   notes: `**What this form is for.** Schedule C profit lands on line 3; the deductible half of self-employment tax lands on line 15. Line 10 carries to Form 1040 line 8 and line 26 carries to Form 1040 line 10.
 
 **What the engine computes.** Lines 9, 10, 25, and 26. When preparing a full return, lines 3 and 15 are filled from Schedule C and Schedule SE.

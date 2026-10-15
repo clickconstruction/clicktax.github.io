@@ -58,6 +58,7 @@ export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: Prepar
     ...(opts.sample ? { sample: true } : {}),
     forms: forms.map((f) => ({
       form: f.form,
+      title: FORMS[f.form]?.shortTitle ?? f.form,
       fields: f.pdfFields,
       summary: f.summary,
       ...(f.computations.length || f.warnings.length
@@ -88,6 +89,8 @@ export interface ReturnInput {
   schedule2?: Values;
   /** Optional Schedule 8812 inputs: line18b, line21, line18a override, other_nonrefundable_credits, schedule3_line11. */
   schedule8812?: Values;
+  /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
+  form8995?: Values;
 }
 
 export interface PreparedReturn {
@@ -175,6 +178,38 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   }
   let f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
 
+  // Form 8995: qualified business income deduction (1040 line 13) from the Schedule C businesses.
+  let f8995: PreparedForm | undefined;
+  if (schedC.length > 0 || input.form8995) {
+    const extra = input.form8995 ?? {};
+    const adjustments = n(s1.values["line15"]) + n(s1.values["line16"]) + n(s1.values["line17"]);
+    const profits = schedC.map((s) => n(s.prepared.values["line31"]));
+    const totalPositive = profits.filter((p) => p > 0).reduce((a, b) => a + b, 0);
+    const businesses = schedC.map((s, i) => {
+      const profit = profits[i]!;
+      const share = profit > 0 && totalPositive > 0 ? (adjustments * profit) / totalPositive : 0;
+      return {
+        name: String(s.prepared.values["business_name"] || s.prepared.values["principal_business"] || `Schedule C business ${i + 1}`),
+        tin: String(s.prepared.values["ein"] || s.prepared.values["ssn"] || ""),
+        qbi: Math.round(profit - share),
+      };
+    });
+    const deductions = n(f1040.values["line12"]) + (year === 2025 ? n(f1040.values["line13b"]) : 0);
+    const v8995: Values = {
+      name: jointName,
+      ssn: tp["ssn"],
+      filing_status: tp["filing_status"],
+      businesses,
+      line11: Math.max(0, n(f1040.values["line11"]) - deductions),
+      line12: Math.max(0, n(tp["line7"])) + n(tp["line3a"]),
+      ...extra,
+    };
+    f8995 = prepareFormValues("f8995", year, v8995, rounding);
+    if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995 line 15.");
+    f1040Values["line13"] = f8995.values["line15"];
+    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+  }
+
   // Schedule 8812: child tax credit (1040 line 19) and additional child tax credit (1040 line 28).
   const truthy = (v: unknown) => v === true || v === 1 || (typeof v === "string" && /^(true|yes|y|1|x)$/i.test(v));
   const depRows = Array.isArray(tp["dependents"]) ? (tp["dependents"] as ListRow[]) : [];
@@ -212,6 +247,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (s1Needed) forms.push(s1);
   if (s2Needed) forms.push(s2);
   if (s8) forms.push(s8);
+  if (f8995) forms.push(f8995);
   for (const s of schedC) forms.push(s.prepared);
   for (const s of seForms) forms.push(s.prepared);
 
@@ -225,6 +261,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       self_employment_tax: seTax,
       adjusted_gross_income: n(f1040.values["line11"]),
       taxable_income: n(f1040.values["line15"]),
+      qbi_deduction: f8995 ? n(f8995.values["line15"]) : 0,
       child_tax_credit: s8 ? n(s8.values["line14"]) : 0,
       additional_child_tax_credit: s8 ? n(s8.values["line27"]) : 0,
       total_tax: n(f1040.values["line24"]),
