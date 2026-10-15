@@ -10,8 +10,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Internal Name of Revenue proprietor Service Go to www.irs.gov/ScheduleC for instructions a",
-  "rightText": ""
+  "above": "Internal Name of Revenue proprietor Service Go to www.irs.gov/ScheduleC for instructions a"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_2[0]",
@@ -24,8 +23,7 @@
   "maxLen": 11,
   "leftTok": "",
   "rowText": "",
-  "above": "information. Social security Sequence number No. (SSN) 09",
-  "rightText": ""
+  "above": "information. Social security Sequence number No. (SSN) 09"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_3[0]",
@@ -38,8 +36,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "A Principal business or profession, including product or service (see instructions)",
-  "rightText": ""
+  "above": "A Principal business or profession, including product or service (see instructions)"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].BComb[0].f1_4[0]",
@@ -52,8 +49,7 @@
   "maxLen": 6,
   "leftTok": "",
   "rowText": "",
-  "above": "Enter code from instructions",
-  "rightText": ""
+  "above": "Enter code from instructions"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_5[0]",
@@ -66,8 +62,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "C Business name. If no separate business name, leave blank.",
-  "rightText": ""
+  "above": "C Business name. If no separate business name, leave blank."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].DComb[0].f1_6[0]",
@@ -80,8 +75,7 @@
   "maxLen": 9,
   "leftTok": "",
   "rowText": "",
-  "above": "Employer ID number (EIN) (see instr.)",
-  "rightText": ""
+  "above": "Employer ID number (EIN) (see instr.)"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_7[0]",
@@ -94,8 +88,7 @@
   "maxLen": null,
   "leftTok": "no.)",
   "rowText": "E Business address (including suite or room no.)",
-  "above": "name, leave blank. D Employer ID number (EIN) (see instr.)",
-  "rightText": ""
+  "above": "name, leave blank. D Employer ID number (EIN) (see instr.)"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_8[0]",
@@ -108,8 +101,7 @@
   "maxLen": null,
   "leftTok": "code",
   "rowText": "City, town or post office, state, and ZIP code",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_1[0]",
@@ -122,8 +114,7 @@
   "maxLen": null,
   "leftTok": "(1)",
   "rowText": "F Accounting method: (1)",
-  "above": "state, and",
-  "rightText": "Cash (2) Accrual"
+  "above": "state, and"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_1[1]",
@@ -136,8 +127,7 @@
   "maxLen": null,
   "leftTok": "(2)",
   "rowText": "F Accounting method: (1) Cash (2)",
-  "above": "",
-  "rightText": "Accrual (3) Other"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_1[2]",
@@ -150,8 +140,7 @@
   "maxLen": null,
   "leftTok": "(3)",
   "rowText": "F Accounting method: (1) Cash (2) Accrual (3)",
-  "above": "",
-  "rightText": "Other (specify)"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_9[0]",
@@ -164,8 +153,7 @@
   "maxLen": null,
   "leftTok": "(specify)",
   "rowText": "F Accounting method: (1) Cash (2) Accrual (3) Other (specify)",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_2[0]",
@@ -178,8 +166,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "ly participate” in the operation of this business during 2024? If “No,” see instructions for limit on losses .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_2[1]",
@@ -192,8 +179,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "articipate” in the operation of this business during 2024? If “No,” see instructions for limit on losses . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_3[0]",
@@ -206,8 +192,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "H If you started or acquired this business during 2024, check here . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_4[0]",
@@ -220,8 +205,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "id you make any payments in 2024 that would require you to file Form(s) 1099? See instructions . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_4[1]",
@@ -234,8 +218,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "ou make any payments in 2024 that would require you to file Form(s) 1099? See instructions . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_5[0]",
@@ -248,8 +231,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "J If “Yes,” did you or will you file required Form(s) 1099? . . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_5[1]",
@@ -262,8 +244,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "J If “Yes,” did you or will you file required Form(s) 1099? . . . . . . . . . . . . . . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_6[0]",
@@ -276,8 +257,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "Form W-2 and the “Statutory employee” box on that form was checked . . . . . . . . .",
-  "above": "you on",
-  "rightText": "1"
+  "above": "you on"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_10[0]",
@@ -290,8 +270,7 @@
   "maxLen": null,
   "leftTok": "1",
   "rowText": "Form W-2 and the “Statutory employee” box on that form was checked . . . . . . . . . 1",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_11[0]",
@@ -304,8 +283,7 @@
   "maxLen": null,
   "leftTok": "2",
   "rowText": "2 Returns and allowances . . . . . . . . . . . . . . . . . . . . . . . . . 2",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_12[0]",
@@ -318,8 +296,7 @@
   "maxLen": null,
   "leftTok": "3",
   "rowText": "3 Subtract line 2 from line 1 . . . . . . . . . . . . . . . . . . . . . . . . 3",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_13[0]",
@@ -332,8 +309,7 @@
   "maxLen": null,
   "leftTok": "4",
   "rowText": "4 Cost of goods sold (from line 42) . . . . . . . . . . . . . . . . . . . . . . 4",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_14[0]",
@@ -346,8 +322,7 @@
   "maxLen": null,
   "leftTok": "5",
   "rowText": "5 Gross profit. Subtract line 4 from line 3 . . . . . . . . . . . . . . . . . . . . 5",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_15[0]",
@@ -360,8 +335,7 @@
   "maxLen": null,
   "leftTok": "6",
   "rowText": "6 Other income, including federal and state gasoline or fuel tax credit or refund (see instructions) . . . . 6",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_16[0]",
@@ -374,8 +348,7 @@
   "maxLen": null,
   "leftTok": "7",
   "rowText": "7 Gross income. Add lines 5 and 6 . . . . . . . . . . . . . . . . . . . . . . 7",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_17[0]",
@@ -388,8 +361,7 @@
   "maxLen": null,
   "leftTok": "8",
   "rowText": "8 Advertising . . . . . 8",
-  "above": "expenses . for . . business . . . use . of . your .",
-  "rightText": "18 Office expense"
+  "above": "expenses . for . . business . . . use . of . your ."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_18[0]",
@@ -402,8 +374,7 @@
   "maxLen": null,
   "leftTok": "9",
   "rowText": "(see instructions) . . . 9",
-  "above": "",
-  "rightText": "20 Rent or"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_19[0]",
@@ -416,8 +387,7 @@
   "maxLen": null,
   "leftTok": "10",
   "rowText": "10 Commissions and fees . 10",
-  "above": "",
-  "rightText": "a Vehicles, machinery,"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_20[0]",
@@ -430,8 +400,7 @@
   "maxLen": null,
   "leftTok": "11",
   "rowText": "11 Contract labor (see instructions) 11",
-  "above": "",
-  "rightText": "b Other business"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_21[0]",
@@ -444,8 +413,7 @@
   "maxLen": null,
   "leftTok": "12",
   "rowText": "12 Depletion . . . . . 12",
-  "above": "",
-  "rightText": "21 Repairs and"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_22[0]",
@@ -458,8 +426,7 @@
   "maxLen": null,
   "leftTok": "13",
   "rowText": "instructions) included in Part . . III) . (see . 13",
-  "above": "",
-  "rightText": "24 Travel and"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_23[0]",
@@ -472,8 +439,7 @@
   "maxLen": null,
   "leftTok": "14",
   "rowText": "(other than on line 19) . 14",
-  "above": "",
-  "rightText": "b Deductible meals"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_24[0]",
@@ -486,8 +452,7 @@
   "maxLen": null,
   "leftTok": "15",
   "rowText": "15 Insurance (other than health) 15",
-  "above": "",
-  "rightText": "25 Utilities ."
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_25[0]",
@@ -500,8 +465,7 @@
   "maxLen": null,
   "leftTok": "16a",
   "rowText": "a Mortgage (paid to banks, etc.) 16a",
-  "above": "",
-  "rightText": "27 a Other"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_26[0]",
@@ -514,8 +478,7 @@
   "maxLen": null,
   "leftTok": "16b",
   "rowText": "b Other . . . . . . 16b",
-  "above": "",
-  "rightText": "b Energy efficient"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines8-17[0].f1_27[0]",
@@ -528,8 +491,7 @@
   "maxLen": null,
   "leftTok": "17",
   "rowText": "17 Legal and professional services 17",
-  "above": "",
-  "rightText": "deduction (attach Form"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_28[0]",
@@ -542,8 +504,7 @@
   "maxLen": null,
   "leftTok": "18",
   "rowText": "8 Advertising . . . . . 8 18 Office expense (see instructions) . 18",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_29[0]",
@@ -556,8 +517,7 @@
   "maxLen": null,
   "leftTok": "19",
   "rowText": "9 Car and truck expenses 19 Pension and profit-sharing plans . 19",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_30[0]",
@@ -570,8 +530,7 @@
   "maxLen": null,
   "leftTok": "20a",
   "rowText": "10 Commissions and fees . 10 a Vehicles, machinery, and equipment 20a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_31[0]",
@@ -584,8 +543,7 @@
   "maxLen": null,
   "leftTok": "20b",
   "rowText": "11 Contract labor (see instructions) 11 b Other business property . . . 20b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_32[0]",
@@ -598,8 +556,7 @@
   "maxLen": null,
   "leftTok": "21",
   "rowText": "12 Depletion . . . . . 12 21 Repairs and maintenance . . . 21",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_33[0]",
@@ -612,8 +569,7 @@
   "maxLen": null,
   "leftTok": "22",
   "rowText": "13 Depreciation expense deduction and section (not 179 22 Supplies (not included in Part III) . 22",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_34[0]",
@@ -626,8 +582,7 @@
   "maxLen": null,
   "leftTok": "23",
   "rowText": "expense included in deduction Part III) (see (not 23 Taxes and licenses . . . . . 23",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_35[0]",
@@ -640,8 +595,7 @@
   "maxLen": null,
   "leftTok": "24a",
   "rowText": "14 Employee benefit programs a Travel . . . . . . . . . 24a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_36[0]",
@@ -654,8 +608,7 @@
   "maxLen": null,
   "leftTok": "24b",
   "rowText": "(other than on line 19) . 14 b Deductible meals (see instructions) 24b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_37[0]",
@@ -668,8 +621,7 @@
   "maxLen": null,
   "leftTok": "25",
   "rowText": "15 Insurance (other than health) 15 25 Utilities . . . . . . . . 25",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_38[0]",
@@ -682,8 +634,7 @@
   "maxLen": null,
   "leftTok": "26",
   "rowText": "16 Interest (see instructions): 26 Wages (less employment credits) 26",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_39[0]",
@@ -696,8 +647,7 @@
   "maxLen": null,
   "leftTok": "27a",
   "rowText": "a Mortgage (paid to banks, etc.) 16a 27 a Other expenses (from line 48) . . 27a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Lines18-27[0].f1_40[0]",
@@ -710,8 +660,7 @@
   "maxLen": null,
   "leftTok": "27b",
   "rowText": "17 Legal and professional services 17 deduction (attach Form 7205) . . 27b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_41[0]",
@@ -724,8 +673,7 @@
   "maxLen": null,
   "leftTok": "28",
   "rowText": "28 Total expenses before expenses for business use of home. Add lines 8 through 27b . . . . . . . 28",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_42[0]",
@@ -738,8 +686,7 @@
   "maxLen": null,
   "leftTok": "29",
   "rowText": "29 Tentative profit or (loss). Subtract line 28 from line 7 . . . . . . . . . . . . . . . . . 29",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line30_ReadOrder[0].f1_43[0]",
@@ -752,8 +699,7 @@
   "maxLen": null,
   "leftTok": "home:",
   "rowText": "Simplified method filers only: Enter the total square footage of (a) your home:",
-  "above": "elsewhere. Attach Form 8829",
-  "rightText": ""
+  "above": "elsewhere. Attach Form 8829"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line30_ReadOrder[0].f1_44[0]",
@@ -766,8 +712,7 @@
   "maxLen": null,
   "leftTok": "business:",
   "rowText": "and (b) the part of your home used for business:",
-  "above": "instructions. square footage of (a) your home:",
-  "rightText": ". Use the"
+  "above": "instructions. square footage of (a) your home:"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_45[0]",
@@ -780,8 +725,7 @@
   "maxLen": null,
   "leftTok": "30",
   "rowText": "Method Worksheet in the instructions to figure the amount to enter on line 30 . . . . . . . . . 30",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_46[0]",
@@ -794,8 +738,7 @@
   "maxLen": null,
   "leftTok": "31",
   "rowText": "checked the box on line 1, see instructions.) Estates and trusts, enter on Form 1041, line 3. } 31",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_7[0]",
@@ -808,8 +751,7 @@
   "maxLen": null,
   "leftTok": "32a",
   "rowText": " Schedule the line 31 1 (Form instructions.) 1040), line Estates 3, and and on trusts, Schedule enter on } 32a",
-  "above": "",
-  "rightText": "All investment is"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_7[1]",
@@ -822,8 +764,7 @@
   "maxLen": null,
   "leftTok": "32b",
   "rowText": "Form 1041, line 3. } 32b",
-  "above": "",
-  "rightText": "Some investment is"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_1[0]",
@@ -836,8 +777,7 @@
   "maxLen": null,
   "leftTok": "a",
   "rowText": "value closing inventory: a",
-  "above": "",
-  "rightText": "Cost b Lower"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_2[0]",
@@ -850,8 +790,7 @@
   "maxLen": null,
   "leftTok": "b",
   "rowText": "value closing inventory: a Cost b",
-  "above": "",
-  "rightText": "Lower of cost"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_3[0]",
@@ -864,8 +803,7 @@
   "maxLen": null,
   "leftTok": "c",
   "rowText": "value closing inventory: a Cost b Lower of cost or market c",
-  "above": "",
-  "rightText": "Other (attach explanation)"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_4[0]",
@@ -878,8 +816,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "If “Yes,” attach explanation . . . . . . . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_4[1]",
@@ -892,8 +829,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "If “Yes,” attach explanation . . . . . . . . . . . . . . . . . . . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_1[0]",
@@ -906,8 +842,7 @@
   "maxLen": null,
   "leftTok": "35",
   "rowText": "5 Inventory at beginning of year. If different from last year’s closing inventory, attach explanation . . . 35",
-  "above": ". Yes No",
-  "rightText": ""
+  "above": ". Yes No"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_2[0]",
@@ -920,8 +855,7 @@
   "maxLen": null,
   "leftTok": "36",
   "rowText": "36 Purchases less cost of items withdrawn for personal use . . . . . . . . . . . . . . 36",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_3[0]",
@@ -934,8 +868,7 @@
   "maxLen": null,
   "leftTok": "37",
   "rowText": "37 Cost of labor. Do not include any amounts paid to yourself . . . . . . . . . . . . . . 37",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_4[0]",
@@ -948,8 +881,7 @@
   "maxLen": null,
   "leftTok": "38",
   "rowText": "38 Materials and supplies . . . . . . . . . . . . . . . . . . . . . . . . 38",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_5[0]",
@@ -962,8 +894,7 @@
   "maxLen": null,
   "leftTok": "39",
   "rowText": "39 Other costs . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_6[0]",
@@ -976,8 +907,7 @@
   "maxLen": null,
   "leftTok": "40",
   "rowText": "40 Add lines 35 through 39 . . . . . . . . . . . . . . . . . . . . . . . . 40",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_7[0]",
@@ -990,8 +920,7 @@
   "maxLen": null,
   "leftTok": "41",
   "rowText": "41 Inventory at end of year . . . . . . . . . . . . . . . . . . . . . . . . 41",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_8[0]",
@@ -1004,8 +933,7 @@
   "maxLen": null,
   "leftTok": "42",
   "rowText": "42 Cost of goods sold. Subtract line 41 from line 40. Enter the result here and on line 4 . . . . . . 42",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_9[0]",
@@ -1018,8 +946,7 @@
   "maxLen": 2,
   "leftTok": "(month/day/year)",
   "rowText": "43 When did you place your vehicle in service for business purposes? (month/day/year)",
-  "above": "",
-  "rightText": "/ /"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_10[0]",
@@ -1032,8 +959,7 @@
   "maxLen": 2,
   "leftTok": "/",
   "rowText": "43 When did you place your vehicle in service for business purposes? (month/day/year) /",
-  "above": "",
-  "rightText": "/"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_11[0]",
@@ -1046,8 +972,7 @@
   "maxLen": 4,
   "leftTok": "/",
   "rowText": "43 When did you place your vehicle in service for business purposes? (month/day/year) / /",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_12[0]",
@@ -1060,8 +985,7 @@
   "maxLen": null,
   "leftTok": "Business",
   "rowText": "a Business",
-  "above": "total number of miles you drove",
-  "rightText": "b Commuting (see"
+  "above": "total number of miles you drove"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_13[0]",
@@ -1074,8 +998,7 @@
   "maxLen": null,
   "leftTok": "instructions)",
   "rowText": "a Business b Commuting (see instructions)",
-  "above": "number of miles you used your",
-  "rightText": "c Other"
+  "above": "number of miles you used your"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_14[0]",
@@ -1088,8 +1011,7 @@
   "maxLen": null,
   "leftTok": "Other",
   "rowText": "a Business b Commuting (see instructions) c Other",
-  "above": "vehicle for:",
-  "rightText": ""
+  "above": "vehicle for:"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_5[0]",
@@ -1102,8 +1024,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "45 Was your vehicle available for personal use during off-duty hours? . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_5[1]",
@@ -1116,8 +1037,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "45 Was your vehicle available for personal use during off-duty hours? . . . . . . . . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_6[0]",
@@ -1130,8 +1050,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "46 Do you (or your spouse) have another vehicle available for personal use?. . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_6[1]",
@@ -1144,8 +1063,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "46 Do you (or your spouse) have another vehicle available for personal use?. . . . . . . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_7[0]",
@@ -1158,8 +1076,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "47a Do you have evidence to support your deduction? . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_7[1]",
@@ -1172,8 +1089,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "47a Do you have evidence to support your deduction? . . . . . . . . . . . . . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_8[0]",
@@ -1186,8 +1102,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "b If “Yes,” is the evidence written? . . . . . . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_8[1]",
@@ -1200,8 +1115,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": "b If “Yes,” is the evidence written? . . . . . . . . . . . . . . . . . . . . . . . . . Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item1[0].f2_15[0]",
@@ -1214,8 +1128,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Part V Other Expenses. List below business expenses not included on lines 8–26, line 27b,",
-  "rightText": ""
+  "above": "Part V Other Expenses. List below business expenses not included on lines 8–26, line 27b,"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item1[0].f2_16[0]",
@@ -1228,8 +1141,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "or line 30.",
-  "rightText": ""
+  "above": "or line 30."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item2[0].f2_17[0]",
@@ -1242,8 +1154,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item2[0].f2_18[0]",
@@ -1256,8 +1167,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item3[0].f2_19[0]",
@@ -1270,8 +1180,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item3[0].f2_20[0]",
@@ -1284,8 +1193,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item4[0].f2_21[0]",
@@ -1298,8 +1206,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item4[0].f2_22[0]",
@@ -1312,8 +1219,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item5[0].f2_23[0]",
@@ -1326,8 +1232,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item5[0].f2_24[0]",
@@ -1340,8 +1245,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item6[0].f2_25[0]",
@@ -1354,8 +1258,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item6[0].f2_26[0]",
@@ -1368,8 +1271,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item7[0].f2_27[0]",
@@ -1382,8 +1284,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item7[0].f2_28[0]",
@@ -1396,8 +1297,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item8[0].f2_29[0]",
@@ -1410,8 +1310,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item8[0].f2_30[0]",
@@ -1424,8 +1323,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item9[0].f2_31[0]",
@@ -1438,8 +1336,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].PartVTable[0].Item9[0].f2_32[0]",
@@ -1452,8 +1349,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_33[0]",
@@ -1466,7 +1362,6 @@
   "maxLen": null,
   "leftTok": "48",
   "rowText": "48 Total other expenses. Enter here and on line 27a . . . . . . . . . . . . . . . . 48",
-  "above": "",
-  "rightText": ""
+  "above": ""
  }
 ]

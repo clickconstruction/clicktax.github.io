@@ -10,8 +10,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Internal Name(s) Revenue shown Service on Form 1040, 1040-SR, or 1040-NR",
-  "rightText": ""
+  "above": "Internal Name(s) Revenue shown Service on Form 1040, 1040-SR, or 1040-NR"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_02[0]",
@@ -24,8 +23,7 @@
   "maxLen": 11,
   "leftTok": "",
   "rowText": "",
-  "above": "Your social security Sequence number No. 02",
-  "rightText": ""
+  "above": "Your social security Sequence number No. 02"
  },
  {
   "pdfField": "form1[0].Page1[0].Line1a_ReadOrder[0].f1_03[0]",
@@ -38,8 +36,7 @@
   "maxLen": null,
   "leftTok": "1a",
   "rowText": "a Excess advance premium tax credit repayment. Attach Form 8962 . . . . 1a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_04[0]",
@@ -52,8 +49,7 @@
   "maxLen": null,
   "leftTok": "1b",
   "rowText": "8936) . . . . . . . . . . . . . . . . . . . . . . . . 1b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_05[0]",
@@ -66,8 +62,7 @@
   "maxLen": null,
   "leftTok": "1c",
   "rowText": "Schedule A (Form 8936) . . . . . . . . . . . . . . . . . . 1c",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_06[0]",
@@ -80,8 +75,7 @@
   "maxLen": null,
   "leftTok": "1d",
   "rowText": "d Recapture of net EPE from Form 4255, line 2a, column (l) . . . . . . . 1d",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[0]",
@@ -94,8 +88,7 @@
   "maxLen": null,
   "leftTok": "(i)",
   "rowText": "(i)",
-  "above": "Excessive amount.",
-  "rightText": "Line 1a, column"
+  "above": "Excessive amount."
  },
  {
   "pdfField": "form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[1]",
@@ -108,8 +101,7 @@
   "maxLen": null,
   "leftTok": "(ii)",
   "rowText": "(i) Line 1a, column (n) (ii)",
-  "above": "4255. Check",
-  "rightText": "Line 1c, column"
+  "above": "4255. Check"
  },
  {
   "pdfField": "form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[2]",
@@ -122,8 +114,7 @@
   "maxLen": null,
   "leftTok": "(iii)",
   "rowText": "(iii)",
-  "above": "",
-  "rightText": "Line 1d, column"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line1e_ReadOrder[0].c1_1[3]",
@@ -136,8 +127,7 @@
   "maxLen": null,
   "leftTok": "(iv)",
   "rowText": "(iii) Line 1d, column (n) (iv)",
-  "above": "",
-  "rightText": "Line 2a, column"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_07[0]",
@@ -150,8 +140,7 @@
   "maxLen": null,
   "leftTok": "1e",
   "rowText": "(iii) Line 1d, column (n) (iv) Line 2a, column (n) . . . . 1e",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[0]",
@@ -164,8 +153,7 @@
   "maxLen": null,
   "leftTok": "(i)",
   "rowText": "(i)",
-  "above": "instructions. EP",
-  "rightText": "Line 1a, column"
+  "above": "instructions. EP"
  },
  {
   "pdfField": "form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[1]",
@@ -178,8 +166,7 @@
   "maxLen": null,
   "leftTok": "(ii)",
   "rowText": "(i) Line 1a, column (o) (ii)",
-  "above": "applicable",
-  "rightText": "Line 1c, column"
+  "above": "applicable"
  },
  {
   "pdfField": "form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[2]",
@@ -192,8 +179,7 @@
   "maxLen": null,
   "leftTok": "(iii)",
   "rowText": "(iii)",
-  "above": "",
-  "rightText": "Line 1d, column"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line1f_ReadOrder[0].c1_2[3]",
@@ -206,8 +192,7 @@
   "maxLen": null,
   "leftTok": "(iv)",
   "rowText": "(iii) Line 1d, column (o) (iv)",
-  "above": "",
-  "rightText": "Line 2a, column"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_08[0]",
@@ -220,8 +205,7 @@
   "maxLen": null,
   "leftTok": "1f",
   "rowText": "(iii) Line 1d, column (o) (iv) Line 2a, column (o) . . . . 1f",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_09[0]",
@@ -234,8 +218,7 @@
   "maxLen": null,
   "leftTok": "instructions):",
   "rowText": "y Other additions to tax (see instructions):",
-  "above": "(iv) Line 2a, column (o) . . . .",
-  "rightText": "1y"
+  "above": "(iv) Line 2a, column (o) . . . ."
  },
  {
   "pdfField": "form1[0].Page1[0].f1_10[0]",
@@ -248,8 +231,7 @@
   "maxLen": null,
   "leftTok": "1y",
   "rowText": "y Other additions to tax (see instructions): 1y",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_11[0]",
@@ -262,8 +244,7 @@
   "maxLen": null,
   "leftTok": "1z",
   "rowText": "z Add lines 1a through 1y . . . . . . . . . . . . . . . . . . . . . . . . . . 1z",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_12[0]",
@@ -276,8 +257,7 @@
   "maxLen": null,
   "leftTok": "2",
   "rowText": "2 Alternative minimum tax. Attach Form 6251 . . . . . . . . . . . . . . . . . . . 2",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_13[0]",
@@ -290,8 +270,7 @@
   "maxLen": null,
   "leftTok": "3",
   "rowText": "3 Add lines 1z and 2. Enter here and on Form 1040, 1040-SR, or 1040-NR, line 17 . . . . . . . 3",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_14[0]",
@@ -304,8 +283,7 @@
   "maxLen": null,
   "leftTok": "4",
   "rowText": "4 Self-employment tax. Attach Schedule SE . . . . . . . . . . . . . . . . . . . . 4",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line5_ReadOrder[0].f1_15[0]",
@@ -318,8 +296,7 @@
   "maxLen": null,
   "leftTok": "5",
   "rowText": "5 Social security and Medicare tax on unreported tip income. Attach Form 4137 5",
-  "above": ". . . . . .",
-  "rightText": ""
+  "above": ". . . . . ."
  },
  {
   "pdfField": "form1[0].Page1[0].f1_16[0]",
@@ -332,8 +309,7 @@
   "maxLen": null,
   "leftTok": "6",
   "rowText": "6 Uncollected social security and Medicare tax on wages. Attach Form 8919 . 6",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_17[0]",
@@ -346,8 +322,7 @@
   "maxLen": null,
   "leftTok": "7",
   "rowText": "7 Total additional social security and Medicare tax. Add lines 5 and 6 . . . . . . . . . . . 7",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line8_ReadOrder[0].c1_3[0]",
@@ -360,8 +335,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "If not required, check here . . . . . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "8"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_18[0]",
@@ -374,8 +348,7 @@
   "maxLen": null,
   "leftTok": "8",
   "rowText": "If not required, check here . . . . . . . . . . . . . . . . . . . . . . . . 8",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_19[0]",
@@ -388,8 +361,7 @@
   "maxLen": null,
   "leftTok": "9",
   "rowText": "9 Household employment taxes. Attach Schedule H . . . . . . . . . . . . . . . . . 9",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_20[0]",
@@ -402,8 +374,7 @@
   "maxLen": null,
   "leftTok": "10",
   "rowText": "10 Repayment of first-time homebuyer credit. Attach Form 5405 if required . . . . . . . . . . 10",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_21[0]",
@@ -416,8 +387,7 @@
   "maxLen": null,
   "leftTok": "11",
   "rowText": "11 Additional Medicare Tax. Attach Form 8959 . . . . . . . . . . . . . . . . . . . 11",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_22[0]",
@@ -430,8 +400,7 @@
   "maxLen": null,
   "leftTok": "12",
   "rowText": "12 Net investment income tax. Attach Form 8960 . . . . . . . . . . . . . . . . . . 12",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_23[0]",
@@ -444,8 +413,7 @@
   "maxLen": null,
   "leftTok": "13",
   "rowText": "W-2, box 12 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_24[0]",
@@ -458,8 +426,7 @@
   "maxLen": null,
   "leftTok": "14",
   "rowText": "14 Interest on tax due on installment income from the sale of certain residential lots and timeshares . . 14",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_25[0]",
@@ -472,8 +439,7 @@
   "maxLen": null,
   "leftTok": "15",
   "rowText": "15 Interest on the deferred tax on gain from certain installment sales with a sales price over $150,000 . 15",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_26[0]",
@@ -486,8 +452,7 @@
   "maxLen": null,
   "leftTok": "16",
   "rowText": "16 Recapture of low-income housing credit. Attach Form 8611 . . . . . . . . . . . . . . 16",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].Line17a_ReadOrder[0].Line17_ReadOrder[0].f2_01[0]",
@@ -500,8 +465,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Recapture of other credits. List type, form number, and amount:",
-  "rightText": "17a"
+  "above": "Recapture of other credits. List type, form number, and amount:"
  },
  {
   "pdfField": "form1[0].Page2[0].Line17a_ReadOrder[0].f2_02[0]",
@@ -514,8 +478,7 @@
   "maxLen": null,
   "leftTok": "17a",
   "rowText": "17a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_03[0]",
@@ -528,8 +491,7 @@
   "maxLen": null,
   "leftTok": "17b",
   "rowText": "b Recapture of federal mortgage subsidy, if you sold your home see instructions 17b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_04[0]",
@@ -542,8 +504,7 @@
   "maxLen": null,
   "leftTok": "17c",
   "rowText": "c Additional tax on HSA distributions. Attach Form 8889 . . . . . . . . 17c",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_05[0]",
@@ -556,8 +517,7 @@
   "maxLen": null,
   "leftTok": "17d",
   "rowText": "Attach Form 8889 . . . . . . . . . . . . . . . . . . . . 17d",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_06[0]",
@@ -570,8 +530,7 @@
   "maxLen": null,
   "leftTok": "17e",
   "rowText": "e Additional tax on Archer MSA distributions. Attach Form 8853 . . . . . 17e",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_07[0]",
@@ -584,8 +543,7 @@
   "maxLen": null,
   "leftTok": "17f",
   "rowText": "f Additional tax on Medicare Advantage MSA distributions. Attach Form 8853 17f",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_08[0]",
@@ -598,8 +556,7 @@
   "maxLen": null,
   "leftTok": "17g",
   "rowText": "in tangible personal property . . . . . . . . . . . . . . . . 17g",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_09[0]",
@@ -612,8 +569,7 @@
   "maxLen": null,
   "leftTok": "17h",
   "rowText": "to meet the requirements of section 409A . . . . . . . . . . . . 17h",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_10[0]",
@@ -626,8 +582,7 @@
   "maxLen": null,
   "leftTok": "17i",
   "rowText": "described in section 457A . . . . . . . . . . . . . . . . . 17i",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_11[0]",
@@ -640,8 +595,7 @@
   "maxLen": null,
   "leftTok": "17j",
   "rowText": "j Section 72(m)(5) excess benefits tax . . . . . . . . . . . . . . 17j",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_12[0]",
@@ -654,8 +608,7 @@
   "maxLen": null,
   "leftTok": "17k",
   "rowText": "k Golden parachute payments . . . . . . . . . . . . . . . . 17k",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_13[0]",
@@ -668,8 +621,7 @@
   "maxLen": null,
   "leftTok": "17l",
   "rowText": "l Tax on accumulation distribution of trusts . . . . . . . . . . . . 17l",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_14[0]",
@@ -682,8 +634,7 @@
   "maxLen": null,
   "leftTok": "17m",
   "rowText": "m Excise tax on insider stock compensation from an expatriated corporation . 17m",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_15[0]",
@@ -696,8 +647,7 @@
   "maxLen": null,
   "leftTok": "17n",
   "rowText": "n Look-back interest under section 167(g) or 460(b) from Form 8697 or 8866 . 17n",
-  "above": "17m",
-  "rightText": ""
+  "above": "17m"
  },
  {
   "pdfField": "form1[0].Page2[0].f2_16[0]",
@@ -710,8 +660,7 @@
   "maxLen": null,
   "leftTok": "17o",
   "rowText": "nonresident alien from Form 1040-NR . . . . . . . . . . . . . 17o",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_17[0]",
@@ -724,8 +673,7 @@
   "maxLen": null,
   "leftTok": "17p",
   "rowText": "dispositions of, stock of a section 1291 fund . . . . . . . . . . . 17p",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_18[0]",
@@ -738,8 +686,7 @@
   "maxLen": null,
   "leftTok": "17q",
   "rowText": "q Any interest from Form 8621, line 24 . . . . . . . . . . . . . . 17q",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].Line17z_ReadOrder[0].f2_19[0]",
@@ -752,8 +699,7 @@
   "maxLen": null,
   "leftTok": "amount:",
   "rowText": "z Any other taxes. List type and amount:",
-  "above": ". . . . . . . . . . . . .",
-  "rightText": ""
+  "above": ". . . . . . . . . . . . ."
  },
  {
   "pdfField": "form1[0].Page2[0].Line17z_ReadOrder[0].f2_20[0]",
@@ -766,8 +712,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Any other taxes. List type and amount:",
-  "rightText": "17z"
+  "above": "Any other taxes. List type and amount:"
  },
  {
   "pdfField": "form1[0].Page2[0].f2_21[0]",
@@ -780,8 +725,7 @@
   "maxLen": null,
   "leftTok": "17z",
   "rowText": "17z",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_22[0]",
@@ -794,8 +738,7 @@
   "maxLen": null,
   "leftTok": "18",
   "rowText": "18 Total additional taxes. Add lines 17a through 17z . . . . . . . . . . . . . . . . . . 18",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_23[0]",
@@ -808,8 +751,7 @@
   "maxLen": null,
   "leftTok": "19",
   "rowText": "19 Recapture of net EPE from Form 4255, line 1d, column (l) . . . . . . . . . . . . . . . 19",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].Line20_ReadOrder[0].f2_24[0]",
@@ -822,8 +764,7 @@
   "maxLen": null,
   "leftTok": "20",
   "rowText": "20 Section 965 net tax liability installment from Form 965-A . . . . . . . 20",
-  "above": ". . . . . .",
-  "rightText": ""
+  "above": ". . . . . ."
  },
  {
   "pdfField": "form1[0].Page2[0].f2_25[0]",
@@ -836,7 +777,6 @@
   "maxLen": null,
   "leftTok": "21",
   "rowText": "or 1040-SR, line 23, or Form 1040-NR, line 23b . . . . . . . . . . . . . . . . . . 21",
-  "above": "",
-  "rightText": ""
+  "above": ""
  }
 ]

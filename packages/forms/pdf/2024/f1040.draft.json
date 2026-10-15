@@ -10,8 +10,7 @@
   "maxLen": null,
   "leftTok": "beginning",
   "rowText": "For the year Jan. 1–Dec. 31, 2024, or other tax year beginning",
-  "above": "Tax Return 2024",
-  "rightText": ", 2024, ending"
+  "above": "Tax Return 2024"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_02[0]",
@@ -24,8 +23,7 @@
   "maxLen": null,
   "leftTok": "ending",
   "rowText": "For the year Jan. 1–Dec. 31, 2024, or other tax year beginning , 2024, ending",
-  "above": "2024 OMB No. 1545-0074",
-  "rightText": ", 20 See"
+  "above": "2024 OMB No. 1545-0074"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_03[0]",
@@ -38,8 +36,7 @@
   "maxLen": 2,
   "leftTok": "20",
   "rowText": "For the year Jan. 1–Dec. 31, 2024, or other tax year beginning , 2024, ending , 20",
-  "above": "IRS Use Only—Do",
-  "rightText": "See separate instructions."
+  "above": "IRS Use Only—Do"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_04[0]",
@@ -52,8 +49,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Your first name and middle initial",
-  "rightText": ""
+  "above": "Your first name and middle initial"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_05[0]",
@@ -66,8 +62,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Last name",
-  "rightText": ""
+  "above": "Last name"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_06[0]",
@@ -80,8 +75,7 @@
   "maxLen": 9,
   "leftTok": "",
   "rowText": "",
-  "above": "Your social security number",
-  "rightText": ""
+  "above": "Your social security number"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_07[0]",
@@ -94,8 +88,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "If joint return, spouse’s first name and middle initial",
-  "rightText": ""
+  "above": "If joint return, spouse’s first name and middle initial"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_08[0]",
@@ -108,8 +101,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Last name",
-  "rightText": ""
+  "above": "Last name"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_09[0]",
@@ -122,8 +114,7 @@
   "maxLen": 9,
   "leftTok": "",
   "rowText": "",
-  "above": "Spouse’s social security number",
-  "rightText": ""
+  "above": "Spouse’s social security number"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_10[0]",
@@ -136,8 +127,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Home address (number and street). If you have a P.O. box, see instructions.",
-  "rightText": "Check here if"
+  "above": "Home address (number and street). If you have a P.O. box, see instructions."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_11[0]",
@@ -150,8 +140,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Apt. no.",
-  "rightText": "Check here if"
+  "above": "Apt. no."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_12[0]",
@@ -164,8 +153,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "City, town, or post office. If you have a foreign address, also complete spaces below.",
-  "rightText": "to box go"
+  "above": "City, town, or post office. If you have a foreign address, also complete spaces below."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_13[0]",
@@ -178,8 +166,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "State",
-  "rightText": "to box go"
+  "above": "State"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_14[0]",
@@ -192,8 +179,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "ZIP code",
-  "rightText": "to box go"
+  "above": "ZIP code"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_15[0]",
@@ -206,8 +192,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Foreign country name",
-  "rightText": "You Spouse"
+  "above": "Foreign country name"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_16[0]",
@@ -220,8 +205,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Foreign province/state/county",
-  "rightText": "You Spouse"
+  "above": "Foreign province/state/county"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_17[0]",
@@ -234,8 +218,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Foreign postal code",
-  "rightText": "You Spouse"
+  "above": "Foreign postal code"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_1[0]",
@@ -248,8 +231,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "below or will refund.",
-  "rightText": "You Spouse"
+  "above": "below or will refund."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_2[0]",
@@ -262,8 +244,7 @@
   "maxLen": null,
   "leftTok": "You",
   "rowText": "You",
-  "above": "change",
-  "rightText": "Spouse"
+  "above": "change"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].FilingStatus_ReadOrder[0].c1_3[0]",
@@ -276,8 +257,7 @@
   "maxLen": null,
   "leftTok": "Status",
   "rowText": "Filing Status",
-  "above": "",
-  "rightText": "Single Head of"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].FilingStatus_ReadOrder[0].c1_3[1]",
@@ -290,8 +270,7 @@
   "maxLen": null,
   "leftTok": "only",
   "rowText": "Check only",
-  "above": "",
-  "rightText": "Married filing jointly"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].FilingStatus_ReadOrder[0].c1_3[2]",
@@ -304,8 +283,7 @@
   "maxLen": null,
   "leftTok": "only",
   "rowText": "Check one box. only",
-  "above": "",
-  "rightText": "Married filing separately"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_3[0]",
@@ -318,8 +296,7 @@
   "maxLen": null,
   "leftTok": "Single",
   "rowText": "Filing Status Single",
-  "above": "",
-  "rightText": "Head of household"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_3[1]",
@@ -332,8 +309,7 @@
   "maxLen": null,
   "leftTok": "(MFS)",
   "rowText": "Check one box. only Married filing separately (MFS)",
-  "above": "",
-  "rightText": "Qualifying surviving spouse"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_18[0]",
@@ -346,8 +322,7 @@
   "maxLen": null,
   "leftTok": "dependent:",
   "rowText": "qualifying person is a child but not your dependent:",
-  "above": "your spouse. If you checked the Qualifying HOH or QSS surviving box, spouse enter the (QSS",
-  "rightText": ""
+  "above": "your spouse. If you checked the Qualifying HOH or QSS surviving box, spouse enter the (QSS"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_4[0]",
@@ -360,8 +335,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "qualifying",
-  "rightText": "If treating a"
+  "above": "qualifying"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_19[0]",
@@ -374,8 +348,7 @@
   "maxLen": null,
   "leftTok": "required):",
   "rowText": "their name (see instructions and attach statement if required):",
-  "above": "U.S. resident for the entire tax year, check the box and enter",
-  "rightText": ""
+  "above": "U.S. resident for the entire tax year, check the box and enter"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_5[0]",
@@ -388,8 +361,7 @@
   "maxLen": null,
   "leftTok": "instructions.)",
   "rowText": "nge, or otherwise dispose of a digital asset (or a financial interest in a digital asset)? (See instructions.)",
-  "above": "",
-  "rightText": "Yes No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_5[1]",
@@ -402,8 +374,7 @@
   "maxLen": null,
   "leftTok": "Yes",
   "rowText": " or otherwise dispose of a digital asset (or a financial interest in a digital asset)? (See instructions.) Yes",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_6[0]",
@@ -416,8 +387,7 @@
   "maxLen": null,
   "leftTok": "claim:",
   "rowText": "Standard Someone can claim:",
-  "above": "dispose",
-  "rightText": "You as a"
+  "above": "dispose"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_7[0]",
@@ -430,8 +400,7 @@
   "maxLen": null,
   "leftTok": "dependent",
   "rowText": "Standard Someone can claim: You as a dependent",
-  "above": "a financial",
-  "rightText": "Your spouse as"
+  "above": "a financial"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_8[0]",
@@ -444,8 +413,7 @@
   "maxLen": null,
   "leftTok": "Deduction",
   "rowText": "Deduction",
-  "above": "Someone",
-  "rightText": "Spouse itemizes on"
+  "above": "Someone"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_9[0]",
@@ -458,8 +426,7 @@
   "maxLen": null,
   "leftTok": "You:",
   "rowText": "Age/Blindness You:",
-  "above": "Spouse",
-  "rightText": "Were born before"
+  "above": "Spouse"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_10[0]",
@@ -472,8 +439,7 @@
   "maxLen": null,
   "leftTok": "1960",
   "rowText": "Age/Blindness You: Were born before January 2, 1960",
-  "above": "you were",
-  "rightText": "Are blind Spouse:"
+  "above": "you were"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_11[0]",
@@ -486,8 +452,7 @@
   "maxLen": null,
   "leftTok": "Spouse:",
   "rowText": "Age/Blindness You: Were born before January 2, 1960 Are blind Spouse:",
-  "above": "",
-  "rightText": "Was born before"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].c1_12[0]",
@@ -500,8 +465,7 @@
   "maxLen": null,
   "leftTok": "1960",
   "rowText": "Age/Blindness You: Were born before January 2, 1960 Are blind Spouse: Was born before January 2, 1960",
-  "above": "",
-  "rightText": "Is blind"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_13[0]",
@@ -514,8 +478,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "and here check . .",
-  "above": "instructions",
-  "rightText": ""
+  "above": "instructions"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_20[0]",
@@ -528,8 +491,7 @@
   "maxLen": null,
   "leftTok": "four",
   "rowText": "If than more four",
-  "above": "(see (1) First instructions): name Last name",
-  "rightText": ""
+  "above": "(see (1) First instructions): name Last name"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_21[0]",
@@ -542,8 +504,7 @@
   "maxLen": 9,
   "leftTok": "four",
   "rowText": "If than more four",
-  "above": "(2) Social number security",
-  "rightText": ""
+  "above": "(2) Social number security"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_22[0]",
@@ -556,8 +517,7 @@
   "maxLen": null,
   "leftTok": "four",
   "rowText": "If than more four",
-  "above": "(3) Relationship to you",
-  "rightText": ""
+  "above": "(3) Relationship to you"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].c1_14[0]",
@@ -570,8 +530,7 @@
   "maxLen": null,
   "leftTok": "four",
   "rowText": "If than more four",
-  "above": "tax credit",
-  "rightText": ""
+  "above": "tax credit"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].c1_15[0]",
@@ -584,8 +543,7 @@
   "maxLen": null,
   "leftTok": "four",
   "rowText": "If than more four",
-  "above": "other",
-  "rightText": ""
+  "above": "other"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_23[0]",
@@ -598,8 +556,7 @@
   "maxLen": null,
   "leftTok": "instructions",
   "rowText": "dependents, see instructions",
-  "above": "(1)",
-  "rightText": ""
+  "above": "(1)"
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_24[0]",
@@ -612,8 +569,7 @@
   "maxLen": 9,
   "leftTok": "instructions",
   "rowText": "dependents, see instructions",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].f1_25[0]",
@@ -626,8 +582,7 @@
   "maxLen": null,
   "leftTok": "instructions",
   "rowText": "dependents, see instructions",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].c1_16[0]",
@@ -640,8 +595,7 @@
   "maxLen": null,
   "leftTok": "instructions",
   "rowText": "dependents, see instructions",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row2[0].c1_17[0]",
@@ -654,8 +608,7 @@
   "maxLen": null,
   "leftTok": "instructions",
   "rowText": "dependents, see instructions",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_26[0]",
@@ -668,8 +621,7 @@
   "maxLen": null,
   "leftTok": "check",
   "rowText": "see and instructions check",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_27[0]",
@@ -682,8 +634,7 @@
   "maxLen": 9,
   "leftTok": "check",
   "rowText": "see and instructions check",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].f1_28[0]",
@@ -696,8 +647,7 @@
   "maxLen": null,
   "leftTok": "check",
   "rowText": "see and instructions check",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].c1_18[0]",
@@ -710,8 +660,7 @@
   "maxLen": null,
   "leftTok": "check",
   "rowText": "see and instructions check",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row3[0].c1_19[0]",
@@ -724,8 +673,7 @@
   "maxLen": null,
   "leftTok": "check",
   "rowText": "see and instructions check",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_29[0]",
@@ -738,8 +686,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "here . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_30[0]",
@@ -752,8 +699,7 @@
   "maxLen": 9,
   "leftTok": ".",
   "rowText": "here . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].f1_31[0]",
@@ -766,8 +712,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "here . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].c1_20[0]",
@@ -780,8 +725,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "here . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Table_Dependents[0].Row4[0].c1_21[0]",
@@ -794,8 +738,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "here . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_32[0]",
@@ -808,8 +751,7 @@
   "maxLen": null,
   "leftTok": "1a",
   "rowText": "Income 1 a Total amount from Form(s) W-2, box 1 (see instructions) . . . . . . . . . . . . . 1a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_33[0]",
@@ -822,8 +764,7 @@
   "maxLen": null,
   "leftTok": "1b",
   "rowText": "Income Attach Form(s) b Household employee wages not reported on Form(s) W-2 . . . . . . . . . . . . . 1b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_34[0]",
@@ -836,8 +777,7 @@
   "maxLen": null,
   "leftTok": "1c",
   "rowText": " W-2 here. Form(s) Also c Tip income not reported on line 1a (see instructions) . . . . . . . . . . . . . . 1c",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_35[0]",
@@ -850,8 +790,7 @@
   "maxLen": null,
   "leftTok": "1d",
   "rowText": "ch W-2G and Forms d Medicaid waiver payments not reported on Form(s) W-2 (see instructions) . . . . . . . . 1d",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_36[0]",
@@ -864,8 +803,7 @@
   "maxLen": null,
   "leftTok": "1e",
   "rowText": "W-2G 1099-R and if tax e Taxable dependent care benefits from Form 2441, line 26 . . . . . . . . . . . . 1e",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_37[0]",
@@ -878,8 +816,7 @@
   "maxLen": null,
   "leftTok": "1f",
   "rowText": "-R was withheld. if tax f Employer-provided adoption benefits from Form 8839, line 29 . . . . . . . . . . . 1f",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_38[0]",
@@ -892,8 +829,7 @@
   "maxLen": null,
   "leftTok": "1g",
   "rowText": "If you did not g Wages from Form 8919, line 6 . . . . . . . . . . . . . . . . . . . . . 1g",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_39[0]",
@@ -906,8 +842,7 @@
   "maxLen": null,
   "leftTok": "1h",
   "rowText": "get W-2, a see Form h Other earned income (see instructions) . . . . . . . . . . . . . . . . . . 1h",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_40[0]",
@@ -920,8 +855,7 @@
   "maxLen": null,
   "leftTok": "1i",
   "rowText": "W-2, instructions. see i Nontaxable combat pay election (see instructions) . . . . . . . 1i",
-  "above": ". . . . . . . . . . . .",
-  "rightText": ""
+  "above": ". . . . . . . . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_41[0]",
@@ -934,8 +868,7 @@
   "maxLen": null,
   "leftTok": "1z",
   "rowText": "z Add lines 1a through 1h . . . . . . . . . . . . . . . . . . . . . . 1z",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_42[0]",
@@ -948,8 +881,7 @@
   "maxLen": null,
   "leftTok": "2a",
   "rowText": "Attach Sch. B 2a Tax-exempt interest . . . 2a",
-  "above": "instructions) . . . . . . . . . .",
-  "rightText": "b Taxable interest"
+  "above": "instructions) . . . . . . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_43[0]",
@@ -962,8 +894,7 @@
   "maxLen": null,
   "leftTok": "2b",
   "rowText": "Attach Sch. B 2a Tax-exempt interest . . . 2a b Taxable interest . . . . . 2b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_44[0]",
@@ -976,8 +907,7 @@
   "maxLen": null,
   "leftTok": "3a",
   "rowText": "if required. 3a Qualified dividends . . . 3a",
-  "above": ". . . . . . .",
-  "rightText": "b Ordinary dividends"
+  "above": ". . . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_45[0]",
@@ -990,8 +920,7 @@
   "maxLen": null,
   "leftTok": "3b",
   "rowText": "if required. 3a Qualified dividends . . . 3a b Ordinary dividends . . . . . 3b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_46[0]",
@@ -1004,8 +933,7 @@
   "maxLen": null,
   "leftTok": "4a",
   "rowText": "4a IRA distributions . . . . 4a",
-  "above": "",
-  "rightText": "b Taxable amount"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_47[0]",
@@ -1018,8 +946,7 @@
   "maxLen": null,
   "leftTok": "4b",
   "rowText": "4a IRA distributions . . . . 4a b Taxable amount . . . . . . 4b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_48[0]",
@@ -1032,8 +959,7 @@
   "maxLen": null,
   "leftTok": "5a",
   "rowText": "Standard Deduction for— 5a Pensions and annuities . . 5a",
-  "above": "",
-  "rightText": "b Taxable amount"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_49[0]",
@@ -1046,8 +972,7 @@
   "maxLen": null,
   "leftTok": "5b",
   "rowText": "Standard Deduction for— 5a Pensions and annuities . . 5a b Taxable amount . . . . . . 5b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_50[0]",
@@ -1060,8 +985,7 @@
   "maxLen": null,
   "leftTok": "6a",
   "rowText": "Deduction • Single or for— 6a Social security benefits . . 6a",
-  "above": "",
-  "rightText": "b Taxable amount"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_51[0]",
@@ -1074,8 +998,7 @@
   "maxLen": null,
   "leftTok": "6b",
   "rowText": "Deduction • Single or for— 6a Social security benefits . . 6a b Taxable amount . . . . . . 6b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].c1_22[0]",
@@ -1088,8 +1011,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "separately, filing c If you elect to use the lump-sum election method, check here (see instructions) . . . . .",
-  "above": ".",
-  "rightText": ""
+  "above": "."
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].c1_23[0]",
@@ -1102,8 +1024,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": " Married filing 7 Capital gain or (loss). Attach Schedule D if required. If not required, check here . . . . .",
-  "above": "",
-  "rightText": "7"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_52[0]",
@@ -1116,8 +1037,7 @@
   "maxLen": null,
   "leftTok": "7",
   "rowText": "arried filing 7 Capital gain or (loss). Attach Schedule D if required. If not required, check here . . . . . 7",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_53[0]",
@@ -1130,8 +1050,7 @@
   "maxLen": null,
   "leftTok": "8",
   "rowText": "• jointly Married or filing 8 Additional income from Schedule 1, line 10 . . . . . . . . . . . . . . . . . 8",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_54[0]",
@@ -1144,8 +1063,7 @@
   "maxLen": null,
   "leftTok": "9",
   "rowText": "alifying spouse, 9 Add lines 1z, 2b, 3b, 4b, 5b, 6b, 7, and 8. This is your total income . . . . . . . . . . 9",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_55[0]",
@@ -1158,8 +1076,7 @@
   "maxLen": null,
   "leftTok": "10",
   "rowText": "• $29,200 Head of 10 Adjustments to income from Schedule 1, line 26 . . . . . . . . . . . . . . . 10",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].Line4a-11_ReadOrder[0].f1_56[0]",
@@ -1172,8 +1089,7 @@
   "maxLen": null,
   "leftTok": "11",
   "rowText": " household, Head of 11 Subtract line 10 from line 9. This is your adjusted gross income . . . . . . . . . . 11",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_57[0]",
@@ -1186,8 +1102,7 @@
   "maxLen": null,
   "leftTok": "12",
   "rowText": "• $21,900 If you checked 12 Standard deduction or itemized deductions (from Schedule A) . . . . . . . . . . 12",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_58[0]",
@@ -1200,8 +1115,7 @@
   "maxLen": null,
   "leftTok": "13",
   "rowText": "ou box checked under 13 Qualified business income deduction from Form 8995 or Form 8995-A . . . . . . . . . 13",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_59[0]",
@@ -1214,8 +1128,7 @@
   "maxLen": null,
   "leftTok": "14",
   "rowText": "Standard Deduction, 14 Add lines 12 and 13 . . . . . . . . . . . . . . . . . . . . . . . . 14",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page1[0].f1_60[0]",
@@ -1228,8 +1141,7 @@
   "maxLen": null,
   "leftTok": "15",
   "rowText": "ctions. 15 Subtract line 14 from line 11. If zero or less, enter -0-. This is your taxable income . . . . . 15",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_1[0]",
@@ -1242,8 +1154,7 @@
   "maxLen": null,
   "leftTok": "1",
   "rowText": "Tax and 16 Tax (see instructions). Check if any from Form(s): 1",
-  "above": "",
-  "rightText": "8814 2 4972"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_2[0]",
@@ -1256,8 +1167,7 @@
   "maxLen": null,
   "leftTok": "2",
   "rowText": "Tax and 16 Tax (see instructions). Check if any from Form(s): 1 8814 2",
-  "above": "",
-  "rightText": "4972 3 ."
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_3[0]",
@@ -1270,8 +1180,7 @@
   "maxLen": null,
   "leftTok": "3",
   "rowText": "Tax and 16 Tax (see instructions). Check if any from Form(s): 1 8814 2 4972 3",
-  "above": "",
-  "rightText": ". . 16"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_01[0]",
@@ -1284,8 +1193,7 @@
   "maxLen": null,
   "leftTok": "3",
   "rowText": "Tax and 16 Tax (see instructions). Check if any from Form(s): 1 8814 2 4972 3",
-  "above": "",
-  "rightText": ". . 16"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_02[0]",
@@ -1298,8 +1206,7 @@
   "maxLen": null,
   "leftTok": "16",
   "rowText": "Tax and 16 Tax (see instructions). Check if any from Form(s): 1 8814 2 4972 3 . . 16",
-  "above": "Page 2",
-  "rightText": ""
+  "above": "Page 2"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_03[0]",
@@ -1312,8 +1219,7 @@
   "maxLen": null,
   "leftTok": "17",
   "rowText": "Credits 17 Amount from Schedule 2, line 3 . . . . . . . . . . . . . . . . . . . . 17",
-  "above": "2",
-  "rightText": ""
+  "above": "2"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_04[0]",
@@ -1326,8 +1232,7 @@
   "maxLen": null,
   "leftTok": "18",
   "rowText": "18 Add lines 16 and 17 . . . . . . . . . . . . . . . . . . . . . . . . 18",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_05[0]",
@@ -1340,8 +1245,7 @@
   "maxLen": null,
   "leftTok": "19",
   "rowText": "19 Child tax credit or credit for other dependents from Schedule 8812 . . . . . . . . . . 19",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_06[0]",
@@ -1354,8 +1258,7 @@
   "maxLen": null,
   "leftTok": "20",
   "rowText": "20 Amount from Schedule 3, line 8 . . . . . . . . . . . . . . . . . . . . 20",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_07[0]",
@@ -1368,8 +1271,7 @@
   "maxLen": null,
   "leftTok": "21",
   "rowText": "21 Add lines 19 and 20 . . . . . . . . . . . . . . . . . . . . . . . . 21",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_08[0]",
@@ -1382,8 +1284,7 @@
   "maxLen": null,
   "leftTok": "22",
   "rowText": "22 Subtract line 21 from line 18. If zero or less, enter -0- . . . . . . . . . . . . . . 22",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_09[0]",
@@ -1396,8 +1297,7 @@
   "maxLen": null,
   "leftTok": "23",
   "rowText": "23 Other taxes, including self-employment tax, from Schedule 2, line 21 . . . . . . . . . 23",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_10[0]",
@@ -1410,8 +1310,7 @@
   "maxLen": null,
   "leftTok": "24",
   "rowText": "24 Add lines 22 and 23. This is your total tax . . . . . . . . . . . . . . . . . 24",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_11[0]",
@@ -1424,8 +1323,7 @@
   "maxLen": null,
   "leftTok": "25a",
   "rowText": "a Form(s) W-2 . . . . . . . . . . . . . . . . . . 25a",
-  "above": ". . . . . .",
-  "rightText": ""
+  "above": ". . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_12[0]",
@@ -1438,8 +1336,7 @@
   "maxLen": null,
   "leftTok": "25b",
   "rowText": "b Form(s) 1099 . . . . . . . . . . . . . . . . . . 25b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_13[0]",
@@ -1452,8 +1349,7 @@
   "maxLen": null,
   "leftTok": "25c",
   "rowText": "c Other forms (see instructions) . . . . . . . . . . . . . 25c",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_14[0]",
@@ -1466,8 +1362,7 @@
   "maxLen": null,
   "leftTok": "25d",
   "rowText": "d Add lines 25a through 25c . . . . . . . . . . . . . . . . . . . . . . 25d",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_15[0]",
@@ -1480,8 +1375,7 @@
   "maxLen": null,
   "leftTok": "26",
   "rowText": "If you have a 26 2024 estimated tax payments and amount applied from 2023 return . . . . . . . . . . 26",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_16[0]",
@@ -1494,8 +1388,7 @@
   "maxLen": null,
   "leftTok": "27",
   "rowText": "qualifying attach Sch. child, EIC. 27 Earned income credit (EIC) . . . . . . . . . . . . . . 27",
-  "above": ". . . . . . . . . . . .",
-  "rightText": ""
+  "above": ". . . . . . . . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_17[0]",
@@ -1508,8 +1401,7 @@
   "maxLen": null,
   "leftTok": "28",
   "rowText": "attach Sch. EIC. 28 Additional child tax credit from Schedule 8812 . . . . . . . . 28",
-  "above": ". . . . . .",
-  "rightText": ""
+  "above": ". . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_18[0]",
@@ -1522,8 +1414,7 @@
   "maxLen": null,
   "leftTok": "29",
   "rowText": "29 American opportunity credit from Form 8863, line 8 . . . . . . . 29",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_19[0]",
@@ -1536,8 +1427,7 @@
   "maxLen": null,
   "leftTok": "30",
   "rowText": "30 Reserved for future use . . . . . . . . . . . . . . . 30",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_20[0]",
@@ -1550,8 +1440,7 @@
   "maxLen": null,
   "leftTok": "31",
   "rowText": "31 Amount from Schedule 3, line 15 . . . . . . . . . . . . 31",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_21[0]",
@@ -1564,8 +1453,7 @@
   "maxLen": null,
   "leftTok": "32",
   "rowText": "32 Add lines 27, 28, 29, and 31. These are your total other payments and refundable credits . . 32",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_22[0]",
@@ -1578,8 +1466,7 @@
   "maxLen": null,
   "leftTok": "33",
   "rowText": "33 Add lines 25d, 26, and 32. These are your total payments . . . . . . . . . . . . 33",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_23[0]",
@@ -1592,8 +1479,7 @@
   "maxLen": null,
   "leftTok": "34",
   "rowText": "fund 34 If line 33 is more than line 24, subtract line 24 from line 33. This is the amount you overpaid . . 34",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_4[0]",
@@ -1606,8 +1492,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "35a Amount of line 34 you want refunded to you. If Form 8888 is attached, check here . . . .",
-  "above": ".",
-  "rightText": "35a"
+  "above": "."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_24[0]",
@@ -1620,8 +1505,7 @@
   "maxLen": null,
   "leftTok": "35a",
   "rowText": "35a Amount of line 34 you want refunded to you. If Form 8888 is attached, check here . . . . 35a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].RoutingNo[0].f2_25[0]",
@@ -1634,8 +1518,7 @@
   "maxLen": 9,
   "leftTok": "number",
   "rowText": "Direct deposit? b Routing number",
-  "above": "more 34 than you line want 24, refunded subtract to line you. 24 from If Form line",
-  "rightText": "c Type: Checking"
+  "above": "more 34 than you line want 24, refunded subtract to line you. 24 from If Form line"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_5[0]",
@@ -1648,8 +1531,7 @@
   "maxLen": null,
   "leftTok": "Type:",
   "rowText": "See Direct instructions. deposit? b Routing number c Type:",
-  "above": "check",
-  "rightText": "Checking Savings"
+  "above": "check"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_5[1]",
@@ -1662,8 +1544,7 @@
   "maxLen": null,
   "leftTok": "Checking",
   "rowText": "See Direct instructions. deposit? b Routing number c Type: Checking",
-  "above": ". .",
-  "rightText": "Savings"
+  "above": ". ."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].AccountNo[0].f2_26[0]",
@@ -1676,8 +1557,7 @@
   "maxLen": 17,
   "leftTok": "number",
   "rowText": "See instructions. d Account number",
-  "above": "34 you want refunded to you. If Form 8888 is attached, c Type: check Checking here",
-  "rightText": ""
+  "above": "34 you want refunded to you. If Form 8888 is attached, c Type: check Checking here"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_27[0]",
@@ -1690,8 +1570,7 @@
   "maxLen": null,
   "leftTok": "36",
   "rowText": "36 Amount of line 34 you want applied to your 2025 estimated tax . . . 36",
-  "above": "Checking Savings",
-  "rightText": ""
+  "above": "Checking Savings"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_28[0]",
@@ -1704,8 +1583,7 @@
   "maxLen": null,
   "leftTok": "37",
   "rowText": "You Owe For details on how to pay, go to www.irs.gov/Payments or see instructions . . . . . . . . 37",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_29[0]",
@@ -1718,8 +1596,7 @@
   "maxLen": null,
   "leftTok": "38",
   "rowText": "38 Estimated tax penalty (see instructions) . . . . . . . . . . 38",
-  "above": ". . . . . .",
-  "rightText": ""
+  "above": ". . . . . ."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_6[0]",
@@ -1732,8 +1609,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "Third Designee Party instructions . . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": "Yes. Complete below."
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_6[1]",
@@ -1746,8 +1622,7 @@
   "maxLen": null,
   "leftTok": "below.",
   "rowText": "Third Designee Party instructions . . . . . . . . . . . . . . . . . . . . . Yes. Complete below.",
-  "above": "",
-  "rightText": "No"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_30[0]",
@@ -1760,8 +1635,7 @@
   "maxLen": null,
   "leftTok": "name",
   "rowText": "Designee’s name",
-  "above": "instructions want to . allow . . another . . . person . . to . discuss . . . this",
-  "rightText": "Phone no. Personal"
+  "above": "instructions want to . allow . . another . . . person . . to . discuss . . . this"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_31[0]",
@@ -1774,8 +1648,7 @@
   "maxLen": null,
   "leftTok": "no.",
   "rowText": "Designee’s name Phone no.",
-  "above": "return with . . the . IRS? . . See . Yes.",
-  "rightText": "Personal number (PIN)"
+  "above": "return with . . the . IRS? . . See . Yes."
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_32[0]",
@@ -1788,8 +1661,7 @@
   "maxLen": 5,
   "leftTok": "identification",
   "rowText": "Designee’s name Phone no. Personal number (PIN) identification",
-  "above": "No",
-  "rightText": ""
+  "above": "No"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_33[0]",
@@ -1802,8 +1674,7 @@
   "maxLen": null,
   "leftTok": "return?",
   "rowText": "Joint return?",
-  "above": "Your occupation",
-  "rightText": "Protection (see inst.)"
+  "above": "Your occupation"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_34[0]",
@@ -1816,8 +1687,7 @@
   "maxLen": 6,
   "leftTok": "inst.)",
   "rowText": "Joint return? (see inst.)",
-  "above": "sent PIN, you enter an it Identity here",
-  "rightText": ""
+  "above": "sent PIN, you enter an it Identity here"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_35[0]",
@@ -1830,8 +1700,7 @@
   "maxLen": null,
   "leftTok": "for",
   "rowText": "Keep your records. a copy for",
-  "above": "Spouse’s occupation",
-  "rightText": "Identity (see inst.)"
+  "above": "Spouse’s occupation"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_36[0]",
@@ -1844,8 +1713,7 @@
   "maxLen": 6,
   "leftTok": "inst.)",
   "rowText": "your records. (see inst.)",
-  "above": "Protection sent your PIN, spouse enter an it here",
-  "rightText": ""
+  "above": "Protection sent your PIN, spouse enter an it here"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_37[0]",
@@ -1858,8 +1726,7 @@
   "maxLen": null,
   "leftTok": "no.",
   "rowText": "Phone no.",
-  "above": "",
-  "rightText": "Email address"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_38[0]",
@@ -1872,8 +1739,7 @@
   "maxLen": null,
   "leftTok": "address",
   "rowText": "Phone no. Email address",
-  "above": "Identity (see inst.) Protection PIN, enter it here",
-  "rightText": ""
+  "above": "Identity (see inst.) Protection PIN, enter it here"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_39[0]",
@@ -1886,8 +1752,7 @@
   "maxLen": null,
   "leftTok": "Preparer",
   "rowText": "Paid Preparer",
-  "above": "Phone Preparer’s no. name",
-  "rightText": "Self-employed"
+  "above": "Phone Preparer’s no. name"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_40[0]",
@@ -1900,8 +1765,7 @@
   "maxLen": 11,
   "leftTok": "Preparer",
   "rowText": "Paid Preparer",
-  "above": "PTIN",
-  "rightText": "Self-employed"
+  "above": "PTIN"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].c2_7[0]",
@@ -1914,8 +1778,7 @@
   "maxLen": null,
   "leftTok": "Preparer",
   "rowText": "Paid Preparer",
-  "above": "Check",
-  "rightText": "Self-employed"
+  "above": "Check"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_41[0]",
@@ -1928,8 +1791,7 @@
   "maxLen": null,
   "leftTok": "name",
   "rowText": "Preparer Use Only Firm’s name",
-  "above": "",
-  "rightText": "Phone no."
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_42[0]",
@@ -1942,8 +1804,7 @@
   "maxLen": null,
   "leftTok": "no.",
   "rowText": "Preparer Use Only Firm’s name Phone no.",
-  "above": "Self-employed",
-  "rightText": ""
+  "above": "Self-employed"
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_43[0]",
@@ -1956,8 +1817,7 @@
   "maxLen": null,
   "leftTok": "address",
   "rowText": "Use Only Firm’s address",
-  "above": "",
-  "rightText": "Firm’s EIN"
+  "above": ""
  },
  {
   "pdfField": "topmostSubform[0].Page2[0].f2_44[0]",
@@ -1970,7 +1830,6 @@
   "maxLen": 10,
   "leftTok": "EIN",
   "rowText": "Use Only Firm’s address Firm’s EIN",
-  "above": "",
-  "rightText": ""
+  "above": ""
  }
 ]

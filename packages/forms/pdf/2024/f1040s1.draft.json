@@ -10,8 +10,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Internal Name(s) Revenue shown Service on Form 1040, 1040-SR, or 1040-NR",
-  "rightText": ""
+  "above": "Internal Name(s) Revenue shown Service on Form 1040, 1040-SR, or 1040-NR"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_02[0]",
@@ -24,8 +23,7 @@
   "maxLen": 11,
   "leftTok": "",
   "rowText": "",
-  "above": "Your social security Sequence number No. 01",
-  "rightText": ""
+  "above": "Your social security Sequence number No. 01"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_03[0]",
@@ -38,8 +36,7 @@
   "maxLen": null,
   "leftTok": ".",
   "rowText": "items sold at a loss . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_04[0]",
@@ -52,8 +49,7 @@
   "maxLen": null,
   "leftTok": "1",
   "rowText": "1 Taxable refunds, credits, or offsets of state and local income taxes . . . . . . . . . . . . 1",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_05[0]",
@@ -66,8 +62,7 @@
   "maxLen": null,
   "leftTok": "2a",
   "rowText": "2a Alimony received . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_06[0]",
@@ -80,8 +75,7 @@
   "maxLen": null,
   "leftTok": "instructions):",
   "rowText": "b Date of original divorce or separation agreement (see instructions):",
-  "above": ". . . . . . . . . . . . . . . . . . . . . . . .",
-  "rightText": ""
+  "above": ". . . . . . . . . . . . . . . . . . . . . . . ."
  },
  {
   "pdfField": "form1[0].Page1[0].f1_07[0]",
@@ -94,8 +88,7 @@
   "maxLen": null,
   "leftTok": "3",
   "rowText": "3 Business income or (loss). Attach Schedule C . . . . . . . . . . . . . . . . . . . 3",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_08[0]",
@@ -108,8 +101,7 @@
   "maxLen": null,
   "leftTok": "4",
   "rowText": "4 Other gains or (losses). Attach Form 4797 . . . . . . . . . . . . . . . . . . . . 4",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_09[0]",
@@ -122,8 +114,7 @@
   "maxLen": null,
   "leftTok": "5",
   "rowText": "5 Rental real estate, royalties, partnerships, S corporations, trusts, etc. Attach Schedule E . . . . . 5",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_10[0]",
@@ -136,8 +127,7 @@
   "maxLen": null,
   "leftTok": "6",
   "rowText": "6 Farm income or (loss). Attach Schedule F . . . . . . . . . . . . . . . . . . . . 6",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_11[0]",
@@ -150,8 +140,7 @@
   "maxLen": null,
   "leftTok": "7",
   "rowText": "7 Unemployment compensation . . . . . . . . . . . . . . . . . . . . . . . . 7",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line8a_ReadOrder[0].f1_12[0]",
@@ -164,8 +153,7 @@
   "maxLen": null,
   "leftTok": "(",
   "rowText": "a Net operating loss . . . . . . . . . . . . . . . . . . . . 8a (",
-  "above": ". . . . .",
-  "rightText": ")"
+  "above": ". . . . ."
  },
  {
   "pdfField": "form1[0].Page1[0].f1_13[0]",
@@ -178,8 +166,7 @@
   "maxLen": null,
   "leftTok": "8b",
   "rowText": "b Gambling . . . . . . . . . . . . . . . . . . . . . . . 8b",
-  "above": "( )",
-  "rightText": ""
+  "above": "( )"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_14[0]",
@@ -192,8 +179,7 @@
   "maxLen": null,
   "leftTok": "8c",
   "rowText": "c Cancellation of debt . . . . . . . . . . . . . . . . . . . 8c",
-  "above": "( )",
-  "rightText": ""
+  "above": "( )"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_15[0]",
@@ -206,8 +192,7 @@
   "maxLen": null,
   "leftTok": "(",
   "rowText": "d Foreign earned income exclusion from Form 2555 . . . . . . . . . 8d (",
-  "above": "",
-  "rightText": ")"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_16[0]",
@@ -220,8 +205,7 @@
   "maxLen": null,
   "leftTok": "8e",
   "rowText": "e Income from Form 8853 . . . . . . . . . . . . . . . . . . 8e",
-  "above": "( )",
-  "rightText": ""
+  "above": "( )"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_17[0]",
@@ -234,8 +218,7 @@
   "maxLen": null,
   "leftTok": "8f",
   "rowText": "f Income from Form 8889 . . . . . . . . . . . . . . . . . . 8f",
-  "above": "( )",
-  "rightText": ""
+  "above": "( )"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_18[0]",
@@ -248,8 +231,7 @@
   "maxLen": null,
   "leftTok": "8g",
   "rowText": "g Alaska Permanent Fund dividends . . . . . . . . . . . . . . 8g",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_19[0]",
@@ -262,8 +244,7 @@
   "maxLen": null,
   "leftTok": "8h",
   "rowText": "h Jury duty pay . . . . . . . . . . . . . . . . . . . . . 8h",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_20[0]",
@@ -276,8 +257,7 @@
   "maxLen": null,
   "leftTok": "8i",
   "rowText": "i Prizes and awards . . . . . . . . . . . . . . . . . . . . 8i",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_21[0]",
@@ -290,8 +270,7 @@
   "maxLen": null,
   "leftTok": "8j",
   "rowText": "j Activity not engaged in for profit income . . . . . . . . . . . . 8j",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_22[0]",
@@ -304,8 +283,7 @@
   "maxLen": null,
   "leftTok": "8k",
   "rowText": "k Stock options . . . . . . . . . . . . . . . . . . . . . 8k",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_23[0]",
@@ -318,8 +296,7 @@
   "maxLen": null,
   "leftTok": "8l",
   "rowText": "profit but were not in the business of renting such property . . . . . . 8l",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_24[0]",
@@ -332,8 +309,7 @@
   "maxLen": null,
   "leftTok": "8m",
   "rowText": "m Olympic and Paralympic medals and USOC prize money (see instructions) . 8m",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_25[0]",
@@ -346,8 +322,7 @@
   "maxLen": null,
   "leftTok": "8n",
   "rowText": "n Section 951(a) inclusion (see instructions) . . . . . . . . . . . . 8n",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_26[0]",
@@ -360,8 +335,7 @@
   "maxLen": null,
   "leftTok": "8o",
   "rowText": "o Section 951A(a) inclusion (see instructions) . . . . . . . . . . . . 8o",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_27[0]",
@@ -374,8 +348,7 @@
   "maxLen": null,
   "leftTok": "8p",
   "rowText": "p Section 461(l) excess business loss adjustment . . . . . . . . . . 8p",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_28[0]",
@@ -388,8 +361,7 @@
   "maxLen": null,
   "leftTok": "8q",
   "rowText": "q Taxable distributions from an ABLE account (see instructions) . . . . . 8q",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_29[0]",
@@ -402,8 +374,7 @@
   "maxLen": null,
   "leftTok": "8r",
   "rowText": "r Scholarship and fellowship grants not reported on Form W-2 . . . . . . 8r",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_30[0]",
@@ -416,8 +387,7 @@
   "maxLen": null,
   "leftTok": "(",
   "rowText": "1a or 1d . . . . . . . . . . . . . . . . . . . . . . . 8s (",
-  "above": "",
-  "rightText": ")"
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_31[0]",
@@ -430,8 +400,7 @@
   "maxLen": null,
   "leftTok": "8t",
   "rowText": "nongovernmental section 457 plan . . . . . . . . . . . . . . 8t",
-  "above": "( )",
-  "rightText": ""
+  "above": "( )"
  },
  {
   "pdfField": "form1[0].Page1[0].f1_32[0]",
@@ -444,8 +413,7 @@
   "maxLen": null,
   "leftTok": "8u",
   "rowText": "u Wages earned while incarcerated . . . . . . . . . . . . . . . 8u",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_33[0]",
@@ -458,8 +426,7 @@
   "maxLen": null,
   "leftTok": "8v",
   "rowText": "instructions . . . . . . . . . . . . . . . . . . . . . . 8v",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].Line8z_ReadOrder[0].f1_34[0]",
@@ -472,8 +439,7 @@
   "maxLen": null,
   "leftTok": "amount:",
   "rowText": "z Other income. List type and amount:",
-  "above": "ordinary . income . . . not . . reported . . . elsewhere. . . . . See .",
-  "rightText": ""
+  "above": "ordinary . income . . . not . . reported . . . elsewhere. . . . . See ."
  },
  {
   "pdfField": "form1[0].Page1[0].Line8z_ReadOrder[0].f1_35[0]",
@@ -486,8 +452,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "instructions Other income. . List . type . . and . amount: . . . . . . . . . . . . . . . .",
-  "rightText": "8z"
+  "above": "instructions Other income. . List . type . . and . amount: . . . . . . . . . . . . . . . ."
  },
  {
   "pdfField": "form1[0].Page1[0].f1_36[0]",
@@ -500,8 +465,7 @@
   "maxLen": null,
   "leftTok": "8z",
   "rowText": "8z",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_37[0]",
@@ -514,8 +478,7 @@
   "maxLen": null,
   "leftTok": "9",
   "rowText": "9 Total other income. Add lines 8a through 8z . . . . . . . . . . . . . . . . . . . 9",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page1[0].f1_38[0]",
@@ -528,8 +491,7 @@
   "maxLen": null,
   "leftTok": "10",
   "rowText": "1040-SR, or 1040-NR, line 8 . . . . . . . . . . . . . . . . . . . . . . . . 10",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_01[0]",
@@ -542,8 +504,7 @@
   "maxLen": null,
   "leftTok": "11",
   "rowText": "11 Educator expenses . . . . . . . . . . . . . . . . . . . . . . . . . . . 11",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_02[0]",
@@ -556,8 +517,7 @@
   "maxLen": null,
   "leftTok": "12",
   "rowText": "Form 2106 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_03[0]",
@@ -570,8 +530,7 @@
   "maxLen": null,
   "leftTok": "13",
   "rowText": "13 Health savings account deduction. Attach Form 8889 . . . . . . . . . . . . . . . . 13",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_04[0]",
@@ -584,8 +543,7 @@
   "maxLen": null,
   "leftTok": "14",
   "rowText": "14 Moving expenses for members of the Armed Forces. Attach Form 3903 . . . . . . . . . . 14",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_05[0]",
@@ -598,8 +556,7 @@
   "maxLen": null,
   "leftTok": "15",
   "rowText": "15 Deductible part of self-employment tax. Attach Schedule SE . . . . . . . . . . . . . . 15",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_06[0]",
@@ -612,8 +569,7 @@
   "maxLen": null,
   "leftTok": "16",
   "rowText": "16 Self-employed SEP, SIMPLE, and qualified plans . . . . . . . . . . . . . . . . . . 16",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_07[0]",
@@ -626,8 +582,7 @@
   "maxLen": null,
   "leftTok": "17",
   "rowText": "17 Self-employed health insurance deduction . . . . . . . . . . . . . . . . . . . . 17",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_08[0]",
@@ -640,8 +595,7 @@
   "maxLen": null,
   "leftTok": "18",
   "rowText": "18 Penalty on early withdrawal of savings . . . . . . . . . . . . . . . . . . . . . 18",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_09[0]",
@@ -654,8 +608,7 @@
   "maxLen": null,
   "leftTok": "19a",
   "rowText": "19a Alimony paid . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19a",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].Line19b_CombField[0].f2_10[0]",
@@ -668,8 +621,7 @@
   "maxLen": 9,
   "leftTok": ".",
   "rowText": "b Recipient’s SSN . . . . . . . . . . . . . . . . . . . . . .",
-  "above": ". . . . . . . . . . . .",
-  "rightText": ""
+  "above": ". . . . . . . . . . . ."
  },
  {
   "pdfField": "form1[0].Page2[0].f2_11[0]",
@@ -682,8 +634,7 @@
   "maxLen": null,
   "leftTok": "instructions):",
   "rowText": "c Date of original divorce or separation agreement (see instructions):",
-  "above": ". . . . . . . . . . . . . . . . . .",
-  "rightText": ""
+  "above": ". . . . . . . . . . . . . . . . . ."
  },
  {
   "pdfField": "form1[0].Page2[0].f2_12[0]",
@@ -696,8 +647,7 @@
   "maxLen": null,
   "leftTok": "20",
   "rowText": "20 IRA deduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_13[0]",
@@ -710,8 +660,7 @@
   "maxLen": null,
   "leftTok": "21",
   "rowText": "21 Student loan interest deduction . . . . . . . . . . . . . . . . . . . . . . . 21",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_14[0]",
@@ -724,8 +673,7 @@
   "maxLen": null,
   "leftTok": "22",
   "rowText": "22 Reserved for future use . . . . . . . . . . . . . . . . . . . . . . . . . . 22",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_15[0]",
@@ -738,8 +686,7 @@
   "maxLen": null,
   "leftTok": "23",
   "rowText": "23 Archer MSA deduction . . . . . . . . . . . . . . . . . . . . . . . . . . 23",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].Line24a_ReadOrder[0].f2_16[0]",
@@ -752,8 +699,7 @@
   "maxLen": null,
   "leftTok": "24a",
   "rowText": "a Jury duty pay (see instructions) . . . . . . . . . . . . . . . 24a",
-  "above": ". . . . . .",
-  "rightText": ""
+  "above": ". . . . . ."
  },
  {
   "pdfField": "form1[0].Page2[0].f2_17[0]",
@@ -766,8 +712,7 @@
   "maxLen": null,
   "leftTok": "24b",
   "rowText": "personal property engaged in for profit . . . . . . . . . . . . . 24b",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_18[0]",
@@ -780,8 +725,7 @@
   "maxLen": null,
   "leftTok": "24c",
   "rowText": "prize money reported on line 8m . . . . . . . . . . . . . . . 24c",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_19[0]",
@@ -794,8 +738,7 @@
   "maxLen": null,
   "leftTok": "24d",
   "rowText": "d Reforestation amortization and expenses . . . . . . . . . . . . 24d",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_20[0]",
@@ -808,8 +751,7 @@
   "maxLen": null,
   "leftTok": "24e",
   "rowText": "1974 . . . . . . . . . . . . . . . . . . . . . . . . 24e",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_21[0]",
@@ -822,8 +764,7 @@
   "maxLen": null,
   "leftTok": "24f",
   "rowText": "f Contributions to section 501(c)(18)(D) pension plans . . . . . . . . . 24f",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_22[0]",
@@ -836,8 +777,7 @@
   "maxLen": null,
   "leftTok": "24g",
   "rowText": "g Contributions by certain chaplains to section 403(b) plans . . . . . . . 24g",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_23[0]",
@@ -850,8 +790,7 @@
   "maxLen": null,
   "leftTok": "24h",
   "rowText": "discrimination claims (see instructions) . . . . . . . . . . . . . 24h",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_24[0]",
@@ -864,8 +803,7 @@
   "maxLen": null,
   "leftTok": "24i",
   "rowText": "IRS for information you provided that helped the IRS detect tax law violations 24i",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_25[0]",
@@ -878,8 +816,7 @@
   "maxLen": null,
   "leftTok": "24j",
   "rowText": "j Housing deduction from Form 2555 . . . . . . . . . . . . . . 24j",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_26[0]",
@@ -892,8 +829,7 @@
   "maxLen": null,
   "leftTok": "24k",
   "rowText": "k Excess deductions of section 67(e) expenses from Schedule K-1 (Form 1041) 24k",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].Line24z_ReadOrder[0].f2_27[0]",
@@ -906,8 +842,7 @@
   "maxLen": null,
   "leftTok": "amount:",
   "rowText": "z Other adjustments. List type and amount:",
-  "above": "expenses . from . . Schedule . . . K-1 . . (Form . . 1041) . .",
-  "rightText": ""
+  "above": "expenses . from . . Schedule . . . K-1 . . (Form . . 1041) . ."
  },
  {
   "pdfField": "form1[0].Page2[0].Line24z_ReadOrder[0].f2_28[0]",
@@ -920,8 +855,7 @@
   "maxLen": null,
   "leftTok": "",
   "rowText": "",
-  "above": "Excess Other adjustments. deductions of List section type and 67(e) amount: expenses from ",
-  "rightText": "24z"
+  "above": "Excess Other adjustments. deductions of List section type and 67(e) amount: expenses from "
  },
  {
   "pdfField": "form1[0].Page2[0].f2_29[0]",
@@ -934,8 +868,7 @@
   "maxLen": null,
   "leftTok": "24z",
   "rowText": "24z",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_30[0]",
@@ -948,8 +881,7 @@
   "maxLen": null,
   "leftTok": "25",
   "rowText": "25 Total other adjustments. Add lines 24a through 24z . . . . . . . . . . . . . . . . . 25",
-  "above": "",
-  "rightText": ""
+  "above": ""
  },
  {
   "pdfField": "form1[0].Page2[0].f2_31[0]",
@@ -962,7 +894,6 @@
   "maxLen": null,
   "leftTok": "26",
   "rowText": "1040, 1040-SR, or 1040-NR, line 10 . . . . . . . . . . . . . . . . . . . . . . 26",
-  "above": "",
-  "rightText": ""
+  "above": ""
  }
 ]

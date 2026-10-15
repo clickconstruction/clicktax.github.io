@@ -22,6 +22,6 @@ for (const form of ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse"]) {
       rows.push({ name: fld.getName(), widget: wi, type: fld instanceof PDFTextField ? "text" : fld instanceof PDFCheckBox ? "check" : "other", page: pageIdx + 1, x: +r.x.toFixed(1), y: +r.y.toFixed(1), w: +r.width.toFixed(1), h: +r.height.toFixed(1), maxLen: fld instanceof PDFTextField ? fld.getMaxLength() ?? null : null, tip: tu && tu.decodeText ? tu.decodeText() : null, exportValues: fld instanceof PDFCheckBox ? fld.acroField.getOnValue ? String(fld.acroField.getOnValue()) : null : null });
     });
   }
-  await writeFile(outPath, JSON.stringify({ pdf: f, pages: pages.map(p => ({ w: p.getWidth(), h: p.getHeight() })), count: rows.length, fields: rows }, null, 1));
+  await writeFile(outPath, JSON.stringify({ pdf: `apps/web/public/forms/${year}/${form}.pdf`, pages: pages.map(p => ({ w: p.getWidth(), h: p.getHeight() })), count: rows.length, fields: rows }, null, 1));
   console.log(form, year, "fields:", rows.length, "pages:", pages.length);
 }
