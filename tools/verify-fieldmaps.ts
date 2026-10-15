@@ -17,8 +17,9 @@ for (const [yearStr, byForm] of Object.entries(FIELD_MAPS)) {
     for (const [key, pdfName] of Object.entries(map)) {
       const t = byName.get(pdfName);
       if (!t) { console.log(`${year} ${formId}: ${key} -> ${pdfName} NOT IN PDF`); bad++; continue; }
-      const base = key.replace(/\[\d+\]\..*$/, "").replace(/\.(yes|no|month|day|year|[a-z_]+)$/, (m) => (form.fields.some((f) => f.id === key) ? m : ""));
-      const field = form.fields.find((f) => f.id === key || f.id === base || key.startsWith(f.id + ".") || key.startsWith(f.id + "["));
+      const base = key.replace(/@\d+$/, "").replace(/\[\d+\]\..*$/, "").replace(/\.(yes|no|month|day|year|[a-z_]+)$/, (m) => (form.fields.some((f) => f.id === key) ? m : ""));
+      const k0 = key.replace(/@\d+$/, "");
+      const field = form.fields.find((f) => f.id === k0 || f.id === base || k0.startsWith(f.id + ".") || k0.startsWith(f.id + "["));
       const wantsCheck = field && (field.type === "checkbox" || field.type === "yesno" || field.type === "choice" || (field.type === "list" && /\.(child_tax_credit|other_dependents_credit|lived_with_you|lived_in_us|full_time_student|permanently_disabled)$/.test(key)));
       if (wantsCheck && t !== "checkbox") { console.log(`${year} ${formId}: ${key} -> ${pdfName} is ${t}, expected checkbox`); bad++; continue; }
       if (!wantsCheck && t === "checkbox") { console.log(`${year} ${formId}: ${key} -> ${pdfName} is a checkbox, expected text`); bad++; continue; }

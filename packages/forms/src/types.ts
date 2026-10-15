@@ -7,7 +7,7 @@ export type FilingStatus = "single" | "mfj" | "mfs" | "hoh" | "qss";
 export const FILING_STATUSES: readonly FilingStatus[] = ["single", "mfj", "mfs", "hoh", "qss"];
 
 /** Every supported form id, in catalog order. Adding a form: add it here, write its FormDef, run gen:fieldmaps. */
-export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9"] as const;
+export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9", "f1040es", "f4562", "f1099nec"] as const;
 export type FormId = (typeof FORM_ID_LIST)[number];
 
 /**
@@ -41,9 +41,9 @@ export interface Locate {
   tok?: string | Partial<Record<TaxYear, string>>;
   above?: string;
   row?: string;
-  name?: string;
-  /** Per-year explicit names when the PDF changed between years. */
-  names?: Partial<Record<TaxYear, string>>;
+  name?: string | string[];
+  /** Per-year explicit names when the PDF changed between years. A year without an entry is skipped (field absent that year). */
+  names?: Partial<Record<TaxYear, string | string[]>>;
   page?: number | Partial<Record<TaxYear, number>>;
   kind?: "text" | "check";
   /** When several widgets match: "rightmost" (default for tok), "leftmost", or a 0-based index by x. */
@@ -81,8 +81,8 @@ export interface FieldDef {
   /** For `list` fields. */
   items?: readonly ListItemDef[];
   rows?: number;
-  /** For list fields: per year, per item id, the short PDF field name of each row (index = row). */
-  listLocate?: Partial<Record<TaxYear, Record<string, readonly string[]>>>;
+  /** For list fields: per year, per item id, the short PDF field name of each row (index = row); an array per row names copies. */
+  listLocate?: Partial<Record<TaxYear, Record<string, readonly (string | readonly string[])[]>>>;
   /** Mark lines that should be written even when zero (totals a reviewer expects to see). */
   alwaysShow?: boolean;
 }
