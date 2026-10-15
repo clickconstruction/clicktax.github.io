@@ -4,7 +4,9 @@
 
 ClickTax lets a person's AI agent fill IRS forms through an [MCP](https://modelcontextprotocol.io) server at `https://mcp.clicktax.org/mcp`, check the arithmetic, and hand back a printable PDF rendered in the person's own browser at `https://clicktax.org/fill`. Free forever. Stateless by construction.
 
-Supported: tax years **2024** and **2025**; Form **1040**, **Schedule 1**, **Schedule 2**, **Schedule C**, **Schedule SE**.
+Supported: tax years **2024** and **2025**; Form **1040**, **Schedule 1**, **Schedule 2**, **Schedule C**, **Schedule SE**, **Schedule 8812**.
+
+Live: MCP at `https://mcp.clicktax.org/mcp` (Cloudflare Worker, free plan), renderer at `https://clicktax.org/fill` (GitHub Pages).
 
 ## How it stays free, stateless, and private
 
@@ -36,15 +38,17 @@ Every `fill_form` / `prepare_return` result returns the **form** (computed value
 | `get_form_schema` | Semantic field ids, labels, types, lines, which lines are computed |
 | `get_form_notes` | What the form is for, what is computed, what to verify |
 | `fill_form` | Validate + compute one form; returns form + notes + link |
-| `prepare_return` | Schedule C(s) → Schedule SE → Schedules 1/2 → Form 1040 in one call |
+| `prepare_return` | Schedule C(s) → Schedule SE → Schedules 1/2 → Schedule 8812 → Form 1040 in one call |
+
+Prompt `prepare_return_interview`: a guided interview the agent runs before calling `prepare_return`.
 
 Field ids are the printed line numbers (`line1`, `line27a`) plus descriptive names for header boxes (`business_name`, `filing_status`). Yes/no questions are booleans; choices are strings (`accounting_method: "cash"`); Schedule C Part V and 1040 dependents are arrays of rows.
 
 ## What the engine computes
 
-Schedule C totals (lines 3, 5, 7, 28, 29, 31, 40, 42, 48); Schedule SE (net earnings, social security up to the wage base net of W-2 wages, Medicare, the deductible half); Schedule 1 and 2 totals; Form 1040 total income, AGI, standard deduction (with age/blindness and dependent-filer limits), taxable income, the tax (IRS Tax Table reproduced exactly below $100,000, Tax Computation Worksheet above), total tax, payments, refund or amount owed.
+Schedule C totals (lines 3, 5, 7, 28, 29, 31, 40, 42, 48); Schedule SE (net earnings, social security up to the wage base net of W-2 wages, Medicare, the deductible half); Schedule 1 and 2 totals; Schedule 8812 (child tax credit with the phaseout, the credit limit, and the refundable additional child tax credit including Part II-B for three or more children); Form 1040 total income, AGI, standard deduction (with age/blindness and dependent-filer limits), taxable income, the tax (IRS Tax Table reproduced exactly below $100,000, Tax Computation Worksheet above, and the Qualified Dividends and Capital Gain Tax Worksheet when line 3a or 7 is present), total tax, payments, refund or amount owed.
 
-Not computed (the engine warns when they apply): credits, itemized deductions, QBI deduction, the Qualified Dividends and Capital Gain Tax Worksheet, Additional Medicare Tax, NIIT, optional SE methods. It does not e-file.
+Not computed (the engine warns when they apply): other credits (Schedule 3), itemized deductions, QBI deduction, Schedule 1-A (2025), Schedule D's 28% and section 1250 worksheets, Additional Medicare Tax, NIIT, optional SE methods, EIC. It does not e-file.
 
 ## Develop
 
@@ -53,6 +57,7 @@ npm install
 npm test                      # engine tests (vitest)
 npm run typecheck
 npm run verify:fieldmaps      # every mapped widget exists in the real IRS PDF
+# `npm test` also fills every form for every year with pdf-lib (render smoke test)
 npm run dev:web               # http://localhost:5173
 npm run dev:mcp               # http://127.0.0.1:8787/mcp
 ```
@@ -68,7 +73,11 @@ npm run dev:mcp               # http://127.0.0.1:8787/mcp
 ## Deploy
 
 - Web: pushed to `main` → GitHub Actions builds `apps/web` and deploys to GitHub Pages (custom domain `clicktax.org`, DNS on Cloudflare).
-- MCP: `cd apps/mcp && npx wrangler deploy` (custom domain `mcp.clicktax.org`), or set the `CLOUDFLARE_API_TOKEN` repository secret and let `deploy-mcp.yml` do it.
+- MCP: `cd apps/mcp && npx wrangler deploy` (custom domain `mcp.clicktax.org`, created by wrangler from `wrangler.jsonc`), or set the `CLOUDFLARE_API_TOKEN` repository secret and let `deploy-mcp.yml` do it.
+
+### Abuse and limits
+
+There is no account system. Cloudflare's free plan includes DDoS protection; a WAF rate-limiting rule on `mcp.clicktax.org` is the recommended next guardrail (configured in the Cloudflare dashboard, not in code). The Worker rejects nothing by itself: it is pure arithmetic over the request body.
 
 ## License and warranty
 

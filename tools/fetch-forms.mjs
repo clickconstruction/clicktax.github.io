@@ -6,7 +6,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 const [year, flag] = process.argv.slice(2);
 if (!year) { console.error("usage: fetch-forms.mjs <year> [--prior]"); process.exit(1); }
-const FORMS = ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse"];
+const FORMS = ["f1040", "f1040s1", "f1040s2", "f1040sc", "f1040sse", "f1040s8"];
 const dir = join(import.meta.dirname, "..", "apps", "web", "public", "forms", year);
 mkdirSync(dir, { recursive: true });
 for (const f of FORMS) {

@@ -1,6 +1,6 @@
 import { Calc, f } from "../engine/helpers.ts";
 import { params } from "../params.ts";
-import { incomeTax } from "../tax.ts";
+import { incomeTax, qdcgWorksheet } from "../tax.ts";
 import { FILING_STATUSES, type FieldDef, type FilingStatus, type FormDef, type TaxYear } from "../types.ts";
 
 type Y = Partial<Record<TaxYear, string>>;
@@ -134,8 +134,9 @@ const fields: FieldDef[] = [
   amt("line13b", "13b", "Additional deductions from Schedule 1-A, line 38 (tips, overtime, car loan interest, seniors)", 2, { years: [2025] }),
   comp("line14", "14", "Add lines 12 and 13 (and 13b for 2025)", 2, "line 12 + line 13 (+ 13b)", { locate: tok("14", { 2024: 1, 2025: 2 }) }),
   comp("line15", "15", "Taxable income", 2, "line 11 - line 14, not less than zero", { locate: tok("15", { 2024: 1, 2025: 2 }), alwaysShow: true }),
-  { id: "line16_override", label: "Tax override (supply only when the Qualified Dividends and Capital Gain Tax Worksheet or another method applies)", type: "money" },
-  comp("line16", "16", "Tax", 2, "Tax Table (under $100,000) or Tax Computation Worksheet on line 15 for the filing status", { alwaysShow: true }),
+  { id: "line16_override", label: "Tax override (supply only when Schedule D's tax worksheet, Form 8615, or another method applies)", type: "money" },
+  { id: "schedule_d_gain", label: "If Schedule D is filed: the smaller of Schedule D line 15 or line 16 (used by the capital gain tax worksheet instead of line 7)", type: "money" },
+  comp("line16", "16", "Tax", 2, "Tax Table (under $100,000) or Tax Computation Worksheet on line 15; when qualified dividends or capital gains are present, the Qualified Dividends and Capital Gain Tax Worksheet", { alwaysShow: true }),
   amt("line17", "17", "Amount from Schedule 2, line 3", 2, { notes: "Filled from Schedule 2 when preparing a full return." }),
   comp("line18", "18", "Add lines 16 and 17", 2, "line 16 + line 17"),
   amt("line19", "19", "Child tax credit or credit for other dependents from Schedule 8812", 2, { notes: "Not computed; Schedule 8812 figures it." }),
@@ -205,7 +206,7 @@ export const form1040: FormDef = {
 
 **What the engine computes.** Lines 1z, 9, 11, 12 (standard deduction unless itemized_deductions is supplied), 14, 15, 16 (tax table or computation worksheet), 18, 21, 22, 24, 25d, 32, 33, 34, 35a and 37.
 
-**What the engine does not compute.** Credits (lines 19, 20, 27-31), the qualified business income deduction (line 13), itemized deductions, and the Qualified Dividends and Capital Gain Tax Worksheet. When line 3a or line 7 is positive, the tax on line 16 is computed at ordinary rates and flagged; supply line16_override from the worksheet.
+**What the engine does not compute.** Credits other than the child tax credit (line 19 and line 28 come from Schedule 8812 when preparing a full return), the qualified business income deduction (line 13), and itemized deductions. Line 16 uses the Qualified Dividends and Capital Gain Tax Worksheet automatically when line 3a or line 7 is positive; Schedule D's 28% and section 1250 worksheets are not implemented (supply line16_override).
 
 **2025 changes.** Line 7 became 7a, line 11 became 11a/11b, line 12 became 12e, line 13 became 13a with a new 13b for Schedule 1-A (tips, overtime, car loan interest, and senior deductions), line 27 became 27a, and line 30 is the refundable adoption credit.
 
@@ -239,8 +240,16 @@ export const form1040: FormDef = {
     if (c.has("line16_override")) {
       l16 = c.set("line16", c.n("line16_override"), "Tax (supplied override)", `line16_override ${f(c.n("line16_override"))}`, "16");
     } else if (FILING_STATUSES.includes(status)) {
-      l16 = c.set("line16", incomeTax(l15, status, ctx.year), "Tax", `${l15 < params(ctx.year).taxTableMax ? "Tax Table" : "Tax Computation Worksheet"} for ${status} on line 15 ${f(l15)}`, "16");
-      if (c.n("line3a") > 0 || c.n("line7") > 0) c.warn("Line 3a (qualified dividends) or line 7 (capital gain) is positive: line 16 should come from the Qualified Dividends and Capital Gain Tax Worksheet, which usually lowers the tax. Supply line16_override from that worksheet.");
+      const qd = c.n("line3a");
+      const gain = c.has("schedule_d_gain") ? Math.max(0, c.n("schedule_d_gain")) : Math.max(0, c.n("line7"));
+      if (qd > 0 || gain > 0) {
+        const w = qdcgWorksheet({ taxableIncome: l15, qualifiedDividends: qd, capitalGain: gain, status, year: ctx.year });
+        l16 = c.set("line16", w.tax, "Tax (Qualified Dividends and Capital Gain Tax Worksheet)", `0% on ${f(w.lines[9]!)}, 15% on ${f(w.lines[17]!)}, 20% on ${f(w.lines[20]!)}, ordinary tax ${f(w.lines[22]!)} on ${f(w.lines[5]!)}; worksheet ${f(w.lines[23]!)} vs ordinary ${f(w.lines[24]!)}`, "16");
+        if (qd > c.n("line3b")) c.warn("Line 3a (qualified dividends) exceeds line 3b (ordinary dividends); qualified dividends are a subset of ordinary dividends.");
+        if (c.n("line7") > 0 && !c.has("schedule_d_gain")) c.warn("Line 7 is positive: if Schedule D is required (sales of assets), supply schedule_d_gain (the smaller of Schedule D lines 15 and 16); if Schedule D shows 28% gain or unrecaptured section 1250 gain, use the Schedule D Tax Worksheet and supply line16_override.");
+      } else {
+        l16 = c.set("line16", incomeTax(l15, status, ctx.year), "Tax", `${l15 < params(ctx.year).taxTableMax ? "Tax Table" : "Tax Computation Worksheet"} for ${status} on line 15 ${f(l15)}`, "16");
+      }
     }
     const l17 = c.n("line17");
     const l18 = c.set("line18", l16 + l17, "Add lines 16 and 17", `line 16 ${f(l16)} + line 17 ${f(l17)}`, "18");

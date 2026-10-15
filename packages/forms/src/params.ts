@@ -19,6 +19,10 @@ export interface YearParams {
     netEarningsFactor: number;
     filingThreshold: number;
   };
+  /** Qualified Dividends and Capital Gain Tax Worksheet breakpoints (taxable income at which 0% and 15% rates end). */
+  capitalGains: { zeroRateMax: Record<FilingStatus, number>; fifteenRateMax: Record<FilingStatus, number> };
+  /** Child tax credit (Schedule 8812). */
+  ctc: { perChild: number; perOtherDependent: number; actcMax: number; phaseoutMfj: number; phaseoutOther: number; earnedIncomeFloor: number; threeChildrenAmount: number };
   /** Printed on Form 1040 for reference. */
   formRevision: string;
 }
@@ -43,6 +47,11 @@ export const PARAMS: Record<TaxYear, YearParams> = {
     brackets: { single: single2024, mfj: mfj2024, mfs: mfs2024, hoh: hoh2024, qss: mfj2024 },
     taxTableMax: 100000,
     se: { wageBase: 168600, socialSecurityRate: 0.124, medicareRate: 0.029, netEarningsFactor: 0.9235, filingThreshold: 400 },
+    capitalGains: {
+      zeroRateMax: { single: 47025, mfj: 94050, mfs: 47025, hoh: 63000, qss: 94050 },
+      fifteenRateMax: { single: 518900, mfj: 583750, mfs: 291850, hoh: 551350, qss: 583750 },
+    },
+    ctc: { perChild: 2000, perOtherDependent: 500, actcMax: 1700, phaseoutMfj: 400000, phaseoutOther: 200000, earnedIncomeFloor: 2500, threeChildrenAmount: 5100 },
     formRevision: "2024",
   },
   2025: {
@@ -52,6 +61,11 @@ export const PARAMS: Record<TaxYear, YearParams> = {
     brackets: { single: single2025, mfj: mfj2025, mfs: mfs2025, hoh: hoh2025, qss: mfj2025 },
     taxTableMax: 100000,
     se: { wageBase: 176100, socialSecurityRate: 0.124, medicareRate: 0.029, netEarningsFactor: 0.9235, filingThreshold: 400 },
+    capitalGains: {
+      zeroRateMax: { single: 48350, mfj: 96700, mfs: 48350, hoh: 64750, qss: 96700 },
+      fifteenRateMax: { single: 533400, mfj: 600050, mfs: 300000, hoh: 566700, qss: 600050 },
+    },
+    ctc: { perChild: 2200, perOtherDependent: 500, actcMax: 1700, phaseoutMfj: 400000, phaseoutOther: 200000, earnedIncomeFloor: 2500, threeChildrenAmount: 5100 },
     formRevision: "2025",
   },
 };

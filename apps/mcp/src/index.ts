@@ -27,7 +27,15 @@ interface Env {
   RENDER_BASE?: string;
 }
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
+const INSTRUCTIONS: Record<FormId, string> = {
+  f1040: "https://www.irs.gov/pub/irs-pdf/i1040gi.pdf",
+  f1040s1: "https://www.irs.gov/forms-pubs/about-schedule-1-form-1040",
+  f1040s2: "https://www.irs.gov/forms-pubs/about-schedule-2-form-1040",
+  f1040sc: "https://www.irs.gov/pub/irs-pdf/i1040sc.pdf",
+  f1040sse: "https://www.irs.gov/pub/irs-pdf/i1040sse.pdf",
+  f1040s8: "https://www.irs.gov/pub/irs-pdf/i1040s8.pdf",
+};
 const formIdSchema = z.enum(FORM_IDS as [FormId, ...FormId[]]).describe("Form id: f1040, f1040sc (Schedule C), f1040sse (Schedule SE), f1040s1 (Schedule 1), f1040s2 (Schedule 2)");
 const yearSchema = z.union([z.literal(2024), z.literal(2025)]).describe("Tax year (the year the income was earned): 2024 or 2025");
 const valuesSchema = z.record(z.string(), z.unknown()).describe("Semantic field id → value, per get_form_schema. Money as numbers; checkboxes as true/false; yes/no questions as true/false; lists as arrays of row objects.");
@@ -67,7 +75,7 @@ function createServer(env: Env): McpServer {
     { name: "clicktax", version: VERSION, title: "ClickTax" },
     {
       instructions: `${DISCLAIMER}
-ClickTax fills IRS forms for tax years ${SUPPORTED_YEARS.join(" and ")}: Form 1040, Schedule 1, Schedule 2, Schedule C, and Schedule SE.
+ClickTax fills IRS forms for tax years ${SUPPORTED_YEARS.join(" and ")}: Form 1040, Schedule 1, Schedule 2, Schedule C, Schedule SE, and Schedule 8812.
 Workflow: call list_forms, then get_form_schema and get_form_notes for each form, collect the person's figures using the semantic field ids, then call fill_form (one form) or prepare_return (a whole sole-proprietor return). Every result has two parts: the form (computed values and a link that renders the PDF locally in the person's browser) and the notes (plain-language guidance and what to verify). Give the person the link; the server stores nothing and the link's data never reaches it. Never invent figures; ask the person. The engine computes arithmetic lines only; credits, itemized deductions, QBI, and capital-gain tax need other IRS forms or worksheets. It does not e-file.`,
     },
   );
@@ -82,7 +90,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
       annotations: readOnly,
     },
     async () => {
-      const forms = FORM_IDS.map((id) => ({ id, shortTitle: FORMS[id].shortTitle, title: FORMS[id].title, years: FORMS[id].years, description: FORMS[id].description }));
+      const forms = FORM_IDS.map((id) => ({ id, shortTitle: FORMS[id].shortTitle, title: FORMS[id].title, years: FORMS[id].years, description: FORMS[id].description, instructions: INSTRUCTIONS[id] }));
       const text = [`**${DISCLAIMER}**`, "", ...forms.map((f) => `- \`${f.id}\` ${f.shortTitle} (${f.years.join(", ")}): ${f.description}`), "", `Renderer: ${renderBase}/fill`].join("\n");
       return { content: [{ type: "text", text }], structuredContent: { disclaimer: DISCLAIMER, years: SUPPORTED_YEARS, forms, renderBase } };
     },
@@ -141,7 +149,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
     "prepare_return",
     {
       title: "Prepare a sole-proprietor return",
-      description: "Assembles a whole return: each Schedule C feeds Schedule SE, Schedule 1, Schedule 2, and Form 1040 automatically (business profit → self-employment tax → deductions → AGI → taxable income → tax → refund or amount owed). Returns one link that renders every form, plus per-form computations, warnings, and notes. Supply form1040 values (names, SSN, filing status, address, W-2 wages, withholding, payments...), scheduleC as an array (add owner: \"spouse\" for a spouse's business on a joint return), and optional scheduleSE/scheduleSESpouse (e.g. line8a W-2 social security wages), schedule1, schedule2 values.",
+      description: "Assembles a whole return: each Schedule C feeds Schedule SE, Schedule 1, Schedule 2, Schedule 8812 (when dependents are marked for the child tax credit), and Form 1040 automatically (business profit → self-employment tax → deductions → AGI → taxable income → tax → credits → refund or amount owed). Returns one link that renders every form, plus per-form computations, warnings, and notes. Supply form1040 values (names, SSN, filing status, address, dependents, W-2 wages, withholding, payments...), scheduleC as an array (add owner: \"spouse\" for a spouse's business on a joint return), and optional scheduleSE/scheduleSESpouse (e.g. line8a W-2 social security wages), schedule1, schedule2, schedule8812 (line18b, line21, other_nonrefundable_credits, schedule3_line11) values. Example: {year: 2025, form1040: {first_name: \"Ann\", last_name: \"Lee\", ssn: \"123456789\", filing_status: \"single\", digital_assets: false, line1a: 50000, line25a: 6000}, scheduleC: [{principal_business: \"Consulting\", accounting_method: \"cash\", material_participation: true, line1: 80000, line18: 1200}]}",
       inputSchema: z.object({
         year: yearSchema,
         form1040: valuesSchema,
@@ -150,6 +158,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
         scheduleSESpouse: valuesSchema.optional(),
         schedule1: valuesSchema.optional(),
         schedule2: valuesSchema.optional(),
+        schedule8812: valuesSchema.optional(),
         rounding: roundingSchema,
         title: z.string().optional(),
       }),
@@ -158,7 +167,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
     async (input) => {
       const { year, rounding, title, ...rest } = input;
       const result = await prepareReturn(
-        { year: year as TaxYear, form1040: rest.form1040 as Values, ...(rest.scheduleC ? { scheduleC: rest.scheduleC as Values[] } : {}), ...(rest.scheduleSE ? { scheduleSE: rest.scheduleSE as Values } : {}), ...(rest.scheduleSESpouse ? { scheduleSESpouse: rest.scheduleSESpouse as Values } : {}), ...(rest.schedule1 ? { schedule1: rest.schedule1 as Values } : {}), ...(rest.schedule2 ? { schedule2: rest.schedule2 as Values } : {}), ...(rounding ? { rounding } : {}) },
+        { year: year as TaxYear, form1040: rest.form1040 as Values, ...(rest.scheduleC ? { scheduleC: rest.scheduleC as Values[] } : {}), ...(rest.scheduleSE ? { scheduleSE: rest.scheduleSE as Values } : {}), ...(rest.scheduleSESpouse ? { scheduleSESpouse: rest.scheduleSESpouse as Values } : {}), ...(rest.schedule1 ? { schedule1: rest.schedule1 as Values } : {}), ...(rest.schedule2 ? { schedule2: rest.schedule2 as Values } : {}), ...(rest.schedule8812 ? { schedule8812: rest.schedule8812 as Values } : {}), ...(rounding ? { rounding } : {}) },
         { renderBase, ...(title ? { title } : {}) },
       );
       const totals = Object.entries(result.totals).map(([k, v]) => `- ${k.replace(/_/g, " ")}: **${money(v)}**`).join("\n");
@@ -177,6 +186,32 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
     },
   );
 
+  server.registerPrompt(
+    "prepare_return_interview",
+    {
+      title: "Interview for a sole-proprietor return",
+      description: "A step-by-step interview the agent runs with the person before calling prepare_return.",
+      argsSchema: z.object({ year: z.string().optional().describe("Tax year, 2024 or 2025") }),
+    },
+    ({ year }) => ({
+      messages: [
+        {
+          role: "user",
+          content: {
+            type: "text",
+            text: `Help me prepare my ${year ?? "2025"} federal return with the ClickTax tools. Start by telling me: ${DISCLAIMER}
+Then interview me in this order, one topic at a time, and do not invent any figure:
+1. Who is filing: names, SSNs, address, filing status, whether anyone can claim me, age 65+ or blind boxes, dependents (name, SSN, relationship, whether each qualifies for the child tax credit), and the digital-assets yes/no question.
+2. W-2 wages and withholding (Form 1040 lines 1a, 25a), interest and dividends (2b, 3a, 3b), any other income, estimated payments (line 26).
+3. Each business: call get_form_schema for f1040sc and ask for gross receipts, each expense category by line, vehicle information if a vehicle is used, home office, accounting method, and the 1099 questions. Add owner: "spouse" for my spouse's business.
+4. Adjustments on Schedule 1 (self-employed health insurance, retirement plan contributions, HSA, student loan interest).
+When you have everything, call prepare_return, give me the link, and walk me through the computed lines and every warning. Remind me that I must review, sign, and mail the return myself; nothing is e-filed.`,
+          },
+        },
+      ],
+    }),
+  );
+
   return server;
 }
 
@@ -186,7 +221,7 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === "/mcp") {
-      const handler = createMcpHandler(() => createServer(env), { route: "/mcp" });
+      const handler = createMcpHandler(() => createServer(env), { route: "/mcp", corsOptions: { origin: "*" }, allowedOriginHostnames: "*" });
       const res = await handler(request, env, ctx);
       const headers = new Headers(res.headers);
       headers.set("cache-control", "no-store");
