@@ -37,6 +37,8 @@ const propItems: NonNullable<FieldDef["items"]> = [
   { id: "line20", label: "20 Total expenses (5 through 19)", type: "money", computed: true },
   { id: "line21", label: "21 Income or (loss): 3 + 4 - 20", type: "money", computed: true },
   { id: "line22", label: "22 Deductible rental real estate loss after the Form 8582 limitation (defaults to the full line 21 loss)", type: "money" },
+  { id: "prior_unallowed_loss", label: "Prior years' unallowed passive loss for this property (Form 8582 column (c))", type: "money" },
+  { id: "active_participation", label: "You actively participated (default yes; set false to lose the $25,000 special allowance)", type: "checkbox" },
 ];
 const partnerLocate: Record<string, string[]> = {
   name: ABCD.map((r, i) => `Page2[0].Table_Line28a-f[0].Row${r}[0].f2_${3 + 3 * i}[0]`),
