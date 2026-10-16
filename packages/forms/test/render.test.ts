@@ -38,7 +38,7 @@ function sample(formId: FormId, year: TaxYear): Values {
             if (item.years && !item.years.includes(year)) continue;
             if (item.computed) continue;
             const text = `Row ${i + 1} ${item.id}`;
-            row[item.id] = item.type === "money" ? 100 * (i + 1) : item.type === "checkbox" ? true : item.type === "yesno" ? i % 2 === 0 : item.type === "percent" ? 50 : item.type === "integer" ? 1200 : item.type === "ssn" ? "111223333" : item.id === "date" ? "03/15/2025" : item.maxLen ? text.slice(0, item.maxLen) : text;
+            row[item.id] = item.type === "money" ? 100 * (i + 1) : item.type === "checkbox" ? true : item.type === "yesno" ? i % 2 === 0 : item.type === "percent" ? 50 : item.type === "integer" ? (item.maxLen && item.maxLen < 4 ? 12 : 1200) : item.type === "ssn" ? "111223333" : item.id === "date" ? "03/15/2025" : item.maxLen ? text.slice(0, item.maxLen) : text;
           }
           return row;
         });
