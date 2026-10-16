@@ -2,7 +2,7 @@ import { FORMS } from "../forms/index.ts";
 import { getFieldMap } from "../fieldmaps/index.ts";
 import type { Computation, FormId, ListRow, Rounding, TaxYear, ValidationIssue, Values } from "../types.ts";
 import { toPdfFields, type SummaryLine } from "./fill.ts";
-import { encodePayload, renderUrl, type RenderPayload } from "./link.ts";
+import { encodePayload, renderUrl, type RenderPayload, type RenderStatement } from "./link.ts";
 import { validateValues } from "./validate.ts";
 
 export interface PreparedForm {
@@ -50,8 +50,9 @@ export function prepareFormValues(formId: FormId, year: TaxYear, values: Values,
   };
 }
 
-export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: PrepareOptions): Promise<string> {
+export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: PrepareOptions, statements: RenderStatement[] = []): Promise<string> {
   const payload: RenderPayload = {
+    ...(statements.length ? { statements } : {}),
     v: 1,
     year,
     ...(opts.title ? { title: opts.title } : {}),
@@ -69,10 +70,31 @@ export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: Prepar
   return renderUrl(opts.renderBase, await encodePayload(payload));
 }
 
-export async function prepareForm(formId: FormId, year: TaxYear, values: Values, opts: PrepareOptions): Promise<PreparedForm & { link: string }> {
+/** Supporting statements a single prepared form carries (the Form 4562 Depreciation and Amortization Report). */
+export function statementsFor(p: PreparedForm, year: TaxYear, idx = 1): RenderStatement[] {
+  const rows = (p.values["depreciation_report"] as ListRow[] | undefined) ?? [];
+  if (p.form !== "f4562" || !rows.length) return [];
+  const m = (x: unknown) => n(x).toLocaleString("en-US", { maximumFractionDigits: 0 });
+  const tot = (k: string) => m(rows.reduce((a, r) => a + n(r[k]), 0));
+  const who = [p.values["name"], p.values["business_activity"]].filter(Boolean).map(String).join(", ");
+  return [{
+    id: `depreciation-${idx}`,
+    title: `Depreciation and Amortization Report (supports ${p.title})`,
+    header: [who, `Tax year ${year}`],
+    columns: ["Asset", "Placed", "Cost", "Bus. %", "Sec. 179", "Special allowance", "Basis", "Method / life", "Yr", "Prior depreciation", "Current", "Accumulated"],
+    rows: [
+      ...rows.map((r) => [String(r["description"] ?? ""), String(r["placed"] ?? ""), m(r["cost"]), `${n(r["business_pct"])}%`, m(r["section179"]), m(r["bonus"]), m(r["basis"]), `${String(r["method"] ?? "")} / ${String(r["life"] ?? "")}`, String(r["recovery_year"] ?? ""), m(r["prior_depreciation"]), m(r["current"]), m(r["accumulated"])]),
+      ["Totals", "", tot("cost"), "", tot("section179"), tot("bonus"), tot("basis"), "", "", tot("prior_depreciation"), tot("current"), tot("accumulated")],
+    ],
+    notes: ["Current depreciation is figured by the MACRS declining-balance method switching to straight line (or straight line for real and ADS property) with the half-year, mid-quarter, or mid-month convention, matching the IRS percentage tables within a dollar. Passenger automobiles are limited under section 280F. Section 179 and the special allowance are shown in the year placed in service.", "Basis is cost times business use less section 179 and the special allowance. Prior depreciation is computed from the same schedule unless you supplied it."],
+  }];
+}
+
+export async function prepareForm(formId: FormId, year: TaxYear, values: Values, opts: PrepareOptions): Promise<PreparedForm & { link: string; statements: RenderStatement[] }> {
   const prepared = prepareFormValues(formId, year, values, opts.rounding ?? "whole");
-  const link = await linkFor(year, [prepared], opts);
-  return { ...prepared, link };
+  const statements = statementsFor(prepared, year);
+  const link = await linkFor(year, [prepared], opts, statements);
+  return { ...prepared, link, statements };
 }
 
 export interface ReturnInput {
@@ -91,16 +113,16 @@ export interface ReturnInput {
   schedule8812?: Values;
   /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
   form8995?: Values;
-  /** Optional Form 8829 inputs (home office, actual expenses) for the first Schedule C unless `business` (1-based) says otherwise. */
-  form8829?: Values;
-  /** Optional Form 4562 inputs (depreciation) for the first Schedule C unless `business` (1-based) says otherwise; line 22 replaces that Schedule C's line 13. */
-  form4562?: Values;
+  /** Optional Form 8829 inputs (home office, actual expenses), one per business: `business` (1-based) picks the Schedule C, default 1. */
+  form8829?: Values | Values[];
+  /** Optional Form 4562 inputs (depreciation), one per business: `business` (1-based) picks the Schedule C, default 1; line 22 replaces that Schedule C's line 13. */
+  form4562?: Values | Values[];
   /** Optional Form 1040-ES inputs; when present, next year's vouchers are figured from this year's return (overrides allowed). */
   form1040es?: Values;
   /** Optional Form 4868 inputs; when present the extension voucher is filled from the computed totals. */
   form4868?: Values;
   /** Optional Form 8889 (HSA) inputs: coverage, line2 contributions, line9 employer contributions, line14a/15 distributions, age_55_or_older. */
-  form8889?: Values;
+  form8889?: Values | Values[];
   /** Optional Form 8959 inputs: line1 Medicare wages (W-2 box 5), line19 Medicare withheld (box 6), line2, line3, line14, line23. */
   form8959?: Values;
   /** Optional Schedule 1-A inputs (2025): line4a tips, line14a overtime, vehicles [{vin, description, interest}], line2a-2d. */
@@ -111,6 +133,10 @@ export interface ReturnInput {
   scheduleB?: Values;
   /** Optional Schedule E inputs (rentals, royalties, K-1s); line 41 → Schedule 1 line 5. */
   scheduleE?: Values;
+  /** Optional Form 8582 inputs (other_activities, line6 override, mfs_lived_apart); prepared automatically when a rental shows a loss. `{ skip: true }` disables it. */
+  form8582?: Values;
+  /** Optional Form 8960 inputs; prepared automatically when AGI exceeds the NIIT threshold. `{ skip: true }` disables it. */
+  form8960?: Values;
   /** Optional Schedule EIC inputs (qualifying children); the computed earned income credit → 1040 line 27. */
   scheduleEIC?: Values;
   /** Optional Schedule D inputs; Forms 8949 totals are added by box, line 16 (or the line 21 loss) goes to 1040 line 7. */
@@ -130,6 +156,8 @@ export interface ReturnInput {
 export interface PreparedReturn {
   year: TaxYear;
   forms: PreparedForm[];
+  /** Supporting statements rendered as plain pages next to the forms. */
+  statements: RenderStatement[];
   warnings: string[];
   totals: Record<string, number>;
   link: string;
@@ -155,45 +183,57 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   });
 
   const forms: PreparedForm[] = [];
-  let f8829: PreparedForm | undefined;
-  let f4562: PreparedForm | undefined;
+  const statements: RenderStatement[] = [];
+  const asList = (v: Values | Values[] | undefined): Values[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
+  const businessOf = (v: Values) => Math.max(1, Math.round(n(v["business"] ?? 1)));
+  const f8829s: PreparedForm[] = [];
+  const f4562s: PreparedForm[] = [];
+  const used4562 = new Set<number>();
+  const used8829 = new Set<number>();
   const schedC = (input.scheduleC ?? []).map((v, i) => {
     const owner = v["owner"] === "spouse" ? "spouse" : "you";
     const values: Values = { ...headerFor(owner), ...v };
     delete values["owner"];
     let p = prepareFormValues("f1040sc", year, values, rounding);
+    const tag = `${i + 1}${owner === "spouse" ? ", spouse" : ""}`;
     // Form 4562 (depreciation) replaces this business's line 13.
-    const depTarget = Math.max(1, Math.round(n(input.form4562?.["business"] ?? 1)));
-    if (input.form4562 && depTarget === i + 1) {
-      const v4562: Values = { name: headerFor(owner)["name"], identifying_number: values["ein"] || headerFor(owner)["ssn"], business_activity: values["principal_business"] || values["business_name"] || "Schedule C business", ...input.form4562 };
+    const dep = asList(input.form4562).find((d, k) => businessOf(d) === i + 1 && !used4562.has(k));
+    if (dep) {
+      used4562.add(asList(input.form4562).indexOf(dep));
+      const v4562: Values = { name: headerFor(owner)["name"], identifying_number: values["ein"] || headerFor(owner)["ssn"], business_activity: values["principal_business"] || values["business_name"] || "Schedule C business", ...dep };
       delete v4562["business"];
       if (v4562["line11"] === undefined) {
         const preDep = prepareFormValues("f1040sc", year, { ...values, line13: 0 }, rounding);
         v4562["line11"] = Math.max(0, n(preDep.values["line31"]) + n(tp["line1a"]));
       }
-      f4562 = prepareFormValues("f4562", year, v4562, rounding);
+      const f4562 = prepareFormValues("f4562", year, v4562, rounding);
+      f4562.title = `${f4562.title} (business ${tag})`;
+      f4562s.push(f4562);
       if (values["line13"] !== undefined) warnings.push(`scheduleC[${i}] line 13 is replaced by Form 4562 line 22.`);
       values["line13"] = f4562.values["line22"];
       p = prepareFormValues("f1040sc", year, values, rounding);
     }
     // Form 8829 (actual home-office expenses) replaces the simplified method on this business's line 30.
-    const target = Math.max(1, Math.round(n(input.form8829?.["business"] ?? 1)));
-    if (input.form8829 && target === i + 1) {
-      const v8829: Values = { ...headerFor(owner), ...input.form8829 };
+    const home = asList(input.form8829).find((h, k) => businessOf(h) === i + 1 && !used8829.has(k));
+    if (home) {
+      used8829.add(asList(input.form8829).indexOf(home));
+      const v8829: Values = { ...headerFor(owner), ...home };
       delete v8829["business"];
       if (v8829["line8"] === undefined) v8829["line8"] = p.values["line29"];
-      f8829 = prepareFormValues("f8829", year, v8829, rounding);
+      const f8829 = prepareFormValues("f8829", year, v8829, rounding);
+      f8829.title = `${f8829.title} (business ${tag})`;
+      f8829s.push(f8829);
       const withHome: Values = { ...values, line30: f8829.values["line36"] };
       delete withHome["line30_home_sqft"];
       delete withHome["line30_business_sqft"];
       if (values["line30"] !== undefined || values["line30_business_sqft"] !== undefined) warnings.push(`scheduleC[${i}] line 30 is replaced by Form 8829 line 36.`);
       p = prepareFormValues("f1040sc", year, withHome, rounding);
     }
-    p.title = `${p.title} (business ${i + 1}${owner === "spouse" ? ", spouse" : ""})`;
+    p.title = `${p.title} (business ${tag})`;
     return { owner, prepared: p };
   });
-  if (input.form8829 && !f8829) warnings.push("form8829 was supplied but no matching Schedule C business exists; it was ignored.");
-  if (input.form4562 && !f4562) warnings.push("form4562 was supplied but no matching Schedule C business exists; it was ignored.");
+  asList(input.form8829).forEach((h, k) => { if (!used8829.has(k)) warnings.push(`form8829[${k}] names business ${businessOf(h)} but no such Schedule C exists; it was ignored.`); });
+  asList(input.form4562).forEach((d, k) => { if (!used4562.has(k)) warnings.push(`form4562[${k}] names business ${businessOf(d)} but no such Schedule C exists; it was ignored.`); });
   if (schedC.length > 1 && !["mfj"].includes(String(tp["filing_status"])) && schedC.some((s) => s.owner === "spouse")) {
     warnings.push("A spouse's Schedule C is listed but the filing status is not married filing jointly.");
   }
@@ -222,10 +262,17 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   const seDeduction = seForms.reduce((acc, s) => acc + n(s.prepared.values["line13"]), 0);
 
   // Form 8889 (HSA): deduction to Schedule 1 line 13, taxable distributions to Schedule 1 line 8f, additional taxes to Schedule 2.
-  let f8889: PreparedForm | undefined;
-  if (input.form8889) {
-    f8889 = prepareFormValues("f8889", year, { name: fullName, ssn: tp["ssn"], ...input.form8889 }, rounding);
-  }
+  // One Form 8889 per account holder: `owner: "spouse"` for the spouse's HSA on a joint return.
+  const f8889s: PreparedForm[] = asList(input.form8889).map((v) => {
+    const owner = v["owner"] === "spouse" ? "spouse" : "you";
+    const vals: Values = { ...headerFor(owner), ...v };
+    delete vals["owner"];
+    const p = prepareFormValues("f8889", year, vals, rounding);
+    if (owner === "spouse") p.title = `${p.title} (spouse)`;
+    return p;
+  });
+  const f8889 = f8889s.length ? f8889s[0] : undefined;
+  const sum8889 = (k: string) => f8889s.reduce((a, p) => a + n(p.values[k]), 0);
 
   // Form 8959 (Additional Medicare Tax): when wages plus self-employment income cross the threshold, or when inputs are supplied.
   let f8959: PreparedForm | undefined;
@@ -252,27 +299,27 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   }
   if (f8889) {
     if (s1Values["line13"] !== undefined) warnings.push("schedule1.line13 was supplied; it is replaced by Form 8889 line 13.");
-    s1Values["line13"] = f8889.values["line13"];
-    const hsaIncome = n(f8889.values["line16"]) + n(f8889.values["line20"]);
+    s1Values["line13"] = sum8889("line13");
+    const hsaIncome = sum8889("line16") + sum8889("line20");
     if (hsaIncome > 0) s1Values["line8f"] = n(s1Values["line8f"]) + hsaIncome;
   }
   if (schedC.length) s1Values["line3"] = totalSchC;
   if (seForms.length) s1Values["line15"] = seDeduction;
-  const s1 = prepareFormValues("f1040s1", year, s1Values, rounding);
+  let s1 = prepareFormValues("f1040s1", year, s1Values, rounding);
   const s1Needed = n(s1.values["line10"]) !== 0 || n(s1.values["line26"]) !== 0 || schedC.length > 0 || Boolean(sE) || Object.keys(input.schedule1 ?? {}).length > 0;
 
   const s2Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule2 ?? {}) };
   if (seForms.length) s2Values["line4"] = seTax;
   if (f8889) {
-    if (n(f8889.values["line17b"]) > 0) s2Values["line17c"] = f8889.values["line17b"];
-    if (n(f8889.values["line21"]) > 0) s2Values["line17d"] = f8889.values["line21"];
+    if (sum8889("line17b") > 0) s2Values["line17c"] = sum8889("line17b");
+    if (sum8889("line21") > 0) s2Values["line17d"] = sum8889("line21");
   }
   if (f8959) {
     if (s2Values["line11"] !== undefined) warnings.push("schedule2.line11 was supplied; it is replaced by Form 8959 line 18.");
     s2Values["line11"] = f8959.values["line18"];
   }
-  const s2 = prepareFormValues("f1040s2", year, s2Values, rounding);
-  const s2Needed = n(s2.values["line3"]) !== 0 || n(s2.values["line21"]) !== 0;
+  let s2 = prepareFormValues("f1040s2", year, s2Values, rounding);
+  let s2Needed = n(s2.values["line3"]) !== 0 || n(s2.values["line21"]) !== 0;
 
   const f1040Values: Values = { ...tp };
   // Schedule B: payer detail for interest and ordinary dividends.
@@ -332,6 +379,36 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040Values["line17"] = s2.values["line3"];
     f1040Values["line23"] = s2.values["line21"];
   }
+  // Form 8582: passive activity loss limits for Schedule E rentals with losses (before AGI, which they reduce).
+  let f8582: PreparedForm | undefined;
+  const lossProps = sE ? ((sE.values["properties"] as ListRow[] | undefined) ?? []).map((r, i) => ({ r, i })).filter(({ r }) => n(r["line21"]) < 0 && String(r["type"] ?? "") !== "6") : [];
+  if (sE && input.form8582?.["skip"] !== true && (lossProps.length || input.form8582)) {
+    const props = (sE.values["properties"] as ListRow[] | undefined) ?? [];
+    const rentals = props.map((r, i) => ({ r, i })).filter(({ r }) => String(r["type"] ?? "") !== "6");
+    const row = ({ r, i }: { r: ListRow; i: number }) => ({ name: String(r["address"] ?? `Property ${i + 1}`), form_schedule: "Sch E line 22", net_income: Math.max(0, n(r["line21"])), net_loss: Math.max(0, -n(r["line21"])), prior_unallowed: Math.abs(n(r["prior_unallowed_loss"])) });
+    const extra = { ...(input.form8582 ?? {}) };
+    delete extra["skip"];
+    const rentalRows = [...rentals.filter(({ r }) => r["active_participation"] !== false).map(row), ...((extra["rental_activities"] as ListRow[] | undefined) ?? [])];
+    const otherRows = [...rentals.filter(({ r }) => r["active_participation"] === false).map(row), ...((extra["other_activities"] as ListRow[] | undefined) ?? [])];
+    // Modified AGI: AGI figured with the rental losses left out, plus the IRA and student loan deductions and taxable social security.
+    const lossTotal = lossProps.reduce((a, { r }) => a + -n(r["line21"]), 0);
+    const s1NoLoss = prepareFormValues("f1040s1", year, { ...s1Values, line5: n(sE.values["line41"]) + lossTotal }, rounding);
+    const pre = prepareFormValues("f1040", year, { ...f1040Values, line8: s1NoLoss.values["line10"], line10: s1NoLoss.values["line26"] }, rounding);
+    const magi = n(pre.values["line11"]) + n(s1NoLoss.values["line20"]) + n(s1NoLoss.values["line21"]) + n(pre.values["line6b"]);
+    f8582 = prepareFormValues("f8582", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line6: magi, ...extra, rental_activities: rentalRows, other_activities: otherRows }, rounding);
+    const allowed = (f8582.values["allowed_losses"] as ListRow[] | undefined) ?? [];
+    const eProps = ((input.scheduleE!["properties"] as ListRow[] | undefined) ?? []).map((r, i) => ({ ...r }));
+    for (const { r, i } of lossProps) {
+      const a = allowed.find((x) => String(x["name"]) === String(r["address"] ?? `Property ${i + 1}`));
+      if (a && eProps[i]) eProps[i]!["line22"] = n(a["allowed"]);
+    }
+    sE = prepareFormValues("f1040se", year, { name: jointName, ssn: tp["ssn"], ...input.scheduleE, properties: eProps }, rounding);
+    s1Values["line5"] = sE.values["line41"];
+    s1 = prepareFormValues("f1040s1", year, s1Values, rounding);
+    f1040Values["line8"] = s1.values["line10"];
+    f1040Values["line10"] = s1.values["line26"];
+  }
+
   let f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
 
   // Schedule A: itemize when it beats the standard deduction, when elected, or when required.
@@ -350,6 +427,32 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       if (itemized <= std) warnings.push(`Itemizing ${itemized} although the standard deduction (${std}) is larger${elected ? " (line 18 elected)" : " (required: spouse itemizes)"}.`);
     } else {
       warnings.push(`Schedule A total (${itemized}) is less than the standard deduction (${std}); the standard deduction is used and Schedule A is omitted.`);
+    }
+  }
+
+  // Form 8960: net investment income tax when AGI exceeds the threshold (Schedule 2 line 12).
+  let f8960: PreparedForm | undefined;
+  {
+    const thr = ["mfj", "qss"].includes(String(tp["filing_status"])) ? 250000 : String(tp["filing_status"]) === "mfs" ? 125000 : 200000;
+    const agi = n(f1040.values["line11"]);
+    if (input.form8960?.["skip"] !== true && (input.form8960 || agi > thr)) {
+      const extra = { ...(input.form8960 ?? {}) };
+      delete extra["skip"];
+      const v: Values = {
+        name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"],
+        line1: f1040.values["line2b"], line2: f1040.values["line3b"], line4a: s1.values["line5"], line5a: n(f1040.values["line7"]) + n(s1.values["line4"]),
+        ...(sA ? { line9a: sA.values["line9"] } : {}), line13: agi, ...extra,
+      };
+      f8960 = prepareFormValues("f8960", year, v, rounding);
+      if (n(f8960.values["line17"]) > 0 || input.form8960) {
+        if (s2Values["line12"] !== undefined) warnings.push("schedule2.line12 was supplied; it is replaced by Form 8960 line 17.");
+        s2Values["line12"] = f8960.values["line17"];
+        s2 = prepareFormValues("f1040s2", year, s2Values, rounding);
+        s2Needed = true;
+        f1040Values["line17"] = s2.values["line3"];
+        f1040Values["line23"] = s2.values["line21"];
+        f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+      } else f8960 = undefined;
     }
   }
 
@@ -390,6 +493,23 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       ...extra,
     };
     f8995 = prepareFormValues("f8995", year, v8995, rounding);
+    const money = (x: unknown) => n(x).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    statements.push({
+      id: "qbi",
+      title: "Qualified Business Income Computation Statement (supports Form 8995)",
+      header: [`${jointName}${tp["ssn"] ? `, SSN ${String(tp["ssn"]).replace(/\d(?=\d{4})/g, "x")}` : ""}`, `Tax year ${year}`],
+      columns: ["Business", "Net profit (Sch C line 31)", "Less SE tax deduction, SE health insurance, and retirement (allocated)", "Qualified business income"],
+      rows: [
+        ...businesses.map((b, i) => [b.name, money(profits[i]), money(-(profits[i]! > 0 && totalPositive > 0 ? (adjustments * profits[i]!) / totalPositive : 0)), money(b.qbi)]),
+        ["Total qualified business income (Form 8995 line 2)", "", "", money(f8995.values["line2"])],
+        ["Qualified business income component, 20% (line 5)", "", "", money(f8995.values["line5"])],
+        ["Taxable income before the deduction (line 11)", "", "", money(v8995["line11"])],
+        ["Net capital gain (line 12)", "", "", money(v8995["line12"])],
+        ["Income limitation, 20% of line 13 (line 14)", "", "", money(f8995.values["line14"])],
+        ["Qualified business income deduction (line 15, Form 1040 line 13)", "", "", money(f8995.values["line15"])],
+      ],
+      notes: [`Schedule 1 adjustments allocated to each business in proportion to its positive net profit: deductible part of self-employment tax ${money(s1.values["line15"])}, self-employed SEP/SIMPLE/qualified plans ${money(s1.values["line16"])}, self-employed health insurance ${money(s1.values["line17"])}.`, "Qualified business income excludes capital gains, wages paid to you, and investment income. The simplified Form 8995 applies only below the taxable-income threshold; above it Form 8995-A is required."],
+    });
     if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995 line 15.");
     f1040Values["line13"] = f8995.values["line15"];
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
@@ -522,20 +642,23 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (s8) forms.push(s8);
   if (sEIC) forms.push(sEIC);
   if (f8995) forms.push(f8995);
-  if (f8889) forms.push(f8889);
+  for (const p of f8889s) forms.push(p);
   if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
+  if (f8960) forms.push(f8960);
   for (const s of schedC) forms.push(s.prepared);
-  if (f8829) forms.push(f8829);
-  if (f4562) forms.push(f4562);
+  for (const p of f8829s) forms.push(p);
+  for (const [i, p] of f4562s.entries()) { forms.push(p); statements.push(...statementsFor(p, year, i + 1)); }
   for (const s of seForms) forms.push(s.prepared);
   if (sE) forms.push(sE);
+  if (f8582) forms.push(f8582);
   if (f4868) forms.push(f4868);
   if (f1040es) forms.push(f1040es);
 
-  const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` });
+  const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` }, statements);
   return {
     year,
     forms,
+    statements,
     warnings,
     totals: {
       schedule_c_net_profit: totalSchC,
@@ -543,8 +666,9 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       adjusted_gross_income: n(f1040.values["line11"]),
       taxable_income: n(f1040.values["line15"]),
       qbi_deduction: f8995 ? n(f8995.values["line15"]) : 0,
-      hsa_deduction: f8889 ? n(f8889.values["line13"]) : 0,
+      hsa_deduction: sum8889("line13"),
       additional_medicare_tax: f8959 ? n(f8959.values["line18"]) : 0,
+      net_investment_income_tax: f8960 ? n(f8960.values["line17"]) : 0,
       child_tax_credit: s8 ? n(s8.values["line14"]) : 0,
       additional_child_tax_credit: s8 ? n(s8.values["line27"]) : 0,
       total_tax: n(f1040.values["line24"]),

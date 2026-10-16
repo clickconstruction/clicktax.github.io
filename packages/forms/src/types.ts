@@ -7,7 +7,7 @@ export type FilingStatus = "single" | "mfj" | "mfs" | "hoh" | "qss";
 export const FILING_STATUSES: readonly FilingStatus[] = ["single", "mfj", "mfs", "hoh", "qss"];
 
 /** Every supported form id, in catalog order. Adding a form: add it here, write its FormDef, run gen:fieldmaps. */
-export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9", "f1040es", "f4562", "f1099nec", "f1040sb", "f1040sd", "f8949", "f1040sa", "f2441", "f8863", "f8880", "f1040se", "f1040sei"] as const;
+export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9", "f1040es", "f4562", "f1099nec", "f1040sb", "f1040sd", "f8949", "f1040sa", "f2441", "f8863", "f8880", "f1040se", "f1040sei", "f8582", "f8960", "f9325"] as const;
 export type FormId = (typeof FORM_ID_LIST)[number];
 
 /**
@@ -87,6 +87,8 @@ export interface FieldDef {
   listLocate?: Partial<Record<TaxYear, Record<string, readonly (string | readonly string[])[]>>>;
   /** Mark lines that should be written even when zero (totals a reviewer expects to see). */
   alwaysShow?: boolean;
+  /** Data-only field (inputs or outputs) that never prints on the PDF; the field-map generator skips it. */
+  noPdf?: boolean;
 }
 
 export type Scalar = string | number | boolean;
