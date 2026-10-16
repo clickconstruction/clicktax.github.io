@@ -1,4 +1,5 @@
 import { Calc, f } from "../engine/helpers.ts";
+import { computeAsset, midQuarterApplies, type AssetInput, type Convention, type Method } from "../engine/depreciation.ts";
 import { params } from "../params.ts";
 import type { FieldDef, FormDef, ListRow, TaxYear } from "../types.ts";
 
@@ -221,6 +222,44 @@ const fields: FieldDef[] = [
     locate: { yes: names(`Page2[0].c2_${21 + i}[0]`, `Page3[0].c3_${1 + i}[0]`), no: names(`Page2[0].c2_${21 + i}[1]`, `Page3[0].c3_${1 + i}[1]`) },
   })),
   {
+    id: "assets",
+    label: "Asset schedule (any number of rows): every depreciable asset, whichever year it was placed in service. The engine figures this year's MACRS depreciation per asset and routes it to lines 6, 14, 17, 19/20, 25, and 26/27; a Depreciation and Amortization Report is produced.",
+    type: "list",
+    noPdf: true,
+    items: [
+      { id: "description", label: "Description", type: "text" },
+      { id: "date_placed", label: "Date placed in service (MM/DD/YYYY)", type: "text" },
+      { id: "cost", label: "Cost or other basis", type: "money" },
+      { id: "business_pct", label: "Business/investment use % (default 100)", type: "percent" },
+      { id: "life", label: "Recovery period in years (3, 5, 7, 10, 15, 20, 27.5, 39...)", type: "text" },
+      { id: "method", label: "Method: 200DB (default for 3-10 year), 150DB (15-20 year), SL (real property)", type: "text" },
+      { id: "convention", label: "Convention: HY (default), MQ, MM (real property)", type: "text" },
+      { id: "section179", label: "Section 179 expense elected in the year placed in service", type: "money" },
+      { id: "bonus", label: "Special depreciation allowance taken in the year placed in service (amount)", type: "money" },
+      { id: "bonus_full", label: "Take the statutory special allowance rate (60% for 2024; 40% through January 19, 2025, 100% after)", type: "checkbox" },
+      { id: "prior_depreciation", label: "Accumulated depreciation through last year (computed when blank)", type: "money" },
+      { id: "listed", label: "Listed property (vehicles and the like): reported in Part V", type: "checkbox" },
+      { id: "passenger_auto", label: "Passenger automobile subject to the section 280F limits", type: "checkbox" },
+      { id: "ads", label: "Alternative depreciation system", type: "checkbox" },
+      { id: "real", label: "Real property (mid-month, straight line) when the life alone does not say so", type: "checkbox" },
+      { id: "type", label: "Part V column (a) text for listed property (defaults to the description)", type: "text" },
+    ],
+    notes: "Supply the asset list instead of lines 17/19/26 and the engine fills them. Mid-quarter convention is applied automatically when more than 40% of the year's basis arrived in the last quarter.",
+  },
+  {
+    id: "depreciation_report",
+    label: "Depreciation and Amortization Report: one row per asset (description, placed, cost, business %, section 179, special allowance, basis, method, life, recovery year, prior, current, accumulated, remaining)",
+    type: "list",
+    computed: true,
+    noPdf: true,
+    items: [
+      { id: "description", label: "Asset", type: "text" }, { id: "placed", label: "Placed in service", type: "text" }, { id: "cost", label: "Cost", type: "money" }, { id: "business_pct", label: "Business %", type: "percent" },
+      { id: "section179", label: "Section 179", type: "money" }, { id: "bonus", label: "Special allowance", type: "money" }, { id: "basis", label: "Depreciable basis", type: "money" }, { id: "method", label: "Method/convention", type: "text" },
+      { id: "life", label: "Life", type: "text" }, { id: "recovery_year", label: "Recovery year", type: "integer" }, { id: "prior_depreciation", label: "Prior depreciation", type: "money" }, { id: "current", label: "Current depreciation", type: "money" },
+      { id: "accumulated", label: "Accumulated", type: "money" }, { id: "remaining", label: "Remaining basis", type: "money" },
+    ],
+  },
+  {
     id: "amortization",
     line: "42",
     label: "Amortization of costs that begin this year (up to 2 rows)",
@@ -260,10 +299,71 @@ export const form4562: FormDef = {
   compute(values, ctx) {
     const c = new Calc(values, ctx);
     const p = params(ctx.year).section179;
-    const s179Rows = c.list("section179_property");
-    const listed = c.list("listed_property");
-    const listed50 = c.list("listed_property_50_or_less");
     const rowMoney = (r: ListRow, k: string) => Number(r[k] ?? 0) || 0;
+    const truthy = (v: unknown) => v === true || v === 1 || /^(true|yes|y|1|x)$/i.test(String(v ?? ""));
+
+    // Asset schedule: every asset's current-year MACRS depreciation, routed to the right lines.
+    const assetRows = c.list("assets");
+    const rowOverride: Record<string, { basis: number; dep: number; month: number; conv: string; method: string; life: number }> = {};
+    const extraListed: ListRow[] = [];
+    const extraListed50: ListRow[] = [];
+    const extraS179: ListRow[] = [];
+    if (assetRows.length) {
+      const has = (r: ListRow, k: string) => r[k] !== undefined && r[k] !== null && r[k] !== "";
+      const toInput = (r: ListRow): AssetInput => ({
+        description: String(r["description"] ?? ""), date_placed: String(r["date_placed"] ?? ""), cost: rowMoney(r, "cost"),
+        ...(has(r, "business_pct") ? { business_pct: Number(r["business_pct"]) } : {}), ...(has(r, "life") ? { life: Number(r["life"]) } : {}),
+        ...(has(r, "method") ? { method: String(r["method"]).toUpperCase() as Method } : {}), ...(has(r, "convention") ? { convention: String(r["convention"]).toUpperCase() as Convention } : {}),
+        ...(rowMoney(r, "section179") ? { section179: rowMoney(r, "section179") } : {}), ...(truthy(r["bonus_full"]) ? { bonus: true } : rowMoney(r, "bonus") ? { bonus: rowMoney(r, "bonus") } : {}),
+        ...(has(r, "prior_depreciation") ? { prior_depreciation: rowMoney(r, "prior_depreciation") } : {}),
+        listed: truthy(r["listed"]), passenger_auto: truthy(r["passenger_auto"]), ads: truthy(r["ads"]), real: truthy(r["real"]),
+      });
+      let results = assetRows.map((r) => computeAsset(toInput(r), ctx.year));
+      if (!assetRows.some((r) => has(r, "convention")) && midQuarterApplies(results, ctx.year)) {
+        c.warn("More than 40% of the basis placed in service this year arrived in the last quarter: the mid-quarter convention applies to all non-real property placed in service this year.");
+        results = assetRows.map((r, i) => (results[i]!.year_placed === ctx.year && !results[i]!.real ? computeAsset({ ...toInput(r), convention: "MQ" }, ctx.year) : results[i]!));
+      }
+      const report: ListRow[] = [];
+      let bonusNonListed = 0, bonusListed = 0, priorYearCurrent = 0;
+      for (const [i, a] of results.entries()) {
+        for (const w of a.warnings) c.warn(w);
+        const row = assetRows[i]!;
+        const businessCost = Math.round((a.cost * a.business_pct) / 100);
+        const placedText = `${String(a.month).padStart(2, "0")}/${a.year_placed}`;
+        report.push({ description: a.description, placed: placedText, cost: a.cost, business_pct: a.business_pct, section179: a.section179, bonus: a.bonus, basis: a.basis, method: `${a.method}/${a.convention}`, life: String(a.life), recovery_year: a.recovery_year, prior_depreciation: a.prior_depreciation, current: a.current, accumulated: a.accumulated, remaining: Math.max(0, a.basis - a.accumulated) });
+        if (a.recovery_year < 1) continue;
+        if (a.listed) {
+          const lrow: ListRow = { type: String(row["type"] || a.description), date: String(row["date_placed"] || placedText), business_pct: a.business_pct, cost: a.cost, basis: a.basis, recovery: String(a.life), method: `${a.method}/${a.convention}`, depreciation: a.current, ...(a.recovery_year === 1 && a.section179 ? { section179: a.section179 } : {}) };
+          (a.business_pct > 50 ? extraListed : extraListed50).push(lrow);
+          if (a.recovery_year === 1) bonusListed += a.bonus;
+          continue;
+        }
+        if (a.recovery_year === 1) {
+          if (a.section179 > 0) extraS179.push({ description: a.description, cost: businessCost, elected: a.section179 });
+          bonusNonListed += a.bonus;
+          const id = a.ads ? (a.life === 12 ? "ads_12yr" : a.life === 30 ? "ads_30yr" : a.life === 40 ? "ads_40yr" : a.life === 50 ? "ads_50yr" : "ads_class_life") : a.life === 27.5 ? "residential_rental_1" : a.life === 39 ? "nonresidential_real_1" : a.life === 50 ? "macrs_50yr" : `macrs_${a.life}yr`;
+          const ov = rowOverride[id] ?? { basis: 0, dep: 0, month: a.month, conv: a.convention, method: a.method, life: a.life };
+          ov.basis += a.basis;
+          ov.dep += a.current;
+          rowOverride[id] = ov;
+        } else priorYearCurrent += a.current;
+      }
+      c.out["depreciation_report"] = report;
+      if (bonusNonListed) c.out["line14"] = c.n("line14") + bonusNonListed;
+      if (bonusListed) c.out["line25"] = c.n("line25") + bonusListed;
+      for (const [id, ov] of Object.entries(rowOverride)) {
+        if (!fields.some((fd) => fd.id === `${id}_c` && (!fd.years || fd.years.includes(ctx.year)))) { c.warn(`No Section B/C row for ${ov.life}-year property on the ${ctx.year} form; its ${f(ov.dep)} is included through line 17.`); priorYearCurrent += ov.dep; delete rowOverride[id]; continue; }
+        c.out[`${id}_c`] = ov.basis;
+        c.out[`${id}_b`] = `${String(ov.month).padStart(2, "0")}/${ctx.year}`;
+      }
+      if (priorYearCurrent) c.out["line17"] = c.n("line17") + priorYearCurrent;
+    }
+    const s179Rows = [...c.list("section179_property"), ...extraS179];
+    if (extraS179.length) c.out["section179_property"] = s179Rows;
+    if (s179Rows.length > 2) c.warn("More than two section 179 assets: line 6 shows the first two; the rest are on the Depreciation and Amortization Report.");
+    const listed = [...c.list("listed_property"), ...extraListed];
+    const listed50 = [...c.list("listed_property_50_or_less"), ...extraListed50];
+    if (listed.length > 3 || listed50.length > 3) c.warn("More than three listed assets in a Part V section: only three print; the rest are on the Depreciation and Amortization Report.");
 
     // Part V first (lines 26-29 feed lines 7 and 21).
     const outListed = listed.map((r) => {
@@ -314,6 +414,15 @@ export const form4562: FormDef = {
       if (spec.years && !spec.years.includes(ctx.year)) continue;
       const basis = c.n(`${spec.id}_c`);
       if (basis <= 0) continue;
+      const ov = rowOverride[spec.id];
+      if (ov) {
+        c.out[`${spec.id}_d`] = `${ov.life} yrs.`;
+        c.out[`${spec.id}_e`] = ov.conv;
+        c.out[`${spec.id}_f`] = ov.method;
+        c.set(`${spec.id}_g`, ov.dep, `${spec.label} depreciation`, `per-asset MACRS on ${f(ov.basis)} (${ov.method}, ${ov.conv})`, spec.label.split(" ")[0]);
+        gds += ov.dep;
+        continue;
+      }
       const month = monthOf(c.str(`${spec.id}_b`));
       const recovery = spec.recovery || Number(c.str(`${spec.id}_d`)) || 0;
       const conv = c.str(`${spec.id}_e`).toUpperCase() === "MQ" ? "MQ" : spec.real ? "MM" : "HY";

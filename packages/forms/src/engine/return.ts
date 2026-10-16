@@ -70,10 +70,31 @@ export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: Prepar
   return renderUrl(opts.renderBase, await encodePayload(payload));
 }
 
-export async function prepareForm(formId: FormId, year: TaxYear, values: Values, opts: PrepareOptions): Promise<PreparedForm & { link: string }> {
+/** Supporting statements a single prepared form carries (the Form 4562 Depreciation and Amortization Report). */
+export function statementsFor(p: PreparedForm, year: TaxYear, idx = 1): RenderStatement[] {
+  const rows = (p.values["depreciation_report"] as ListRow[] | undefined) ?? [];
+  if (p.form !== "f4562" || !rows.length) return [];
+  const m = (x: unknown) => n(x).toLocaleString("en-US", { maximumFractionDigits: 0 });
+  const tot = (k: string) => m(rows.reduce((a, r) => a + n(r[k]), 0));
+  const who = [p.values["name"], p.values["business_activity"]].filter(Boolean).map(String).join(", ");
+  return [{
+    id: `depreciation-${idx}`,
+    title: `Depreciation and Amortization Report (supports ${p.title})`,
+    header: [who, `Tax year ${year}`],
+    columns: ["Asset", "Placed", "Cost", "Bus. %", "Sec. 179", "Special allowance", "Basis", "Method / life", "Yr", "Prior depreciation", "Current", "Accumulated"],
+    rows: [
+      ...rows.map((r) => [String(r["description"] ?? ""), String(r["placed"] ?? ""), m(r["cost"]), `${n(r["business_pct"])}%`, m(r["section179"]), m(r["bonus"]), m(r["basis"]), `${String(r["method"] ?? "")} / ${String(r["life"] ?? "")}`, String(r["recovery_year"] ?? ""), m(r["prior_depreciation"]), m(r["current"]), m(r["accumulated"])]),
+      ["Totals", "", tot("cost"), "", tot("section179"), tot("bonus"), tot("basis"), "", "", tot("prior_depreciation"), tot("current"), tot("accumulated")],
+    ],
+    notes: ["Current depreciation is figured by the MACRS declining-balance method switching to straight line (or straight line for real and ADS property) with the half-year, mid-quarter, or mid-month convention, matching the IRS percentage tables within a dollar. Passenger automobiles are limited under section 280F. Section 179 and the special allowance are shown in the year placed in service.", "Basis is cost times business use less section 179 and the special allowance. Prior depreciation is computed from the same schedule unless you supplied it."],
+  }];
+}
+
+export async function prepareForm(formId: FormId, year: TaxYear, values: Values, opts: PrepareOptions): Promise<PreparedForm & { link: string; statements: RenderStatement[] }> {
   const prepared = prepareFormValues(formId, year, values, opts.rounding ?? "whole");
-  const link = await linkFor(year, [prepared], opts);
-  return { ...prepared, link };
+  const statements = statementsFor(prepared, year);
+  const link = await linkFor(year, [prepared], opts, statements);
+  return { ...prepared, link, statements };
 }
 
 export interface ReturnInput {
@@ -626,7 +647,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8960) forms.push(f8960);
   for (const s of schedC) forms.push(s.prepared);
   for (const p of f8829s) forms.push(p);
-  for (const p of f4562s) forms.push(p);
+  for (const [i, p] of f4562s.entries()) { forms.push(p); statements.push(...statementsFor(p, year, i + 1)); }
   for (const s of seForms) forms.push(s.prepared);
   if (sE) forms.push(sE);
   if (f8582) forms.push(f8582);

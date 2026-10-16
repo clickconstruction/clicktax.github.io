@@ -87,6 +87,8 @@ export interface FieldDef {
   listLocate?: Partial<Record<TaxYear, Record<string, readonly (string | readonly string[])[]>>>;
   /** Mark lines that should be written even when zero (totals a reviewer expects to see). */
   alwaysShow?: boolean;
+  /** Data-only field (inputs or outputs) that never prints on the PDF; the field-map generator skips it. */
+  noPdf?: boolean;
 }
 
 export type Scalar = string | number | boolean;

@@ -73,6 +73,7 @@ for (const year of SUPPORTED_YEARS) {
     const map: Record<string, string> = {};
     console.log(`== ${year} ${formId} (root ${root}) ==`);
     for (const field of form.fields as FieldDef[]) {
+      if (field.noPdf) continue;
       if (field.years && !field.years.includes(year)) continue;
       if (field.type === "list") {
         const ll = field.listLocate?.[year];

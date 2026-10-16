@@ -132,7 +132,7 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
       const text = [`**${DISCLAIMER}**`, "", `Open this link to render and download the filled ${FORMS[form].shortTitle} (${year}):`, prepared.link, "", formBlock(prepared), "", "Notes: see structuredContent.notes (or call get_form_notes)."].join("\n");
       return {
         content: [{ type: "text", text }],
-        structuredContent: { disclaimer: DISCLAIMER, form: { ...stripPdfFields(prepared), link: prepared.link }, notes: { ...notes, computations: prepared.computations, warnings: prepared.warnings, issues: prepared.issues } },
+        structuredContent: { disclaimer: DISCLAIMER, form: { ...stripPdfFields(prepared), link: prepared.link }, statements: prepared.statements, notes: { ...notes, computations: prepared.computations, warnings: prepared.warnings, issues: prepared.issues } },
       };
     },
   );
