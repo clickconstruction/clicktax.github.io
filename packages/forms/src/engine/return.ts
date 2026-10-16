@@ -109,6 +109,10 @@ export interface ReturnInput {
   schedule3?: Values;
   /** Optional Schedule B inputs (interest and dividend payers); line 4 → 1040 line 2b, line 6 → 1040 line 3b. */
   scheduleB?: Values;
+  /** Optional Schedule E inputs (rentals, royalties, K-1s); line 41 → Schedule 1 line 5. */
+  scheduleE?: Values;
+  /** Optional Schedule EIC inputs (qualifying children); the computed earned income credit → 1040 line 27. */
+  scheduleEIC?: Values;
   /** Optional Schedule D inputs; Forms 8949 totals are added by box, line 16 (or the line 21 loss) goes to 1040 line 7. */
   scheduleD?: Values;
   /** Optional Forms 8949, one per box combination; totals flow to Schedule D rows 1b/2/3 and 8b/9/10. */
@@ -237,7 +241,15 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     }
   }
 
+  // Schedule E: rental, royalty, and pass-through income to Schedule 1 line 5.
+  let sE: PreparedForm | undefined;
+  if (input.scheduleE) sE = prepareFormValues("f1040se", year, { name: jointName, ssn: tp["ssn"], ...input.scheduleE }, rounding);
+
   const s1Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule1 ?? {}) };
+  if (sE) {
+    if (s1Values["line5"] !== undefined) warnings.push("schedule1.line5 was supplied; it is replaced by Schedule E line 41.");
+    s1Values["line5"] = sE.values["line41"];
+  }
   if (f8889) {
     if (s1Values["line13"] !== undefined) warnings.push("schedule1.line13 was supplied; it is replaced by Form 8889 line 13.");
     s1Values["line13"] = f8889.values["line13"];
@@ -247,7 +259,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (schedC.length) s1Values["line3"] = totalSchC;
   if (seForms.length) s1Values["line15"] = seDeduction;
   const s1 = prepareFormValues("f1040s1", year, s1Values, rounding);
-  const s1Needed = n(s1.values["line10"]) !== 0 || n(s1.values["line26"]) !== 0 || schedC.length > 0 || Object.keys(input.schedule1 ?? {}).length > 0;
+  const s1Needed = n(s1.values["line10"]) !== 0 || n(s1.values["line26"]) !== 0 || schedC.length > 0 || Boolean(sE) || Object.keys(input.schedule1 ?? {}).length > 0;
 
   const s2Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule2 ?? {}) };
   if (seForms.length) s2Values["line4"] = seTax;
@@ -424,6 +436,19 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
   }
 
+  // Schedule EIC / earned income credit to Form 1040 line 27 (before Schedule 8812, whose line 24 includes it).
+  let sEIC: PreparedForm | undefined;
+  if (input.scheduleEIC) {
+    const earned = Math.max(0, n(f1040.values["line1z"]) + totalSchC - seDeduction);
+    const investment = n(f1040.values["line2a"]) + n(f1040.values["line2b"]) + n(f1040.values["line3b"]) + Math.max(0, n(f1040.values["line7"]));
+    const eic = prepareFormValues("f1040sei", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], earned_income: earned, agi: f1040.values["line11"], investment_income: investment, ...input.scheduleEIC }, rounding);
+    if (tp["line27"] !== undefined) warnings.push("form1040.line27 was supplied; it is replaced by the computed earned income credit.");
+    f1040Values["line27"] = eic.values["eic_credit"];
+    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    if (n(eic.values["qualifying_children"]) > 0) sEIC = eic; // Schedule EIC is attached only with qualifying children
+    else for (const w of eic.warnings) warnings.push(`Earned income credit: ${w}`);
+  }
+
   // Schedule 8812: child tax credit (1040 line 19) and additional child tax credit (1040 line 28).
   const truthy = (v: unknown) => v === true || v === 1 || (typeof v === "string" && /^(true|yes|y|1|x)$/i.test(v));
   const depRows = Array.isArray(tp["dependents"]) ? (tp["dependents"] as ListRow[]) : [];
@@ -447,7 +472,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       line13: Math.max(0, n(f1040.values["line18"]) - otherCredits),
       line18a: earned,
       line22: n(s1.values["line15"]) + n(s2.values["line5"]) + n(s2.values["line6"]) + n(s2.values["line13"]),
-      line24: n(tp["line27"]) + (s3 ? n(s3.values["line11"]) : n(extra["schedule3_line11"])),
+      line24: n(f1040Values["line27"] ?? tp["line27"]) + (s3 ? n(s3.values["line11"]) : n(extra["schedule3_line11"])),
       ...extra,
     };
     delete s8Values["other_nonrefundable_credits"];
@@ -495,6 +520,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8863) forms.push(f8863);
   if (f8880) forms.push(f8880);
   if (s8) forms.push(s8);
+  if (sEIC) forms.push(sEIC);
   if (f8995) forms.push(f8995);
   if (f8889) forms.push(f8889);
   if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
@@ -502,6 +528,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8829) forms.push(f8829);
   if (f4562) forms.push(f4562);
   for (const s of seForms) forms.push(s.prepared);
+  if (sE) forms.push(sE);
   if (f4868) forms.push(f4868);
   if (f1040es) forms.push(f1040es);
 
