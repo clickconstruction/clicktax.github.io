@@ -91,16 +91,16 @@ export interface ReturnInput {
   schedule8812?: Values;
   /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
   form8995?: Values;
-  /** Optional Form 8829 inputs (home office, actual expenses) for the first Schedule C unless `business` (1-based) says otherwise. */
-  form8829?: Values;
-  /** Optional Form 4562 inputs (depreciation) for the first Schedule C unless `business` (1-based) says otherwise; line 22 replaces that Schedule C's line 13. */
-  form4562?: Values;
+  /** Optional Form 8829 inputs (home office, actual expenses), one per business: `business` (1-based) picks the Schedule C, default 1. */
+  form8829?: Values | Values[];
+  /** Optional Form 4562 inputs (depreciation), one per business: `business` (1-based) picks the Schedule C, default 1; line 22 replaces that Schedule C's line 13. */
+  form4562?: Values | Values[];
   /** Optional Form 1040-ES inputs; when present, next year's vouchers are figured from this year's return (overrides allowed). */
   form1040es?: Values;
   /** Optional Form 4868 inputs; when present the extension voucher is filled from the computed totals. */
   form4868?: Values;
   /** Optional Form 8889 (HSA) inputs: coverage, line2 contributions, line9 employer contributions, line14a/15 distributions, age_55_or_older. */
-  form8889?: Values;
+  form8889?: Values | Values[];
   /** Optional Form 8959 inputs: line1 Medicare wages (W-2 box 5), line19 Medicare withheld (box 6), line2, line3, line14, line23. */
   form8959?: Values;
   /** Optional Schedule 1-A inputs (2025): line4a tips, line14a overtime, vehicles [{vin, description, interest}], line2a-2d. */
@@ -155,45 +155,56 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   });
 
   const forms: PreparedForm[] = [];
-  let f8829: PreparedForm | undefined;
-  let f4562: PreparedForm | undefined;
+  const asList = (v: Values | Values[] | undefined): Values[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
+  const businessOf = (v: Values) => Math.max(1, Math.round(n(v["business"] ?? 1)));
+  const f8829s: PreparedForm[] = [];
+  const f4562s: PreparedForm[] = [];
+  const used4562 = new Set<number>();
+  const used8829 = new Set<number>();
   const schedC = (input.scheduleC ?? []).map((v, i) => {
     const owner = v["owner"] === "spouse" ? "spouse" : "you";
     const values: Values = { ...headerFor(owner), ...v };
     delete values["owner"];
     let p = prepareFormValues("f1040sc", year, values, rounding);
+    const tag = `${i + 1}${owner === "spouse" ? ", spouse" : ""}`;
     // Form 4562 (depreciation) replaces this business's line 13.
-    const depTarget = Math.max(1, Math.round(n(input.form4562?.["business"] ?? 1)));
-    if (input.form4562 && depTarget === i + 1) {
-      const v4562: Values = { name: headerFor(owner)["name"], identifying_number: values["ein"] || headerFor(owner)["ssn"], business_activity: values["principal_business"] || values["business_name"] || "Schedule C business", ...input.form4562 };
+    const dep = asList(input.form4562).find((d, k) => businessOf(d) === i + 1 && !used4562.has(k));
+    if (dep) {
+      used4562.add(asList(input.form4562).indexOf(dep));
+      const v4562: Values = { name: headerFor(owner)["name"], identifying_number: values["ein"] || headerFor(owner)["ssn"], business_activity: values["principal_business"] || values["business_name"] || "Schedule C business", ...dep };
       delete v4562["business"];
       if (v4562["line11"] === undefined) {
         const preDep = prepareFormValues("f1040sc", year, { ...values, line13: 0 }, rounding);
         v4562["line11"] = Math.max(0, n(preDep.values["line31"]) + n(tp["line1a"]));
       }
-      f4562 = prepareFormValues("f4562", year, v4562, rounding);
+      const f4562 = prepareFormValues("f4562", year, v4562, rounding);
+      f4562.title = `${f4562.title} (business ${tag})`;
+      f4562s.push(f4562);
       if (values["line13"] !== undefined) warnings.push(`scheduleC[${i}] line 13 is replaced by Form 4562 line 22.`);
       values["line13"] = f4562.values["line22"];
       p = prepareFormValues("f1040sc", year, values, rounding);
     }
     // Form 8829 (actual home-office expenses) replaces the simplified method on this business's line 30.
-    const target = Math.max(1, Math.round(n(input.form8829?.["business"] ?? 1)));
-    if (input.form8829 && target === i + 1) {
-      const v8829: Values = { ...headerFor(owner), ...input.form8829 };
+    const home = asList(input.form8829).find((h, k) => businessOf(h) === i + 1 && !used8829.has(k));
+    if (home) {
+      used8829.add(asList(input.form8829).indexOf(home));
+      const v8829: Values = { ...headerFor(owner), ...home };
       delete v8829["business"];
       if (v8829["line8"] === undefined) v8829["line8"] = p.values["line29"];
-      f8829 = prepareFormValues("f8829", year, v8829, rounding);
+      const f8829 = prepareFormValues("f8829", year, v8829, rounding);
+      f8829.title = `${f8829.title} (business ${tag})`;
+      f8829s.push(f8829);
       const withHome: Values = { ...values, line30: f8829.values["line36"] };
       delete withHome["line30_home_sqft"];
       delete withHome["line30_business_sqft"];
       if (values["line30"] !== undefined || values["line30_business_sqft"] !== undefined) warnings.push(`scheduleC[${i}] line 30 is replaced by Form 8829 line 36.`);
       p = prepareFormValues("f1040sc", year, withHome, rounding);
     }
-    p.title = `${p.title} (business ${i + 1}${owner === "spouse" ? ", spouse" : ""})`;
+    p.title = `${p.title} (business ${tag})`;
     return { owner, prepared: p };
   });
-  if (input.form8829 && !f8829) warnings.push("form8829 was supplied but no matching Schedule C business exists; it was ignored.");
-  if (input.form4562 && !f4562) warnings.push("form4562 was supplied but no matching Schedule C business exists; it was ignored.");
+  asList(input.form8829).forEach((h, k) => { if (!used8829.has(k)) warnings.push(`form8829[${k}] names business ${businessOf(h)} but no such Schedule C exists; it was ignored.`); });
+  asList(input.form4562).forEach((d, k) => { if (!used4562.has(k)) warnings.push(`form4562[${k}] names business ${businessOf(d)} but no such Schedule C exists; it was ignored.`); });
   if (schedC.length > 1 && !["mfj"].includes(String(tp["filing_status"])) && schedC.some((s) => s.owner === "spouse")) {
     warnings.push("A spouse's Schedule C is listed but the filing status is not married filing jointly.");
   }
@@ -222,10 +233,17 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   const seDeduction = seForms.reduce((acc, s) => acc + n(s.prepared.values["line13"]), 0);
 
   // Form 8889 (HSA): deduction to Schedule 1 line 13, taxable distributions to Schedule 1 line 8f, additional taxes to Schedule 2.
-  let f8889: PreparedForm | undefined;
-  if (input.form8889) {
-    f8889 = prepareFormValues("f8889", year, { name: fullName, ssn: tp["ssn"], ...input.form8889 }, rounding);
-  }
+  // One Form 8889 per account holder: `owner: "spouse"` for the spouse's HSA on a joint return.
+  const f8889s: PreparedForm[] = asList(input.form8889).map((v) => {
+    const owner = v["owner"] === "spouse" ? "spouse" : "you";
+    const vals: Values = { ...headerFor(owner), ...v };
+    delete vals["owner"];
+    const p = prepareFormValues("f8889", year, vals, rounding);
+    if (owner === "spouse") p.title = `${p.title} (spouse)`;
+    return p;
+  });
+  const f8889 = f8889s.length ? f8889s[0] : undefined;
+  const sum8889 = (k: string) => f8889s.reduce((a, p) => a + n(p.values[k]), 0);
 
   // Form 8959 (Additional Medicare Tax): when wages plus self-employment income cross the threshold, or when inputs are supplied.
   let f8959: PreparedForm | undefined;
@@ -252,8 +270,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   }
   if (f8889) {
     if (s1Values["line13"] !== undefined) warnings.push("schedule1.line13 was supplied; it is replaced by Form 8889 line 13.");
-    s1Values["line13"] = f8889.values["line13"];
-    const hsaIncome = n(f8889.values["line16"]) + n(f8889.values["line20"]);
+    s1Values["line13"] = sum8889("line13");
+    const hsaIncome = sum8889("line16") + sum8889("line20");
     if (hsaIncome > 0) s1Values["line8f"] = n(s1Values["line8f"]) + hsaIncome;
   }
   if (schedC.length) s1Values["line3"] = totalSchC;
@@ -264,8 +282,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   const s2Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule2 ?? {}) };
   if (seForms.length) s2Values["line4"] = seTax;
   if (f8889) {
-    if (n(f8889.values["line17b"]) > 0) s2Values["line17c"] = f8889.values["line17b"];
-    if (n(f8889.values["line21"]) > 0) s2Values["line17d"] = f8889.values["line21"];
+    if (sum8889("line17b") > 0) s2Values["line17c"] = sum8889("line17b");
+    if (sum8889("line21") > 0) s2Values["line17d"] = sum8889("line21");
   }
   if (f8959) {
     if (s2Values["line11"] !== undefined) warnings.push("schedule2.line11 was supplied; it is replaced by Form 8959 line 18.");
@@ -522,11 +540,11 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (s8) forms.push(s8);
   if (sEIC) forms.push(sEIC);
   if (f8995) forms.push(f8995);
-  if (f8889) forms.push(f8889);
+  for (const p of f8889s) forms.push(p);
   if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
   for (const s of schedC) forms.push(s.prepared);
-  if (f8829) forms.push(f8829);
-  if (f4562) forms.push(f4562);
+  for (const p of f8829s) forms.push(p);
+  for (const p of f4562s) forms.push(p);
   for (const s of seForms) forms.push(s.prepared);
   if (sE) forms.push(sE);
   if (f4868) forms.push(f4868);
@@ -543,7 +561,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       adjusted_gross_income: n(f1040.values["line11"]),
       taxable_income: n(f1040.values["line15"]),
       qbi_deduction: f8995 ? n(f8995.values["line15"]) : 0,
-      hsa_deduction: f8889 ? n(f8889.values["line13"]) : 0,
+      hsa_deduction: sum8889("line13"),
       additional_medicare_tax: f8959 ? n(f8959.values["line18"]) : 0,
       child_tax_credit: s8 ? n(s8.values["line14"]) : 0,
       additional_child_tax_credit: s8 ? n(s8.values["line27"]) : 0,
