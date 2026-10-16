@@ -2,7 +2,7 @@ import { FORMS } from "../forms/index.ts";
 import { getFieldMap } from "../fieldmaps/index.ts";
 import type { Computation, FormId, ListRow, Rounding, TaxYear, ValidationIssue, Values } from "../types.ts";
 import { toPdfFields, type SummaryLine } from "./fill.ts";
-import { encodePayload, renderUrl, type RenderPayload } from "./link.ts";
+import { encodePayload, renderUrl, type RenderPayload, type RenderStatement } from "./link.ts";
 import { validateValues } from "./validate.ts";
 
 export interface PreparedForm {
@@ -50,8 +50,9 @@ export function prepareFormValues(formId: FormId, year: TaxYear, values: Values,
   };
 }
 
-export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: PrepareOptions): Promise<string> {
+export async function linkFor(year: TaxYear, forms: PreparedForm[], opts: PrepareOptions, statements: RenderStatement[] = []): Promise<string> {
   const payload: RenderPayload = {
+    ...(statements.length ? { statements } : {}),
     v: 1,
     year,
     ...(opts.title ? { title: opts.title } : {}),
@@ -134,6 +135,8 @@ export interface ReturnInput {
 export interface PreparedReturn {
   year: TaxYear;
   forms: PreparedForm[];
+  /** Supporting statements rendered as plain pages next to the forms. */
+  statements: RenderStatement[];
   warnings: string[];
   totals: Record<string, number>;
   link: string;
@@ -159,6 +162,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   });
 
   const forms: PreparedForm[] = [];
+  const statements: RenderStatement[] = [];
   const asList = (v: Values | Values[] | undefined): Values[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
   const businessOf = (v: Values) => Math.max(1, Math.round(n(v["business"] ?? 1)));
   const f8829s: PreparedForm[] = [];
@@ -468,6 +472,23 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       ...extra,
     };
     f8995 = prepareFormValues("f8995", year, v8995, rounding);
+    const money = (x: unknown) => n(x).toLocaleString("en-US", { maximumFractionDigits: 0 });
+    statements.push({
+      id: "qbi",
+      title: "Qualified Business Income Computation Statement (supports Form 8995)",
+      header: [`${jointName}${tp["ssn"] ? `, SSN ${String(tp["ssn"]).replace(/\d(?=\d{4})/g, "x")}` : ""}`, `Tax year ${year}`],
+      columns: ["Business", "Net profit (Sch C line 31)", "Less SE tax deduction, SE health insurance, and retirement (allocated)", "Qualified business income"],
+      rows: [
+        ...businesses.map((b, i) => [b.name, money(profits[i]), money(-(profits[i]! > 0 && totalPositive > 0 ? (adjustments * profits[i]!) / totalPositive : 0)), money(b.qbi)]),
+        ["Total qualified business income (Form 8995 line 2)", "", "", money(f8995.values["line2"])],
+        ["Qualified business income component, 20% (line 5)", "", "", money(f8995.values["line5"])],
+        ["Taxable income before the deduction (line 11)", "", "", money(v8995["line11"])],
+        ["Net capital gain (line 12)", "", "", money(v8995["line12"])],
+        ["Income limitation, 20% of line 13 (line 14)", "", "", money(f8995.values["line14"])],
+        ["Qualified business income deduction (line 15, Form 1040 line 13)", "", "", money(f8995.values["line15"])],
+      ],
+      notes: [`Schedule 1 adjustments allocated to each business in proportion to its positive net profit: deductible part of self-employment tax ${money(s1.values["line15"])}, self-employed SEP/SIMPLE/qualified plans ${money(s1.values["line16"])}, self-employed health insurance ${money(s1.values["line17"])}.`, "Qualified business income excludes capital gains, wages paid to you, and investment income. The simplified Form 8995 applies only below the taxable-income threshold; above it Form 8995-A is required."],
+    });
     if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995 line 15.");
     f1040Values["line13"] = f8995.values["line15"];
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
@@ -612,10 +633,11 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f4868) forms.push(f4868);
   if (f1040es) forms.push(f1040es);
 
-  const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` });
+  const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` }, statements);
   return {
     year,
     forms,
+    statements,
     warnings,
     totals: {
       schedule_c_net_profit: totalSchC,

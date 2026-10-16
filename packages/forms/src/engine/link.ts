@@ -16,6 +16,21 @@ export interface RenderForm {
   notes?: { computations: Array<{ line?: string; label: string; value: string | number | boolean; formula: string }>; warnings: string[] };
 }
 
+/** A supporting statement the renderer lays out on plain pages (no IRS PDF): a depreciation report, a QBI computation, an attachment. */
+export interface RenderStatement {
+  /** Stable id, e.g. "qbi" or "depreciation-1". */
+  id: string;
+  title: string;
+  /** Lines printed under the title (taxpayer name, SSN, form it supports). */
+  header?: string[];
+  columns?: string[];
+  rows?: string[][];
+  /** Column alignment, "l" or "r"; defaults to left for the first column and right for the rest. */
+  align?: Array<"l" | "r">;
+  /** Paragraphs printed after the table. */
+  notes?: string[];
+}
+
 export interface RenderPayload {
   v: 1;
   year: TaxYear;
@@ -23,6 +38,7 @@ export interface RenderPayload {
   /** True when the figures are invented sample data (the website's Test buttons). */
   sample?: boolean;
   forms: RenderForm[];
+  statements?: RenderStatement[];
 }
 
 function bytesToBase64Url(bytes: Uint8Array): string {

@@ -181,13 +181,14 @@ Workflow: call list_forms, then get_form_schema and get_form_notes for each form
         { renderBase, ...(title ? { title } : {}) },
       );
       const totals = Object.entries(result.totals).map(([k, v]) => `- ${k.replace(/_/g, " ")}: **${money(v)}**`).join("\n");
-      const text = [`**${DISCLAIMER}**`, "", `Open this link to render and download all ${result.forms.length} forms (${year}):`, result.link, "", "Totals:", totals, "", ...(result.warnings.length ? ["Return-level warnings:", ...result.warnings.map((w) => `- ${w}`), ""] : []), ...result.forms.map(formBlock)].join("\n");
+      const text = [`**${DISCLAIMER}**`, "", `Open this link to render and download all ${result.forms.length} forms (${year}):`, result.link, "", "Totals:", totals, "", ...(result.warnings.length ? ["Return-level warnings:", ...result.warnings.map((w) => `- ${w}`), ""] : []), ...result.forms.map(formBlock), ...(result.statements.length ? ["", "Supporting statements (rendered as plain pages on the link):", ...result.statements.map((st) => `- ${st.title}`)] : [])].join("\n");
       return {
         content: [{ type: "text", text }],
         structuredContent: {
           disclaimer: DISCLAIMER,
           year,
           link: result.link,
+          statements: result.statements,
           totals: result.totals,
           warnings: result.warnings,
           forms: result.forms.map((f) => ({ ...stripPdfFields(f), notes: formNotes(f.form, year as TaxYear) })),
