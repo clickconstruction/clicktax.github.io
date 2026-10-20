@@ -21,6 +21,8 @@ export interface YearParams {
   };
   /** Qualified Dividends and Capital Gain Tax Worksheet breakpoints (taxable income at which 0% and 15% rates end). */
   capitalGains: { zeroRateMax: Record<FilingStatus, number>; fifteenRateMax: Record<FilingStatus, number> };
+  /** Form 6251 alternative minimum tax: exemption, phaseout start, and the 26%/28% breakpoint. */
+  amt: { exemption: Record<FilingStatus, number>; phaseoutStart: Record<FilingStatus, number>; breakpoint: number; breakpointMfs: number };
   /** Section 179 (Form 4562): maximum deduction, phaseout threshold, SUV limit. */
   section179: { max: number; threshold: number; suvLimit: number };
   /** Form 8889 HSA contribution limits. */
@@ -59,6 +61,7 @@ export const PARAMS: Record<TaxYear, YearParams> = {
       zeroRateMax: { single: 47025, mfj: 94050, mfs: 47025, hoh: 63000, qss: 94050 },
       fifteenRateMax: { single: 518900, mfj: 583750, mfs: 291850, hoh: 551350, qss: 583750 },
     },
+    amt: { exemption: { single: 85700, mfj: 133300, mfs: 66650, hoh: 85700, qss: 133300 }, phaseoutStart: { single: 609350, mfj: 1218700, mfs: 609350, hoh: 609350, qss: 1218700 }, breakpoint: 232600, breakpointMfs: 116300 },
     section179: { max: 1220000, threshold: 3050000, suvLimit: 30500 },
     hsa: { selfOnly: 4150, family: 8300, catchUp: 1000 },
     additionalMedicare: { mfj: 250000, mfs: 125000, other: 200000, rate: 0.009 },
@@ -77,6 +80,7 @@ export const PARAMS: Record<TaxYear, YearParams> = {
       zeroRateMax: { single: 48350, mfj: 96700, mfs: 48350, hoh: 64750, qss: 96700 },
       fifteenRateMax: { single: 533400, mfj: 600050, mfs: 300000, hoh: 566700, qss: 600050 },
     },
+    amt: { exemption: { single: 88100, mfj: 137000, mfs: 68500, hoh: 88100, qss: 137000 }, phaseoutStart: { single: 626350, mfj: 1252700, mfs: 626350, hoh: 626350, qss: 1252700 }, breakpoint: 239100, breakpointMfs: 119550 },
     section179: { max: 2500000, threshold: 4000000, suvLimit: 31300 },
     hsa: { selfOnly: 4300, family: 8550, catchUp: 1000 },
     additionalMedicare: { mfj: 250000, mfs: 125000, other: 200000, rate: 0.009 },
