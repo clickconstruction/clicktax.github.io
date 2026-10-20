@@ -2,7 +2,33 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "name": "topmostSubform[0].Page1[0].f1_1[0]",
+  "ssn": "topmostSubform[0].Page1[0].f1_2[0]",
+  "line1a": "topmostSubform[0].Page1[0].c1_1[0]",
+  "line1b": "topmostSubform[0].Page1[0].c1_2[0]",
+  "line1c": "topmostSubform[0].Page1[0].c1_3[0]",
+  "line1d": "topmostSubform[0].Page1[0].c1_4[0]",
+  "line1e": "topmostSubform[0].Page1[0].c1_5[0]",
+  "line2": "topmostSubform[0].Page1[0].f1_3[0]",
+  "line3.yes": "topmostSubform[0].Page1[0].c1_7[0]",
+  "line3.no": "topmostSubform[0].Page1[0].c1_7[1]",
+  "line4": "topmostSubform[0].Page1[0].f1_4[0]",
+  "line5": "topmostSubform[0].Page1[0].f1_5[0]",
+  "line6": "topmostSubform[0].Page1[0].f1_6[0]",
+  "line7": "topmostSubform[0].Page1[0].f1_7[0]",
+  "line8": "topmostSubform[0].Page1[0].f1_8[0]",
+  "line9": "topmostSubform[0].Page1[0].f1_9[0]",
+  "line10a": "topmostSubform[0].Page1[0].f1_10[0]",
+  "line10b": "topmostSubform[0].Page1[0].f1_11[0]",
+  "line11a": "topmostSubform[0].Page1[0].f1_12[0]",
+  "line11b": "topmostSubform[0].Page1[0].f1_13[0]",
+  "line11c": "topmostSubform[0].Page1[0].f1_14[0]",
+  "line12": "topmostSubform[0].Page1[0].f1_15[0]",
+  "line13": "topmostSubform[0].Page1[0].f1_16[0]",
+  "part3_amount": "topmostSubform[0].Page1[0].f1_17[0]",
+  "part3_year_begin": "topmostSubform[0].Page1[0].f1_18[0]",
+  "part3_year_end": "topmostSubform[0].Page1[0].f1_19[0]",
+  "part3_state": "topmostSubform[0].Page1[0].f1_20[0]",
 };
 
 export default map;

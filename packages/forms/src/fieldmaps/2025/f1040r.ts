@@ -2,7 +2,33 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "name": "topmostSubform[0].Page1[0].f1_1[0]",
+  "ssn": "topmostSubform[0].Page1[0].f1_2[0]",
+  "box.1": "topmostSubform[0].Page1[0].c1_1[0]",
+  "box.2": "topmostSubform[0].Page1[0].c1_1[1]",
+  "box.3": "topmostSubform[0].Page1[0].Married[0].c1_1[0]",
+  "box.4": "topmostSubform[0].Page1[0].Married[0].c1_1[1]",
+  "box.5": "topmostSubform[0].Page1[0].Married[0].c1_1[2]",
+  "box.6": "topmostSubform[0].Page1[0].Married[0].c1_1[3]",
+  "box.7": "topmostSubform[0].Page1[0].Married[0].c1_1[4]",
+  "box.8": "topmostSubform[0].Page1[0].MarriedSeparate[0].c1_1[0]",
+  "box.9": "topmostSubform[0].Page1[0].MarriedSeparate[0].c1_1[1]",
+  "physician_statement": "topmostSubform[0].Page1[0].c1_2[0]",
+  "line10": "topmostSubform[0].Page2[0].f2_1[0]",
+  "line11": "topmostSubform[0].Page2[0].f2_2[0]",
+  "line12": "topmostSubform[0].Page2[0].f2_3[0]",
+  "line13a": "topmostSubform[0].Page2[0].f2_4[0]",
+  "line13b": "topmostSubform[0].Page2[0].f2_5[0]",
+  "line13c": "topmostSubform[0].Page2[0].f2_6[0]",
+  "line14": "topmostSubform[0].Page2[0].f2_7[0]",
+  "line15": "topmostSubform[0].Page2[0].f2_8[0]",
+  "line16": "topmostSubform[0].Page2[0].f2_9[0]",
+  "line17": "topmostSubform[0].Page2[0].f2_10[0]",
+  "line18": "topmostSubform[0].Page2[0].f2_11[0]",
+  "line19": "topmostSubform[0].Page2[0].f2_12[0]",
+  "line20": "topmostSubform[0].Page2[0].f2_13[0]",
+  "line21": "topmostSubform[0].Page2[0].f2_14[0]",
+  "line22": "topmostSubform[0].Page2[0].f2_15[0]",
 };
 
 export default map;

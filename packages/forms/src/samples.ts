@@ -154,6 +154,15 @@ const samples: Partial<Record<FormId, Values>> = {
   f8853: { name: NAME, ssn: SSN, line2: 2400, line3: 2925, line4: 61000, line6a: 1800, line7: 1800, policyholder_name: NAME, policyholder_ssn: SSN, line14a: "John Sample", line14b: "987654321", line15: false, line16: false, line17: 36000, line18: 36000, ltc_days: 80, line22: 31000, line24: 0 },
   f3903: { name: NAME, ssn: SSN, armed_forces: true, line1: 4200, line2: 1350, line4: 2800 },
   f8911: { name: NAME, ssn: SSN, lineA: 1, line4: 1000, line5: 14200, line6a: 0, line6b: 1800, line8: 9800 },
+  f8396: { name: NAME, ssn: SSN, home_address: "123 Main Street, Austin, TX 78701", issuer: "Texas Department of Housing and Community Affairs", certificate_number: "TX-2021-004512", issue_date: "06/15/2021", line1: 9800, line2: 25, line6: 350, ws_line1: 6200, ws_line2: 1500 },
+  f8814: { name: NAME, ssn: SSN, child_name: "Avery Sample", child_ssn: "987654321", line1a: 1900, line2a: 1500, line2b: 900, line3: 600 },
+  f982: { name: NAME, ssn: SSN, line1b: true, line2: 18500, line3: false, line6: 4000, line10a: 14500 },
+  f5405: { name: NAME, ssn: SSN, line1: "05/20/2025", line3: "a", line4: 7500, line5: 5000, line9: 410000, line10: 24600, line12: 362000 },
+  f461: { name: NAME, ssn: SSN, filing_status: "mfj", line2: -720000, line3: 12000, line5: -40000, line10: 12000 },
+  f1040r: { name: NAME, ssn: SSN, box: "1", line13a: 9600, line14: 14200, line21: 650 },
+  f8824: { name: NAME, ssn: SSN, line1: "Fourplex, 410 Elm St, Austin, TX", line2: "Retail condo, 77 Congress Ave, Austin, TX", line3: "03/15/2015", line4: "04/10/2025", line5: "05/01/2025", line6: "07/15/2025", line7: false, line15: 35000, line16: 820000, line18: 410000, line21: 0 },
+  f8839: { name: NAME, ssn: SSN, line7: 148000, line15: 0, line17: 9800, children: [{ first_name: "Mia", last_name: "Sample", birth_year: "2021", identifying_number: "123456780", final: true, line5: 22400 }], },
+  f4684: { name: NAME, ssn: SSN, federally_declared: true, fema_dr: "4879", agi: 110000, properties: [{ description: "Residence", location: "Kerrville, TX", zip: "78028", date_acquired: "06/2016", line2: 310000, line3: 180000, line5: 420000, line6: 160000 }, { description: "2019 pickup", location: "Kerrville, TX", zip: "78028", date_acquired: "09/2019", line2: 38000, line3: 12000, line5: 26000, line6: 0 }] },
 };
 
 /** Sample values for one form. The same for every supported year unless a field is year-specific. */
