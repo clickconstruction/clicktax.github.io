@@ -202,6 +202,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
 
   const forms: PreparedForm[] = [];
   const statements: RenderStatement[] = [];
+  const mainId: FormId = tp["use_1040sr"] === true ? "f1040sr" : "f1040";
   const asList = (v: Values | Values[] | undefined): Values[] => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
   const businessOf = (v: Values) => Math.max(1, Math.round(n(v["business"] ?? 1)));
   const f8829s: PreparedForm[] = [];
@@ -451,7 +452,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     // Modified AGI: AGI figured with the rental losses left out, plus the IRA and student loan deductions and taxable social security.
     const lossTotal = lossProps.reduce((a, { r }) => a + -n(r["line21"]), 0);
     const s1NoLoss = prepareFormValues("f1040s1", year, { ...s1Values, line5: n(sE.values["line41"]) + lossTotal }, rounding);
-    const pre = prepareFormValues("f1040", year, { ...f1040Values, line8: s1NoLoss.values["line10"], line10: s1NoLoss.values["line26"] }, rounding);
+    const pre = prepareFormValues(mainId, year, { ...f1040Values, line8: s1NoLoss.values["line10"], line10: s1NoLoss.values["line26"] }, rounding);
     const magi = n(pre.values["line11"]) + n(s1NoLoss.values["line20"]) + n(s1NoLoss.values["line21"]) + n(pre.values["line6b"]);
     f8582 = prepareFormValues("f8582", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line6: magi, ...extra, rental_activities: rentalRows, other_activities: otherRows }, rounding);
     const allowed = (f8582.values["allowed_losses"] as ListRow[] | undefined) ?? [];
@@ -467,7 +468,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040Values["line10"] = s1.values["line26"];
   }
 
-  let f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+  let f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
 
   // Schedule A: itemize when it beats the standard deduction, when elected, or when required.
   let sA: PreparedForm | undefined;
@@ -481,7 +482,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       sA = a;
       if (tp["itemized_deductions"] !== undefined) warnings.push("form1040.itemized_deductions was supplied; it is replaced by Schedule A line 17.");
       f1040Values["itemized_deductions"] = itemized;
-      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+      f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
       if (itemized <= std) warnings.push(`Itemizing ${itemized} although the standard deduction (${std}) is larger${elected ? " (line 18 elected)" : " (required: spouse itemizes)"}.`);
     } else {
       warnings.push(`Schedule A total (${itemized}) is less than the standard deduction (${std}); the standard deduction is used and Schedule A is omitted.`);
@@ -509,7 +510,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
         s2Needed = true;
         f1040Values["line17"] = s2.values["line3"];
         f1040Values["line23"] = s2.values["line21"];
-        f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+        f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
       } else f8960 = undefined;
     }
   }
@@ -521,7 +522,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     s1a = prepareFormValues("f1040s1a", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], you_65_or_older: tp["you_65_or_older"], spouse_65_or_older: tp["spouse_65_or_older"], line1: f1040.values["line11"], ...(input.schedule1A ?? {}) }, rounding);
     if (tp["line13b"] !== undefined) warnings.push("form1040.line13b was supplied; it is replaced by Schedule 1-A line 38.");
     f1040Values["line13b"] = s1a.values["line38"];
-    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
   }
 
   // Form 8995: qualified business income deduction (1040 line 13) from the Schedule C businesses.
@@ -570,7 +571,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     });
     if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995 line 15.");
     f1040Values["line13"] = f8995.values["line15"];
-    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
   }
 
   // Form 6251: the alternative minimum tax is figured for every return with taxable income and attached when it applies.
@@ -601,7 +602,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       s2Needed = true;
       f1040Values["line17"] = s2.values["line3"];
       f1040Values["line23"] = s2.values["line21"];
-      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+      f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
     }
   }
   let f8283: PreparedForm | undefined;
@@ -630,7 +631,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       s2Needed = true;
       f1040Values["line17"] = s2.values["line3"];
       f1040Values["line23"] = s2.values["line21"];
-      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+      f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
     }
   }
 
@@ -693,7 +694,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     if (tp["line31"] !== undefined) warnings.push("form1040.line31 was supplied; it is replaced by Schedule 3 line 15.");
     f1040Values["line20"] = s3.values["line8"];
     f1040Values["line31"] = s3.values["line15"];
-    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
   }
 
   // Schedule EIC / earned income credit to Form 1040 line 27 (before Schedule 8812, whose line 24 includes it).
@@ -704,7 +705,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     const eic = prepareFormValues("f1040sei", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], earned_income: earned, agi: f1040.values["line11"], investment_income: investment, ...input.scheduleEIC }, rounding);
     if (tp["line27"] !== undefined) warnings.push("form1040.line27 was supplied; it is replaced by the computed earned income credit.");
     f1040Values["line27"] = eic.values["eic_credit"];
-    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
     if (n(eic.values["qualifying_children"]) > 0) sEIC = eic; // Schedule EIC is attached only with qualifying children
     else for (const w of eic.warnings) warnings.push(`Earned income credit: ${w}`);
   }
@@ -742,7 +743,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     if (tp["line28"] !== undefined) warnings.push("form1040.line28 was supplied; it is replaced by Schedule 8812 line 27.");
     f1040Values["line19"] = s8.values["line14"];
     f1040Values["line28"] = s8.values["line27"];
-    f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
   }
 
   // Form 2210: the estimated tax penalty when the balance due reaches $1,000 (Form 1040 line 38).
@@ -757,7 +758,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     if (n(f2210.values["line19"]) > 0 || input.form2210) {
       if (tp["line38"] !== undefined) warnings.push("form1040.line38 was supplied; it is replaced by Form 2210 line 19.");
       f1040Values["line38"] = f2210.values["line19"];
-      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+      f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
     } else f2210 = undefined;
   }
 
