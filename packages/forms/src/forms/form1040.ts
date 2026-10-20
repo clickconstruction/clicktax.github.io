@@ -138,6 +138,7 @@ const fields: FieldDef[] = [
   comp("line15", "15", "Taxable income", 2, "line 11 - line 14, not less than zero", { locate: tok("15", { 2024: 1, 2025: 2 }), alwaysShow: true }),
   { id: "line16_override", label: "Tax override (supply only when Schedule D's tax worksheet, Form 8615, or another method applies)", type: "money" },
   { id: "schedule_d_gain", label: "If Schedule D is filed: the smaller of Schedule D line 15 or line 16 (used by the capital gain tax worksheet instead of line 7)", type: "money" },
+  { id: "feie_excluded", label: "Foreign earned income and housing amounts excluded on Form 2555 (lines 45 and 50); the tax is then figured with the Foreign Earned Income Tax Worksheet", type: "money", noPdf: true },
   comp("line16", "16", "Tax", 2, "Tax Table (under $100,000) or Tax Computation Worksheet on line 15; when qualified dividends or capital gains are present, the Qualified Dividends and Capital Gain Tax Worksheet", { alwaysShow: true }),
   amt("line17", "17", "Amount from Schedule 2, line 3", 2, { notes: "Filled from Schedule 2 when preparing a full return." }),
   comp("line18", "18", "Add lines 16 and 17", 2, "line 16 + line 17"),
@@ -245,7 +246,14 @@ export const form1040: FormDef = {
     } else if (FILING_STATUSES.includes(status)) {
       const qd = c.n("line3a");
       const gain = c.has("schedule_d_gain") ? Math.max(0, c.n("schedule_d_gain")) : Math.max(0, c.n("line7"));
-      if (qd > 0 || gain > 0) {
+      const excluded = Math.max(0, c.n("feie_excluded"));
+      if (excluded > 0) {
+        // Foreign Earned Income Tax Worksheet: tax on taxable income plus the excluded amount, less the tax on the excluded amount alone.
+        const taxOn = (ti: number) => (qd > 0 || gain > 0 ? qdcgWorksheet({ taxableIncome: ti, qualifiedDividends: qd, capitalGain: gain, status, year: ctx.year }).tax : incomeTax(ti, status, ctx.year));
+        const t4 = taxOn(l15 + excluded);
+        const t5 = incomeTax(excluded, status, ctx.year);
+        l16 = c.set("line16", Math.max(0, t4 - t5), "Tax (Foreign Earned Income Tax Worksheet)", `tax on ${f(l15 + excluded)} = ${f(t4)}, less tax on the excluded ${f(excluded)} = ${f(t5)}`, "16");
+      } else if (qd > 0 || gain > 0) {
         const w = qdcgWorksheet({ taxableIncome: l15, qualifiedDividends: qd, capitalGain: gain, status, year: ctx.year });
         l16 = c.set("line16", w.tax, "Tax (Qualified Dividends and Capital Gain Tax Worksheet)", `0% on ${f(w.lines[9]!)}, 15% on ${f(w.lines[17]!)}, 20% on ${f(w.lines[20]!)}, ordinary tax ${f(w.lines[22]!)} on ${f(w.lines[5]!)}; worksheet ${f(w.lines[23]!)} vs ordinary ${f(w.lines[24]!)}`, "16");
         if (qd > c.n("line3b")) c.warn("Line 3a (qualified dividends) exceeds line 3b (ordinary dividends); qualified dividends are a subset of ordinary dividends.");
