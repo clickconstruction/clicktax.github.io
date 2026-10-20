@@ -7,7 +7,7 @@ export type FilingStatus = "single" | "mfj" | "mfs" | "hoh" | "qss";
 export const FILING_STATUSES: readonly FilingStatus[] = ["single", "mfj", "mfs", "hoh", "qss"];
 
 /** Every supported form id, in catalog order. Adding a form: add it here, write its FormDef, run gen:fieldmaps. */
-export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9", "f1040es", "f4562", "f1099nec", "f1040sb", "f1040sd", "f8949", "f1040sa", "f2441", "f8863", "f8880", "f1040se", "f1040sei", "f8582", "f8960", "f9325", "f8962", "f1040sr", "f6251", "f5695", "f1040x", "f8606", "f1116", "f2210", "f4797", "f5329", "f8283"] as const;
+export const FORM_ID_LIST = ["f1040", "f1040s1", "f1040s2", "f1040s3", "f1040s1a", "f1040sc", "f1040sse", "f1040s8", "f8995", "f8889", "f8959", "f8829", "f4868", "fw9", "f1040es", "f4562", "f1099nec", "f1040sb", "f1040sd", "f8949", "f1040sa", "f2441", "f8863", "f8880", "f1040se", "f1040sei", "f8582", "f8960", "f9325", "f8962", "f1040sr", "f6251", "f5695", "f1040x", "f8606", "f1116", "f2210", "f4797", "f5329", "f8283", "f1040sf", "f4952", "f8862", "f3800", "f8938", "f8936", "f6781"] as const;
 export type FormId = (typeof FORM_ID_LIST)[number];
 
 /**
