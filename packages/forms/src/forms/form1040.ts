@@ -84,6 +84,7 @@ const fields: FieldDef[] = [
     items: [
       { id: "first_name", label: "First name", type: "text" },
       { id: "last_name", label: "Last name", type: "text" },
+      { id: "name", label: "First and last name together (the 2024 layout has one box)", type: "text", computed: true, years: [2024] },
       { id: "ssn", label: "Social security number", type: "ssn", maxLen: 9 },
       { id: "relationship", label: "Relationship to you", type: "text" },
       { id: "child_tax_credit", label: "Qualifies for child tax credit", type: "checkbox" },
@@ -106,6 +107,7 @@ const fields: FieldDef[] = [
   amt("line1e", "1e", "Taxable dependent care benefits from Form 2441, line 26", 1),
   amt("line1f", "1f", "Employer-provided adoption benefits from Form 8839, line 29", 1),
   amt("line1g", "1g", "Wages from Form 8919, line 6", 1),
+  { id: "use_1040sr", label: "Render on Form 1040-SR (the large-print return for filers 65 and over) instead of Form 1040", type: "checkbox" },
   { id: "line1h_type", line: "1h", label: "Other earned income: type", type: "text", years: [2025], locate: { names: { 2025: "Page1[0].f1_54[0]" } } },
   amt("line1h", "1h", "Other earned income", 1),
   amt("line1i", "1i", "Nontaxable combat pay election", 1),
@@ -277,6 +279,7 @@ export const form1040: FormDef = {
     if (!c.has("digital_assets")) c.warn("digital_assets (the digital asset question) must be answered yes or no.");
     if (status === "mfj" && !c.has("spouse_first_name")) c.warn("Married filing jointly but spouse_first_name is missing.");
     const deps = c.list("dependents");
+    if (deps.length) c.out["dependents"] = deps.map((d) => ({ ...d, name: [d["first_name"], d["last_name"]].filter(Boolean).map(String).join(" ") || d["name"] || "" }));
     if (deps.length > 4) c.warn("More than four dependents: only four fit on the form; check more_than_four_dependents and attach a statement.");
     if (deps.length > 0 && !c.has("line19")) c.warn("Dependents are listed but line 19 (child tax credit / credit for other dependents from Schedule 8812) is empty.");
     return c.result();
