@@ -229,6 +229,22 @@ export interface ReturnInput {
   form8839?: Values;
   /** Optional Form 4684 (casualties and thefts); line 18 → Schedule A line 15, lines 32/38b → Schedule A line 16, line 15 gain → Schedule D line 11. */
   form4684?: Values;
+  /** Optional Form 5884 (work opportunity credit); line 4 → Form 3800 Part III line 4b. */
+  form5884?: Values;
+  /** Optional Form 8846 (FICA tip credit); line 6 → Form 3800 Part III line 4f. */
+  form8846?: Values;
+  /** Optional Form 8994 (paid family and medical leave credit); line 3 → Form 3800 Part III line 4j. */
+  form8994?: Values;
+  /** Optional Form 8586 (low-income housing credit); line 5 → Form 3800 Part III line 4d. */
+  form8586?: Values;
+  /** Optional Form 6765 (research credit); line 30 → Form 3800 Part III line 1c (line 4i with eligible_small_business). */
+  form6765?: Values;
+  /** Optional Form 8992 (GILTI); line 5 → Schedule 1 line 8o. */
+  form8992?: Values;
+  /** Optional Forms 2439 (undistributed long-term capital gains), one per notice; box 1a → Schedule D line 11, 1b → line 19, 1d → line 18, box 2 → Schedule 3 line 13a. */
+  form2439?: Values | Values[];
+  /** Optional Form 8997 (QOF investments), attached as supplied; inclusion events answer the Schedule D QOF question. */
+  form8997?: Values;
 }
 
 export interface PreparedReturn {
@@ -444,6 +460,15 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     if (s1Values["line14"] !== undefined) warnings.push("schedule1.line14 was supplied; it is replaced by Form 3903 line 5.");
     s1Values["line14"] = f3903.values["line5"];
   }
+  // Form 8992: the GILTI inclusion goes to Schedule 1 line 8o.
+  let f8992: PreparedForm | undefined;
+  if (input.form8992) {
+    f8992 = prepareFormValues("f8992", year, { name: jointName, ssn: tp["ssn"], ...input.form8992 }, rounding);
+    if (n(f8992.values["line5"]) > 0) {
+      if (s1Values["line8o"] !== undefined) warnings.push("schedule1.line8o was supplied; it is replaced by Form 8992 line 5.");
+      s1Values["line8o"] = f8992.values["line5"];
+    }
+  }
   if (f4797) {
     if (s1Values["line4"] !== undefined) warnings.push("schedule1.line4 was supplied; it is replaced by Form 4797 line 18b.");
     s1Values["line4"] = f4797.values["line18b"];
@@ -577,6 +602,13 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   }
 
   // Form 6781: section 1256 contracts and straddles feed Schedule D lines 4 and 11.
+  // Forms 2439 (one per notice): box 1a → Schedule D line 11, 1b → line 19, 1d → line 18; box 2 → Schedule 3 line 13a.
+  const f2439s: PreparedForm[] = asList(input.form2439).map((v) => prepareFormValues("f2439", year, { name: jointName, ssn: tp["ssn"], ...v }, rounding));
+  const f2439Gain = f2439s.reduce((a, p) => a + n(p.values["line1a"]), 0);
+  const f2439Tax = f2439s.reduce((a, p) => a + n(p.values["line2"]), 0);
+  // Form 8997: the QOF investment statement, attached as supplied.
+  let f8997: PreparedForm | undefined;
+  if (input.form8997) f8997 = prepareFormValues("f8997", year, { name: jointName, ssn: tp["ssn"], ...input.form8997 }, rounding);
   let f6781: PreparedForm | undefined;
   if (input.form6781) f6781 = prepareFormValues("f6781", year, { name: jointName, ssn: tp["ssn"], ...input.form6781 }, rounding);
 
@@ -593,7 +625,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   // Form 8949 / Schedule D: capital gains and losses to Form 1040 line 7 (before AGI).
   const f8949s: PreparedForm[] = [];
   let sD: PreparedForm | undefined;
-  if (input.form8949?.length || input.scheduleD || f6781 || f6252ToD.length || f8824ToD.length || (f4684 && n(f4684.values["line15"]) > 0) || (f4797 && (n(f4797.values["line9"]) > 0 || n(f4797.values["unrecaptured_1250_total"]) > 0))) {
+  if (input.form8949?.length || input.scheduleD || f6781 || f2439Gain > 0 || f6252ToD.length || f8824ToD.length || (f4684 && n(f4684.values["line15"]) > 0) || (f4797 && (n(f4797.values["line9"]) > 0 || n(f4797.values["unrecaptured_1250_total"]) > 0))) {
     const dValues: Values = { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], ...(input.scheduleD ?? {}) };
     if (f6781) {
       const shortTerm = n(f6781.values["line8"]) - n(f6781.values["line11a"]) + n(f6781.values["line13a"]);
@@ -612,6 +644,12 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       if (gain !== 0) dValues[key] = n(dValues[key]) + gain;
     }
     if (f4684 && n(f4684.values["line15"]) > 0) dValues["line11"] = n(dValues["line11"]) + n(f4684.values["line15"]);
+    for (const p of f2439s) {
+      if (n(p.values["line1a"]) !== 0) dValues["line11"] = n(dValues["line11"]) + n(p.values["line1a"]);
+      if (n(p.values["line1b"]) !== 0) dValues["line19"] = n(dValues["line19"]) + n(p.values["line1b"]);
+      if (n(p.values["line1d"]) !== 0) dValues["line18"] = n(dValues["line18"]) + n(p.values["line1d"]);
+    }
+    if (f8997 && ((f8997.values["inclusion_events"] as ListRow[] | undefined)?.length ?? 0) > 0 && dValues["qof_disposal"] === undefined) dValues["qof_disposal"] = true;
     if (f8814CG > 0) dValues["line13"] = n(dValues["line13"]) + f8814CG;
     if (f4797 && n(f4797.values["line9"]) > 0) dValues["line11"] = n(dValues["line11"]) + n(f4797.values["line9"]);
     if (f4797 && n(f4797.values["unrecaptured_1250_total"]) > 0 && n(f4797.values["line7"]) > 0) dValues["line19"] = n(dValues["line19"]) + n(f4797.values["unrecaptured_1250_total"]);
@@ -1052,14 +1090,33 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     }
   }
 
+  // Business credit forms feeding Form 3800 Part III: 5884 (4b), 8846 (4f), 8994 (4j), 8586 (4d), 6765 (1c, or 4i for eligible small businesses).
+  const gbcForms: Array<{ id: FormId; input: Values | undefined; line: (p: PreparedForm) => string; amount: (p: PreparedForm) => number }> = [
+    { id: "f5884", input: input.form5884, line: () => "4b", amount: (p) => n(p.values[p.values["estate_or_trust"] === true ? "line6" : "line4"]) },
+    { id: "f8846", input: input.form8846, line: () => "4f", amount: (p) => n(p.values["line6"]) },
+    { id: "f8994", input: input.form8994, line: () => "4j", amount: (p) => n(p.values["line3"]) },
+    { id: "f8586", input: input.form8586, line: () => "4d", amount: (p) => n(p.values[p.values["estate_or_trust"] === true ? "line7" : "line5"]) },
+    { id: "f6765", input: input.form6765, line: (p) => (p.values["eligible_small_business"] === true ? "4i" : "1c"), amount: (p) => n(p.values[p.values["estate_or_trust"] === true ? "line32" : "line30"]) },
+  ];
+  const gbcPrepared: PreparedForm[] = [];
+  const gbcCredits: ListRow[] = [];
+  for (const g of gbcForms) {
+    if (!g.input) continue;
+    const p = prepareFormValues(g.id, year, { name: jointName, ssn: tp["ssn"], ...g.input }, rounding);
+    gbcPrepared.push(p);
+    const amt = g.amount(p);
+    if (amt > 0) gbcCredits.push({ line: g.line(p), nonpassive: amt });
+  }
+
   // Form 3800: the general business credit (Schedule 3 line 6a), limited by net income tax and the tentative minimum tax.
   let f3800: PreparedForm | undefined;
-  if (input.form3800 || (f8936 && (n(f8936.values["line8"]) > 0 || n(f8936.values["line21"]) > 0)) || (f8911 && n(f8911.values["line3"]) > 0)) {
+  if (input.form3800 || gbcCredits.length || (f8936 && (n(f8936.values["line8"]) > 0 || n(f8936.values["line21"]) > 0)) || (f8911 && n(f8911.values["line3"]) > 0)) {
     const extra: Values = { ...(input.form3800 ?? {}) };
     const credits: ListRow[] = [...((extra["credits"] as ListRow[] | undefined) ?? [])];
     if (f8936 && n(f8936.values["line8"]) > 0) credits.push({ line: "1y", nonpassive: n(f8936.values["line8"]) });
     if (f8936 && n(f8936.values["line21"]) > 0) credits.push({ line: "1aa", nonpassive: n(f8936.values["line21"]) });
     if (f8911 && n(f8911.values["line3"]) > 0) credits.push({ line: "1s", nonpassive: n(f8911.values["line3"]) });
+    credits.push(...gbcCredits);
     const otherCredits = ["line2", "line3", "line4", "line5a", "line5b", "line6b", "line6c", "line6d", "line6f", "line6g", "line6h", "line6i", "line6j", "line6k", "line6l", "line6m"].reduce((a, k) => a + n(s3Input[k]), 0);
     f3800 = prepareFormValues("f3800", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line7: n(f1040.values["line16"]) + n(s2.values["line1z"]), line8: n(s2.values["line2"]), line10a: n(s3Input["line1"]), line10b: otherCredits, line14: tentativeMinTax, ...extra, credits }, rounding);
     if (s3Input["line6a"] !== undefined) warnings.push("schedule3.line6a was supplied; it is replaced by Form 3800 line 38.");
@@ -1068,7 +1125,11 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
 
   // Schedule 3: other credits and payments (1040 lines 20 and 31).
   let s3: PreparedForm | undefined;
-  if (input.schedule3 || f2441 || f8863 || f8880 || f8936 || f3800 || f8801 || f8911 || sR || f8839 || f8396 || f1116s.length || f5695 || (f8962 && n(f8962.values["line26"]) > 0)) {
+  if (f2439Tax > 0) {
+    if (s3Input["line13a"] !== undefined) warnings.push("schedule3.line13a was supplied; it is replaced by the Form 2439 box 2 total.");
+    s3Input["line13a"] = f2439Tax;
+  }
+  if (input.schedule3 || f2439Tax > 0 || f2441 || f8863 || f8880 || f8936 || f3800 || f8801 || f8911 || sR || f8839 || f8396 || f1116s.length || f5695 || (f8962 && n(f8962.values["line26"]) > 0)) {
     s3 = prepareFormValues("f1040s3", year, { name: jointName, ssn: tp["ssn"], ...s3Input }, rounding);
     if (tp["line20"] !== undefined) warnings.push("form1040.line20 was supplied; it is replaced by Schedule 3 line 8.");
     if (tp["line31"] !== undefined) warnings.push("form1040.line31 was supplied; it is replaced by Schedule 3 line 15.");
@@ -1199,7 +1260,11 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8863) forms.push(f8863);
   if (f8880) forms.push(f8880);
   if (f8936) forms.push(f8936);
+  for (const p of gbcPrepared) forms.push(p);
   if (f3800) forms.push(f3800);
+  if (f8992) forms.push(f8992);
+  for (const p of f2439s) forms.push(p);
+  if (f8997) forms.push(f8997);
   if (f8801) forms.push(f8801);
   if (f8911) forms.push(f8911);
   if (sR) forms.push(sR);
