@@ -147,6 +147,13 @@ const samples: Partial<Record<FormId, Values>> = {
   f4835: { name: NAME, ssn: SSN, active_participation: true, line1: 48000, line3a: 2500, line6: 400, line8: 1200, line9: 3100, line12: 4800, line15: 5200, line18: 900, line23: 2600, line27: 1800, other_expenses: [{ description: "Well repair", amount: 1500 }] },
   f2106: { name: NAME, occupation: "Army Reserve drill sergeant", ssn: SSN, filer_type: "reservist", method: "standard", line2_a: 120, line3_a: 1850, line5_b: 640, line7_a: 500, vehicles: [{ placed_month: "03", placed_day: "01", placed_year: "2022", total_miles: 14000, business_miles: 2600, avg_commute: 18, commuting_miles: 4300 }], line18: true, line19: true, line20: true, line21: true },
   f8958: { first_name: "Jane Q", last_name: "Sample", ssn: SSN, spouse_first_name: "John", spouse_last_name: "Sample", spouse_ssn: "987654321", items: [{ line: "1", description: "Sample Plumbing LLC (W-2)", total: 84000 }, { line: "1", description: "City of Austin (W-2)", total: 52000 }, { line: "2", description: "First Community Bank", total: 1240 }, { line: "11", description: "Federal withholding", total: 14200 }] },
+  f8615: { name: "Avery Sample", ssn: "987654321", parent_name: "Jane Q Sample", parent_ssn: SSN, parent_filing_status: "mfj", line1: 9800, line4: 8350, line6: 118000, line10: 15730 },
+  f1040sh: { name: NAME, ssn: SSN, ein: "123456789", line1: 24000, line5: 0, line7: 1800, line13: "TX", line14: 648, line15: 7000, line10: true, line11: true, line12: true },
+  f8801: { name: NAME, ssn: SSN, filing_status: "mfj", line1: 310000, line2: 42000, line14: 54000, line16: 14238, line19: 2600, line22: 48000, line23: 39000 },
+  f8990: { name: "Sample Plumbing LLC", ssn: "12-3456789", line1: 180000, line6: 900000, line23: 4000, partnerships: [{ name: "Riverside Partners LP", ein: "36-1234567", current_excess_expense: 12000, excess_taxable_income: 30000, excess_interest_income: 2000 }] },
+  f8853: { name: NAME, ssn: SSN, line2: 2400, line3: 2925, line4: 61000, line6a: 1800, line7: 1800, policyholder_name: NAME, policyholder_ssn: SSN, line14a: "John Sample", line14b: "987654321", line15: false, line16: false, line17: 36000, line18: 36000, ltc_days: 80, line22: 31000, line24: 0 },
+  f3903: { name: NAME, ssn: SSN, armed_forces: true, line1: 4200, line2: 1350, line4: 2800 },
+  f8911: { name: NAME, ssn: SSN, lineA: 1, line4: 1000, line5: 14200, line6a: 0, line6b: 1800, line8: 9800 },
 };
 
 /** Sample values for one form. The same for every supported year unless a field is year-specific. */

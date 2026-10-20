@@ -2,7 +2,21 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "name": "topmostSubform[0].Page1[0].f1_01[0]",
+  "ssn": "topmostSubform[0].Page1[0].f1_02[0]",
+  "lineA": "topmostSubform[0].Page1[0].f1_03[0]",
+  "line1": "topmostSubform[0].Page1[0].f1_04[0]",
+  "line2": "topmostSubform[0].Page1[0].f1_05[0]",
+  "line3": "topmostSubform[0].Page1[0].f1_06[0]",
+  "line4": "topmostSubform[0].Page1[0].f1_07[0]",
+  "line5": "topmostSubform[0].Page1[0].f1_08[0]",
+  "line6a": "topmostSubform[0].Page1[0].f1_09[0]",
+  "line6b": "topmostSubform[0].Page1[0].f1_10[0]",
+  "line6c": "topmostSubform[0].Page1[0].f1_11[0]",
+  "line7": "topmostSubform[0].Page1[0].f1_12[0]",
+  "line8": "topmostSubform[0].Page1[0].f1_13[0]",
+  "line9": "topmostSubform[0].Page1[0].f1_14[0]",
+  "line10": "topmostSubform[0].Page1[0].f1_15[0]",
 };
 
 export default map;
