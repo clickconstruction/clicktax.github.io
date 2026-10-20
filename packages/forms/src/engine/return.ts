@@ -139,6 +139,10 @@ export interface ReturnInput {
   form8960?: Values;
   /** Optional Schedule EIC inputs (qualifying children); the computed earned income credit → 1040 line 27. */
   scheduleEIC?: Values;
+  /** Optional Form 8962 (premium tax credit) from Form 1095-A; net credit → Schedule 3 line 9, repayment → Schedule 2 line 1a. */
+  form8962?: Values;
+  /** Optional Forms 1116 (foreign tax credit), one per category; line 35 totals → Schedule 3 line 1. */
+  form1116?: Values | Values[];
   /** Optional Form 8606 (nondeductible IRAs), one per spouse (owner: "spouse"); taxable amounts → 1040 line 4b. */
   form8606?: Values | Values[];
   /** Optional Form 5329 (additional taxes on retirement accounts), one per spouse; totals → Schedule 2 line 8. */
@@ -587,9 +591,42 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   let f8283: PreparedForm | undefined;
   if (input.form8283) f8283 = prepareFormValues("f8283", year, { name: jointName, ssn: tp["ssn"], ...input.form8283 }, rounding);
 
+  // Form 8962: premium tax credit reconciliation from Form 1095-A (Schedule 3 line 9 / Schedule 2 line 1a).
+  let f8962: PreparedForm | undefined;
+  if (input.form8962) {
+    const depCount = Array.isArray(tp["dependents"]) ? (tp["dependents"] as ListRow[]).length : 0;
+    const magi = n(f1040.values["line11"]) + n(f1040.values["line2a"]) + Math.max(0, n(f1040.values["line6a"]) - n(f1040.values["line6b"]));
+    f8962 = prepareFormValues("f8962", year, { name: fullName, ssn: tp["ssn"], filing_status: tp["filing_status"], line1: 1 + (String(tp["filing_status"]) === "mfj" ? 1 : 0) + depCount, line2a: magi, ...input.form8962 }, rounding);
+    if (n(f8962.values["line29"]) > 0) {
+      if (s2Values["line1a"] !== undefined) warnings.push("schedule2.line1a was supplied; it is replaced by Form 8962 line 29.");
+      s2Values["line1a"] = f8962.values["line29"];
+      s2 = prepareFormValues("f1040s2", year, s2Values, rounding);
+      s2Needed = true;
+      f1040Values["line17"] = s2.values["line3"];
+      f1040Values["line23"] = s2.values["line21"];
+      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    }
+  }
+
+  // Forms 1116: the foreign tax credit, one per income category (Schedule 3 line 1).
+  const f1116s: PreparedForm[] = asList(input.form1116).map((v, i, all) => {
+    const p = prepareFormValues("f1116", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line18: f1040.values["line15"], line20: n(f1040.values["line16"]) + n(s2.values["line1z"]), ...v }, rounding);
+    if (all.length > 1) p.title = `${p.title} (${String(v["category"] ?? `category ${i + 1}`).replace(/_/g, " ")})`;
+    return p;
+  });
+
   // Credit forms, each limited by the tax left after the credits ahead of it on Schedule 3:
   // Form 2441 (line 2), Form 8863 (line 3 and the refundable part on 1040 line 29), Form 8880 (line 4).
   const s3Input: Values = { ...(input.schedule3 ?? {}) };
+  if (f1116s.length) {
+    if (s3Input["line1"] !== undefined) warnings.push("schedule3.line1 was supplied; it is replaced by the Form 1116 total.");
+    // Each form's line 35 already includes the other categories it was told about; take the largest single total rather than double counting.
+    s3Input["line1"] = Math.max(...f1116s.map((p) => n(p.values["line35"])));
+  }
+  if (f8962 && n(f8962.values["line26"]) > 0) {
+    if (s3Input["line9"] !== undefined) warnings.push("schedule3.line9 was supplied; it is replaced by Form 8962 line 26.");
+    s3Input["line9"] = f8962.values["line26"];
+  }
   let f2441: PreparedForm | undefined;
   let f8863: PreparedForm | undefined;
   let f8880: PreparedForm | undefined;
@@ -619,7 +656,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
 
   // Schedule 3: other credits and payments (1040 lines 20 and 31).
   let s3: PreparedForm | undefined;
-  if (input.schedule3 || f2441 || f8863 || f8880) {
+  if (input.schedule3 || f2441 || f8863 || f8880 || f1116s.length || (f8962 && n(f8962.values["line26"]) > 0)) {
     s3 = prepareFormValues("f1040s3", year, { name: jointName, ssn: tp["ssn"], ...s3Input }, rounding);
     if (tp["line20"] !== undefined) warnings.push("form1040.line20 was supplied; it is replaced by Schedule 3 line 8.");
     if (tp["line31"] !== undefined) warnings.push("form1040.line31 was supplied; it is replaced by Schedule 3 line 15.");
@@ -721,6 +758,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   for (const p of f8606s) forms.push(p);
   for (const p of f5329s) forms.push(p);
   if (f8283) forms.push(f8283);
+  if (f8962) forms.push(f8962);
+  for (const p of f1116s) forms.push(p);
   for (const s of schedC) forms.push(s.prepared);
   for (const p of f8829s) forms.push(p);
   for (const [i, p] of f4562s.entries()) { forms.push(p); statements.push(...statementsFor(p, year, i + 1)); }
@@ -746,6 +785,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       additional_medicare_tax: f8959 ? n(f8959.values["line18"]) : 0,
       net_investment_income_tax: f8960 ? n(f8960.values["line17"]) : 0,
       alternative_minimum_tax: f6251 ? n(f6251.values["line11"]) : 0,
+      net_premium_tax_credit: f8962 ? n(f8962.values["line26"]) : 0,
+      excess_advance_ptc_repayment: f8962 ? n(f8962.values["line29"]) : 0,
       child_tax_credit: s8 ? n(s8.values["line14"]) : 0,
       additional_child_tax_credit: s8 ? n(s8.values["line27"]) : 0,
       total_tax: n(f1040.values["line24"]),
