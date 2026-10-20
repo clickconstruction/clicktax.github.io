@@ -137,6 +137,7 @@ const fields: FieldDef[] = [
   comp("line14", "14", "Add lines 12 and 13 (and 13b for 2025)", 2, "line 12 + line 13 (+ 13b)", { locate: tok("14", { 2024: 1, 2025: 2 }) }),
   comp("line15", "15", "Taxable income", 2, "line 11 - line 14, not less than zero", { locate: tok("15", { 2024: 1, 2025: 2 }), alwaysShow: true }),
   { id: "line16_override", label: "Tax override (supply only when Schedule D's tax worksheet, Form 8615, or another method applies)", type: "money" },
+  { id: "line16_additions", label: "Amounts added to the line 16 tax after the computation (Form 8814 line 15 tax on a child's income)", type: "money", noPdf: true },
   { id: "schedule_d_gain", label: "If Schedule D is filed: the smaller of Schedule D line 15 or line 16 (used by the capital gain tax worksheet instead of line 7)", type: "money" },
   { id: "feie_excluded", label: "Foreign earned income and housing amounts excluded on Form 2555 (lines 45 and 50); the tax is then figured with the Foreign Earned Income Tax Worksheet", type: "money", noPdf: true },
   comp("line16", "16", "Tax", 2, "Tax Table (under $100,000) or Tax Computation Worksheet on line 15; when qualified dividends or capital gains are present, the Qualified Dividends and Capital Gain Tax Worksheet", { alwaysShow: true }),
@@ -262,6 +263,7 @@ export const form1040: FormDef = {
         l16 = c.set("line16", incomeTax(l15, status, ctx.year), "Tax", `${l15 < params(ctx.year).taxTableMax ? "Tax Table" : "Tax Computation Worksheet"} for ${status} on line 15 ${f(l15)}`, "16");
       }
     }
+    if (c.n("line16_additions") > 0) l16 = c.set("line16", l16 + c.n("line16_additions"), "Tax including Form 8814 tax on a child's income", `${f(l16)} + ${f(c.n("line16_additions"))}`, "16");
     const l17 = c.n("line17");
     const l18 = c.set("line18", l16 + l17, "Add lines 16 and 17", `line 16 ${f(l16)} + line 17 ${f(l17)}`, "18");
     const l21 = c.set("line21", c.n("line19") + c.n("line20"), "Add lines 19 and 20", `line 19 ${f(c.n("line19"))} + line 20 ${f(c.n("line20"))}`, "21");
