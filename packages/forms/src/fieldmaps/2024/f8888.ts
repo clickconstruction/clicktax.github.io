@@ -2,7 +2,25 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "calendar_year": "topmostSubform[0].Page1[0].Pg1Header[0].CalendarYear[0].f1_1[0]",
+  "name": "topmostSubform[0].Page1[0].f1_2[0]",
+  "ssn": "topmostSubform[0].Page1[0].f1_3[0]",
+  "accounts[0].amount": "topmostSubform[0].Page1[0].f1_4[0]",
+  "accounts[1].amount": "topmostSubform[0].Page1[0].f1_7[0]",
+  "accounts[2].amount": "topmostSubform[0].Page1[0].f1_10[0]",
+  "accounts[0].routing": "topmostSubform[0].Page1[0].Line1bCombfield[0].f1_5[0]",
+  "accounts[1].routing": "topmostSubform[0].Page1[0].Line2bCombfield[0].f1_8[0]",
+  "accounts[2].routing": "topmostSubform[0].Page1[0].Line3bCombfield[0].f1_11[0]",
+  "accounts[0].checking": "topmostSubform[0].Page1[0].c1_1[0]",
+  "accounts[1].checking": "topmostSubform[0].Page1[0].c1_2[0]",
+  "accounts[2].checking": "topmostSubform[0].Page1[0].c1_3[0]",
+  "accounts[0].savings": "topmostSubform[0].Page1[0].c1_1[1]",
+  "accounts[1].savings": "topmostSubform[0].Page1[0].c1_2[1]",
+  "accounts[2].savings": "topmostSubform[0].Page1[0].c1_3[1]",
+  "accounts[0].account": "topmostSubform[0].Page1[0].Line1dCombfield[0].f1_6[0]",
+  "accounts[1].account": "topmostSubform[0].Page1[0].Line2dCombfield[0].f1_9[0]",
+  "accounts[2].account": "topmostSubform[0].Page1[0].Line3dCombfield[0].f1_12[0]",
+  "line5": "topmostSubform[0].Page1[0].f1_14[0]",
 };
 
 export default map;

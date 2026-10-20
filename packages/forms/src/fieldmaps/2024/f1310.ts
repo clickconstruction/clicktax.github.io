@@ -2,7 +2,31 @@
 import type { FieldMap } from "../../types.ts";
 
 const map: FieldMap = {
-
+  "calendar_year": "topmostSubform[0].Page1[0].f1_1[0]",
+  "fy_begin": "topmostSubform[0].Page1[0].f1_2[0]",
+  "fy_begin_year": "topmostSubform[0].Page1[0].f1_3[0]",
+  "fy_end": "topmostSubform[0].Page1[0].f1_4[0]",
+  "fy_end_year": "topmostSubform[0].Page1[0].f1_5[0]",
+  "decedent_name": "topmostSubform[0].Page1[0].f1_6[0]",
+  "date_of_death": "topmostSubform[0].Page1[0].f1_7[0]",
+  "decedent_ssn": "topmostSubform[0].Page1[0].f1_8[0]",
+  "claimant_name": "topmostSubform[0].Page1[0].f1_9[0]",
+  "claimant_ssn": "topmostSubform[0].Page1[0].f1_10[0]",
+  "address": "topmostSubform[0].Page1[0].f1_11[0]",
+  "apt": "topmostSubform[0].Page1[0].f1_12[0]",
+  "city_state_zip": "topmostSubform[0].Page1[0].f1_13[0]",
+  "box.a": "topmostSubform[0].Page1[0].c1_1[0]",
+  "box.b": "topmostSubform[0].Page1[0].c1_1[1]",
+  "box.c": "topmostSubform[0].Page1[0].c1_1[2]",
+  "line1.yes": "topmostSubform[0].Page1[0].c1_2[0]",
+  "line1.no": "topmostSubform[0].Page1[0].c1_2[1]",
+  "line2a.yes": "topmostSubform[0].Page1[0].c1_3[0]",
+  "line2a.no": "topmostSubform[0].Page1[0].c1_3[1]",
+  "line2b.yes": "topmostSubform[0].Page1[0].c1_4[0]",
+  "line2b.no": "topmostSubform[0].Page1[0].c1_4[1]",
+  "line3.yes": "topmostSubform[0].Page1[0].c1_5[0]",
+  "line3.no": "topmostSubform[0].Page1[0].c1_5[1]",
+  "phone": "topmostSubform[0].Page1[0].f1_14[0]",
 };
 
 export default map;

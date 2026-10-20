@@ -183,6 +183,20 @@ export interface ReturnInput {
   form8862?: Values;
   /** Optional Form 8938 (specified foreign financial assets), attached as supplied. */
   form8938?: Values;
+  /** Optional Form 8888 (split refund among accounts); line 5 is checked against Form 1040 line 35a. */
+  form8888?: Values;
+  /** Optional Form 1310 (person claiming a refund for a deceased taxpayer), attached as supplied. */
+  form1310?: Values;
+  /** Optional Forms 6252 (installment sales), one per sale; line 26 → Schedule D line 11 (or line 4 when long_term is false); business_property keeps it for Form 4797. */
+  form6252?: Values | Values[];
+  /** Optional Form 2555 (foreign earned income exclusion); line 45 → Schedule 1 line 8d, line 50 → line 24j, and Form 1040 line 16 uses the Foreign Earned Income Tax Worksheet. */
+  form2555?: Values;
+  /** Optional Form 4835 (farm rental income); net → Schedule E line 40. */
+  form4835?: Values;
+  /** Optional Form 2106 (employee business expenses); line 10 → Schedule 1 line 12. */
+  form2106?: Values;
+  /** Optional Form 8958 (community property allocation), attached with the names and SSNs from Form 1040. */
+  form8958?: Values;
 }
 
 export interface PreparedReturn {
@@ -344,11 +358,43 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   let f4797: PreparedForm | undefined;
   if (input.form4797) f4797 = prepareFormValues("f4797", year, { name: jointName, ssn: tp["ssn"], ...input.form4797 }, rounding);
 
+  // Form 4835: farm rental income feeds Schedule E line 40.
+  let f4835: PreparedForm | undefined;
+  const eIn: Values = { ...(input.scheduleE ?? {}) };
+  if (input.form4835) {
+    f4835 = prepareFormValues("f4835", year, { name: jointName, ssn: tp["ssn"], ...input.form4835 }, rounding);
+    const net = n(f4835.values["line32"]);
+    if (eIn["line40"] !== undefined) warnings.push("scheduleE.line40 was supplied; it is replaced by Form 4835.");
+    eIn["line40"] = net < 0 ? n(f4835.values["line34c"]) : net;
+  }
   // Schedule E: rental, royalty, and pass-through income to Schedule 1 line 5.
   let sE: PreparedForm | undefined;
-  if (input.scheduleE) sE = prepareFormValues("f1040se", year, { name: jointName, ssn: tp["ssn"], ...input.scheduleE }, rounding);
+  if (input.scheduleE || f4835) sE = prepareFormValues("f1040se", year, { name: jointName, ssn: tp["ssn"], ...eIn }, rounding);
 
   const s1Values: Values = { name: jointName, ssn: tp["ssn"], ...(input.schedule1 ?? {}) };
+  // Form 2555: the foreign earned income exclusion (Schedule 1 line 8d) and housing deduction (line 24j).
+  let f2555: PreparedForm | undefined;
+  let feieExcluded = 0;
+  if (input.form2555) {
+    f2555 = prepareFormValues("f2555", year, { name: fullName, ssn: tp["ssn"], ...input.form2555 }, rounding);
+    if (s1Values["line8d"] !== undefined) warnings.push("schedule1.line8d was supplied; it is replaced by Form 2555 line 45.");
+    s1Values["line8d"] = f2555.values["line45"];
+    if (n(f2555.values["line50"]) > 0) {
+      if (s1Values["line24j"] !== undefined) warnings.push("schedule1.line24j was supplied; it is replaced by Form 2555 line 50.");
+      s1Values["line24j"] = f2555.values["line50"];
+    }
+    feieExcluded = n(f2555.values["line45"]) + n(f2555.values["line50"]);
+  }
+  // Form 2106: employee business expenses for reservists, performing artists, and fee-basis officials (Schedule 1 line 12).
+  let f2106: PreparedForm | undefined;
+  if (input.form2106) {
+    f2106 = prepareFormValues("f2106", year, { name: fullName, ssn: tp["ssn"], ...input.form2106 }, rounding);
+    if (String(input.form2106["filer_type"] ?? "") === "impairment") warnings.push("Form 2106 for impairment-related work expenses: enter line 10 on Schedule A line 16 (scheduleA.line16); it is not placed on Schedule 1.");
+    else {
+      if (s1Values["line12"] !== undefined) warnings.push("schedule1.line12 was supplied; it is replaced by Form 2106 line 10.");
+      s1Values["line12"] = f2106.values["line10"];
+    }
+  }
   if (f4797) {
     if (s1Values["line4"] !== undefined) warnings.push("schedule1.line4 was supplied; it is replaced by Form 4797 line 18b.");
     s1Values["line4"] = f4797.values["line18b"];
@@ -398,7 +444,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   let s2 = prepareFormValues("f1040s2", year, s2Values, rounding);
   let s2Needed = n(s2.values["line3"]) !== 0 || n(s2.values["line21"]) !== 0;
 
-  const f1040Values: Values = { ...tp };
+  const f1040Values: Values = { ...tp, ...(feieExcluded > 0 ? { feie_excluded: feieExcluded } : {}) };
   // Schedule B: payer detail for interest and ordinary dividends.
   let sB: PreparedForm | undefined;
   if (input.scheduleB) {
@@ -416,16 +462,31 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   let f6781: PreparedForm | undefined;
   if (input.form6781) f6781 = prepareFormValues("f6781", year, { name: jointName, ssn: tp["ssn"], ...input.form6781 }, rounding);
 
+  // Forms 6252: installment sale income to Schedule D (kept for Form 4797 when business property).
+  const f6252s: PreparedForm[] = asList(input.form6252).map((v, i, all) => {
+    const p = prepareFormValues("f6252", year, { name: jointName, ssn: tp["ssn"], ...v }, rounding);
+    if (all.length > 1) p.title = `${p.title} (${i + 1})`;
+    return p;
+  });
+  const f6252ToD = f6252s.filter((p) => p.values["business_property"] !== true);
+  if (f6252s.length > f6252ToD.length) warnings.push("Form 6252 with business_property: report line 26 (and 37) on Form 4797; it is not placed on Schedule D.");
+  if (f6252s.some((p) => n(p.values["line25"]) + n(p.values["line36"]) > 0)) warnings.push("Form 6252 ordinary recapture income (lines 25/36) belongs on Form 4797 Part II; it is not placed automatically.");
+
   // Form 8949 / Schedule D: capital gains and losses to Form 1040 line 7 (before AGI).
   const f8949s: PreparedForm[] = [];
   let sD: PreparedForm | undefined;
-  if (input.form8949?.length || input.scheduleD || f6781 || (f4797 && (n(f4797.values["line9"]) > 0 || n(f4797.values["unrecaptured_1250_total"]) > 0))) {
+  if (input.form8949?.length || input.scheduleD || f6781 || f6252ToD.length || (f4797 && (n(f4797.values["line9"]) > 0 || n(f4797.values["unrecaptured_1250_total"]) > 0))) {
     const dValues: Values = { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], ...(input.scheduleD ?? {}) };
     if (f6781) {
       const shortTerm = n(f6781.values["line8"]) - n(f6781.values["line11a"]) + n(f6781.values["line13a"]);
       const longTerm = n(f6781.values["line9"]) - n(f6781.values["line11b"]) + n(f6781.values["line13b"]);
       if (shortTerm !== 0) dValues["line4"] = n(dValues["line4"]) + shortTerm;
       if (longTerm !== 0) dValues["line11"] = n(dValues["line11"]) + longTerm;
+    }
+    for (const p of f6252ToD) {
+      const gain = n(p.values["line26"]) + n(p.values["line37"]);
+      const key = p.values["long_term"] === false ? "line4" : "line11";
+      if (gain !== 0) dValues[key] = n(dValues[key]) + gain;
     }
     if (f4797 && n(f4797.values["line9"]) > 0) dValues["line11"] = n(dValues["line11"]) + n(f4797.values["line9"]);
     if (f4797 && n(f4797.values["unrecaptured_1250_total"]) > 0 && n(f4797.values["line7"]) > 0) dValues["line19"] = n(dValues["line19"]) + n(f4797.values["unrecaptured_1250_total"]);
@@ -503,12 +564,12 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     const magi = n(pre.values["line11"]) + n(s1NoLoss.values["line20"]) + n(s1NoLoss.values["line21"]) + n(pre.values["line6b"]);
     f8582 = prepareFormValues("f8582", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line6: magi, ...extra, rental_activities: rentalRows, other_activities: otherRows }, rounding);
     const allowed = (f8582.values["allowed_losses"] as ListRow[] | undefined) ?? [];
-    const eProps = ((input.scheduleE!["properties"] as ListRow[] | undefined) ?? []).map((r, i) => ({ ...r }));
+    const eProps = ((eIn["properties"] as ListRow[] | undefined) ?? []).map((r) => ({ ...r }));
     for (const { r, i } of lossProps) {
       const a = allowed.find((x) => String(x["name"]) === String(r["address"] ?? `Property ${i + 1}`));
       if (a && eProps[i]) eProps[i]!["line22"] = n(a["allowed"]);
     }
-    sE = prepareFormValues("f1040se", year, { name: jointName, ssn: tp["ssn"], ...input.scheduleE, properties: eProps }, rounding);
+    sE = prepareFormValues("f1040se", year, { name: jointName, ssn: tp["ssn"], ...eIn, properties: eProps }, rounding);
     s1Values["line5"] = sE.values["line41"];
     s1 = prepareFormValues("f1040s1", year, s1Values, rounding);
     f1040Values["line8"] = s1.values["line10"];
@@ -759,7 +820,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   let f8936: PreparedForm | undefined;
   if (input.form8936) {
     const ahead = ["line1", "line2", "line3", "line4", "line5a", "line5b", "line6b", "line6d", "line6e", "line6g", "line6h", "line6i", "line6j", "line6k", "line6l"].reduce((a, k) => a + n(s3Input[k]), 0);
-    f8936 = prepareFormValues("f8936", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line1a: f1040.values["line11"], line10: f1040.values["line18"], line11: ahead, line15: f1040.values["line18"], ...input.form8936 }, rounding);
+    f8936 = prepareFormValues("f8936", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line1a: f1040.values["line11"], ...(f2555 ? { line1c: n(f2555.values["line42"]) + n(f2555.values["line36"]), line1d: f2555.values["line50"] } : {}), line10: f1040.values["line18"], line11: ahead, line15: f1040.values["line18"], ...input.form8936 }, rounding);
     if (n(f8936.values["line13"]) > 0) {
       if (s3Input["line6f"] !== undefined) warnings.push("schedule3.line6f was supplied; it is replaced by Form 8936 line 13.");
       s3Input["line6f"] = f8936.values["line13"];
@@ -866,6 +927,14 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f4868 = prepareFormValues("f4868", year, { name: jointName, address: addr, city: tp["city"], state: tp["state"], zip: tp["zip"], ssn: tp["ssn"], spouse_ssn: tp["spouse_ssn"], line4: f1040.values["line24"], line5: f1040.values["line33"], ...input.form4868 }, rounding);
   }
 
+  // Forms 8888, 1310, and 8958: filled from the return's figures and attached.
+  let f8888: PreparedForm | undefined;
+  if (input.form8888) f8888 = prepareFormValues("f8888", year, { name: jointName, ssn: tp["ssn"], refund: f1040.values["line35a"], ...input.form8888 }, rounding);
+  let f1310: PreparedForm | undefined;
+  if (input.form1310) f1310 = prepareFormValues("f1310", year, { ...input.form1310 }, rounding);
+  let f8958: PreparedForm | undefined;
+  if (input.form8958) f8958 = prepareFormValues("f8958", year, { first_name: tp["first_name"], last_name: tp["last_name"], ssn: tp["ssn"], spouse_first_name: tp["spouse_first_name"], spouse_last_name: tp["spouse_last_name"], spouse_ssn: tp["spouse_ssn"], ...input.form8958 }, rounding);
+
   // Form 1040-ES: next year's estimated payments from this year's return.
   let f1040es: PreparedForm | undefined;
   if (input.form1040es) {
@@ -890,7 +959,10 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (sD) forms.push(sD);
   for (const p of f8949s) forms.push(p);
   if (f6781) forms.push(f6781);
+  for (const p of f6252s) forms.push(p);
   if (s1a && n(s1a.values["line38"]) > 0) forms.push(s1a);
+  if (f2555) forms.push(f2555);
+  if (f2106) forms.push(f2106);
   if (s3) forms.push(s3);
   if (f2441) forms.push(f2441);
   if (f8863) forms.push(f8863);
@@ -909,6 +981,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8283) forms.push(f8283);
   if (f8862) forms.push(f8862);
   if (f8938) forms.push(f8938);
+  if (f8958) forms.push(f8958);
   if (f8962) forms.push(f8962);
   if (f5695) forms.push(f5695);
   if (f4797) forms.push(f4797);
@@ -919,9 +992,12 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   for (const [i, p] of f4562s.entries()) { forms.push(p); statements.push(...statementsFor(p, year, i + 1)); }
   for (const s of seForms) forms.push(s.prepared);
   if (sE) forms.push(sE);
+  if (f4835) forms.push(f4835);
   if (f8582) forms.push(f8582);
   if (f2210) forms.push(f2210);
   if (f4868) forms.push(f4868);
+  if (f8888) forms.push(f8888);
+  if (f1310) forms.push(f1310);
   if (f1040es) forms.push(f1040es);
 
   const link = await linkFor(year, forms, { ...opts, rounding, title: opts.title ?? `${year} Form 1040 return for ${jointName || "taxpayer"}` }, statements);
@@ -951,6 +1027,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       amount_owed: n(f1040.values["line37"]),
       estimated_tax_penalty: f2210 ? n(f2210.values["line19"]) : 0,
       general_business_credit: f3800 ? n(f3800.values["line38"]) : 0,
+      foreign_earned_income_exclusion: feieExcluded,
     },
     link,
   };
