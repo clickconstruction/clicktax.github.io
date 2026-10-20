@@ -139,6 +139,8 @@ export interface ReturnInput {
   form8960?: Values;
   /** Optional Schedule EIC inputs (qualifying children); the computed earned income credit → 1040 line 27. */
   scheduleEIC?: Values;
+  /** Optional Form 2210 inputs (prior_year_tax, prior_year_agi, estimated_payments, boxes); figured automatically when the balance due is $1,000 or more. `{ skip: true }` disables it. */
+  form2210?: Values;
   /** Optional Form 4797 (sales of business property): line 9 → Schedule D line 11, line 18b → Schedule 1 line 4, unrecaptured 1250 gain → Schedule D line 19. */
   form4797?: Values;
   /** Optional Form 5695 (residential energy credits): lines 15 and 32 → Schedule 3 lines 5a and 5b. */
@@ -743,6 +745,22 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
   }
 
+  // Form 2210: the estimated tax penalty when the balance due reaches $1,000 (Form 1040 line 38).
+  let f2210: PreparedForm | undefined;
+  if (input.form2210?.["skip"] !== true && (input.form2210 || n(f1040.values["line37"]) >= 1000)) {
+    const extra = { ...(input.form2210 ?? {}) };
+    delete extra["skip"];
+    const refundable = n(f1040.values["line27"]) + n(f1040.values["line28"]) + n(f1040.values["line29"]) + (year === 2025 ? n(f1040.values["line30"]) : 0) + (f8962 ? n(f8962.values["line26"]) : 0);
+    const payments = extra["estimated_payments"] ?? (n(f1040.values["line26"]) > 0 ? [1, 2, 3, 4].map((q) => ({ date: q === 4 ? `01/15/${year + 1}` : `${[4, 6, 9][q - 1]}/15/${year}`, amount: Math.round(n(f1040.values["line26"]) / 4) })) : []);
+    if (extra["estimated_payments"] === undefined && n(f1040.values["line26"]) > 0) warnings.push("Form 2210: estimated payments were assumed paid in four equal installments on the due dates; supply form2210.estimated_payments with the actual dates.");
+    f2210 = prepareFormValues("f2210", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line1: f1040.values["line22"], line2: f1040.values["line23"], line3: -refundable, line6: f1040.values["line25d"], ...extra, estimated_payments: payments }, rounding);
+    if (n(f2210.values["line19"]) > 0 || input.form2210) {
+      if (tp["line38"] !== undefined) warnings.push("form1040.line38 was supplied; it is replaced by Form 2210 line 19.");
+      f1040Values["line38"] = f2210.values["line19"];
+      f1040 = prepareFormValues("f1040", year, f1040Values, rounding);
+    } else f2210 = undefined;
+  }
+
   // Form 4868 extension voucher from the computed totals.
   let f4868: PreparedForm | undefined;
   if (input.form4868) {
@@ -797,6 +815,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   for (const s of seForms) forms.push(s.prepared);
   if (sE) forms.push(sE);
   if (f8582) forms.push(f8582);
+  if (f2210) forms.push(f2210);
   if (f4868) forms.push(f4868);
   if (f1040es) forms.push(f1040es);
 
@@ -824,6 +843,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       total_payments: n(f1040.values["line33"]),
       refund: n(f1040.values["line35a"]),
       amount_owed: n(f1040.values["line37"]),
+      estimated_tax_penalty: f2210 ? n(f2210.values["line19"]) : 0,
     },
     link,
   };
