@@ -37,6 +37,13 @@ import { form2210 } from "./form2210.ts";
 import { form4797 } from "./form4797.ts";
 import { form5329 } from "./form5329.ts";
 import { form8283 } from "./form8283.ts";
+import { scheduleF } from "./scheduleF.ts";
+import { form4952 } from "./form4952.ts";
+import { form8862 } from "./form8862.ts";
+import { form3800 } from "./form3800.ts";
+import { form8938 } from "./form8938.ts";
+import { form8936 } from "./form8936.ts";
+import { form6781 } from "./form6781.ts";
 import { scheduleC } from "./scheduleC.ts";
 import { scheduleSE } from "./scheduleSE.ts";
 
@@ -80,6 +87,13 @@ const FORMS_PARTIAL: Partial<Record<FormId, FormDef>> = {
   f4797: form4797,
   f5329: form5329,
   f8283: form8283,
+  f1040sf: scheduleF,
+  f4952: form4952,
+  f8862: form8862,
+  f3800: form3800,
+  f8938: form8938,
+  f8936: form8936,
+  f6781: form6781,
   f1040sc: scheduleC,
   f1040sse: scheduleSE,
 };
