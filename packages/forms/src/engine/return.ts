@@ -245,6 +245,14 @@ export interface ReturnInput {
   form2439?: Values | Values[];
   /** Optional Form 8997 (QOF investments), attached as supplied; inclusion events answer the Schedule D QOF question. */
   form8997?: Values;
+  /** Optional Form 4136 (fuel tax credit; gallons per line); line 17 → Schedule 3 line 12. */
+  form4136?: Values;
+  /** Optional Form 3468 (investment credit); the Part II-VII totals → Form 3800 Part III lines 1a, 1d, 1o, 1v, 4a, and 4k. */
+  form3468?: Values;
+  /** Optional Form 965-A (net 965 tax liability report), attached as supplied. */
+  form965a?: Values;
+  /** Optional Form 1040-NR, prepared with the header and schedule amounts from this return and attached (file either it or Form 1040). */
+  form1040nr?: Values;
 }
 
 export interface PreparedReturn {
@@ -1107,6 +1115,12 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     const amt = g.amount(p);
     if (amt > 0) gbcCredits.push({ line: g.line(p), nonpassive: amt });
   }
+  if (input.form3468) {
+    const p = prepareFormValues("f3468", year, { name: jointName, ssn: tp["ssn"], ...input.form3468 }, rounding);
+    gbcPrepared.push(p);
+    const parts: Array<[string, string]> = [["p2_line7", "1a"], ["p3_line3", "1d"], ["p4_line3", "1o"], ["p5_line11", "1v"], ["p6_line32", "4a"], ["p7_line3", "4k"]];
+    for (const [k, line] of parts) if (n(p.values[k]) > 0) gbcCredits.push({ line, nonpassive: n(p.values[k]) });
+  }
 
   // Form 3800: the general business credit (Schedule 3 line 6a), limited by net income tax and the tentative minimum tax.
   let f3800: PreparedForm | undefined;
@@ -1125,11 +1139,20 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
 
   // Schedule 3: other credits and payments (1040 lines 20 and 31).
   let s3: PreparedForm | undefined;
+  // Form 4136: the fuel tax credit goes to Schedule 3 line 12.
+  let f4136: PreparedForm | undefined;
+  if (input.form4136) {
+    f4136 = prepareFormValues("f4136", year, { name: jointName, ssn: tp["ssn"], ...input.form4136 }, rounding);
+    if (n(f4136.values["line17"]) > 0) {
+      if (s3Input["line12"] !== undefined) warnings.push("schedule3.line12 was supplied; it is replaced by Form 4136 line 17.");
+      s3Input["line12"] = f4136.values["line17"];
+    }
+  }
   if (f2439Tax > 0) {
     if (s3Input["line13a"] !== undefined) warnings.push("schedule3.line13a was supplied; it is replaced by the Form 2439 box 2 total.");
     s3Input["line13a"] = f2439Tax;
   }
-  if (input.schedule3 || f2439Tax > 0 || f2441 || f8863 || f8880 || f8936 || f3800 || f8801 || f8911 || sR || f8839 || f8396 || f1116s.length || f5695 || (f8962 && n(f8962.values["line26"]) > 0)) {
+  if (input.schedule3 || f2439Tax > 0 || f4136 || f2441 || f8863 || f8880 || f8936 || f3800 || f8801 || f8911 || sR || f8839 || f8396 || f1116s.length || f5695 || (f8962 && n(f8962.values["line26"]) > 0)) {
     s3 = prepareFormValues("f1040s3", year, { name: jointName, ssn: tp["ssn"], ...s3Input }, rounding);
     if (tp["line20"] !== undefined) warnings.push("form1040.line20 was supplied; it is replaced by Schedule 3 line 8.");
     if (tp["line31"] !== undefined) warnings.push("form1040.line31 was supplied; it is replaced by Schedule 3 line 15.");
@@ -1265,6 +1288,21 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (f8992) forms.push(f8992);
   for (const p of f2439s) forms.push(p);
   if (f8997) forms.push(f8997);
+  if (f4136) forms.push(f4136);
+  if (input.form965a) forms.push(prepareFormValues("f965a", year, { name: jointName, ssn: tp["ssn"], ...input.form965a }, rounding));
+  if (input.form1040nr) {
+    const defaults: Values = {
+      first_name: tp["first_name"], last_name: tp["last_name"], ssn: tp["ssn"], address: tp["address"], apt: tp["apt"], city: tp["city"], state: tp["state"], zip: tp["zip"],
+      line1a: tp["line1a"], line1b: tp["line1b"], line1c: tp["line1c"], line1d: tp["line1d"], line1e: tp["line1e"], line1f: tp["line1f"], line1g: tp["line1g"], line1h: tp["line1h"],
+      line2a: tp["line2a"], line2b: tp["line2b"], line3a: tp["line3a"], line3b: tp["line3b"], line4a: tp["line4a"], line4b: tp["line4b"], line5a: tp["line5a"], line5b: tp["line5b"], line7a: tp["line7"],
+      line25a: tp["line25a"], line25b: tp["line25b"], line25c: tp["line25c"], line26: tp["line26"],
+      line8: s1.values["line10"], line10: s1.values["line26"], line17: s2.values["line3"], line23b: s2.values["line21"],
+      line20: s3?.values["line8"], line31: s3?.values["line15"], line13a: f8995?.values["line15"], line19: s8?.values["line14"], line28: s8?.values["line27"],
+    };
+    for (const k of Object.keys(defaults)) if (defaults[k] === undefined || defaults[k] === 0) delete defaults[k];
+    forms.push(prepareFormValues("f1040nr", year, { ...defaults, ...input.form1040nr }, rounding));
+    warnings.push("Form 1040-NR was prepared with this return's header and schedule amounts; a nonresident files it instead of Form 1040.");
+  }
   if (f8801) forms.push(f8801);
   if (f8911) forms.push(f8911);
   if (sR) forms.push(sR);
