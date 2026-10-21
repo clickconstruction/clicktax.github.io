@@ -163,6 +163,14 @@ const samples: Partial<Record<FormId, Values>> = {
   f8824: { name: NAME, ssn: SSN, line1: "Fourplex, 410 Elm St, Austin, TX", line2: "Retail condo, 77 Congress Ave, Austin, TX", line3: "03/15/2015", line4: "04/10/2025", line5: "05/01/2025", line6: "07/15/2025", line7: false, line15: 35000, line16: 820000, line18: 410000, line21: 0 },
   f8839: { name: NAME, ssn: SSN, line7: 148000, line15: 0, line17: 9800, children: [{ first_name: "Mia", last_name: "Sample", birth_year: "2021", identifying_number: "123456780", final: true, line5: 22400 }], },
   f4684: { name: NAME, ssn: SSN, federally_declared: true, fema_dr: "4879", agi: 110000, properties: [{ description: "Residence", location: "Kerrville, TX", zip: "78028", date_acquired: "06/2016", line2: 310000, line3: 180000, line5: 420000, line6: 160000 }, { description: "2019 pickup", location: "Kerrville, TX", zip: "78028", date_acquired: "09/2019", line2: 38000, line3: 12000, line5: 26000, line6: 0 }] },
+  f5884: { name: NAME, ssn: SSN, line1a_wages: 12000, line1b_wages: 30000, line1c_wages: 10000, line3: 1500 },
+  f8846: { name: NAME, ssn: SSN, line1: 84000, line2: 6000, line5: 900 },
+  f8994: { name: NAME, ssn: SSN, lineA: true, lineB: true, lineC: true, lineD: true, leave_wages: 40000, pay_rate: 70, line2: 1200 },
+  f8586: { name: NAME, ssn: SSN, line1: 2, line2: false, line3: 18500, line4: 4200 },
+  f8992: { name: NAME, ssn: SSN, line1: 420000, line2: 35000, qbai: 1500000, line3a: 60000, line3b: 12000 },
+  f2439: { name: "Sam Sample, 12 Main St, Austin, TX 78701", ssn: SSN, ric_name: "Sample Growth Fund, 100 Market St, Boston, MA 02110", ric_ein: "04-1234567", line1a: 8400, line1b: 1200, line1d: 300, line2: 1764 },
+  f8997: { name: NAME, ssn: SSN, holdings_begin: [{ ein: "83-1234567", date: "03/15/2022", description: "100 shares Sample QOF LLC", short_term: 0, long_term: 60000 }], deferred_gains: [{ ein: "83-1234567", date: "06/30/2025", description: "50 shares Sample QOF LLC", short_term: 15000, long_term: 0 }], foreign_eligible: false },
+  f6765: { name: NAME, ssn: SSN, lineA: false, lineB: false, line21: 540000, section_g_required: true, business_components: [{ ein: "12-3456789", activity_code: "541511", name: "Routing engine v2", type: "Computer software", software: "Held for sale", description: "Whether a new graph algorithm can cut route planning time", line50: 180000, line51: 30000, line52: 20000, line54: 8000, line55: 6000, line56: 26000 }] },
 };
 
 /** Sample values for one form. The same for every supported year unless a field is year-specific. */
