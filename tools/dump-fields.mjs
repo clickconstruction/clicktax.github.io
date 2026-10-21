@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Enumerates every AcroForm widget (name, type, page, rectangle, maxLen) of each IRS PDF for a year.
-// Usage: node tools/dump-fields.mjs 2025   -> packages/forms/pdf/2025/<form>.fields.json
+// Usage: node tools/dump-fields.mjs 2025 [f8995a ...]  -> packages/forms/pdf/2025/<form>.fields.json (optional basenames limit the run)
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { FORMS, FORM_IDS } from "../packages/forms/src/forms/index.ts";
@@ -9,7 +9,8 @@ const year = process.argv[2];
 if (!year) { console.error("usage: dump-fields.mjs <year>"); process.exit(1); }
 const ROOT = join(import.meta.dirname, "..");
 await mkdir(join(ROOT, "packages", "forms", "pdf", year), { recursive: true });
-for (const form of FORM_IDS.filter((id) => FORMS[id].years.includes(Number(year)))) {
+const only = process.argv.slice(3); // optional: explicit PDF basenames (for forms not yet registered)
+for (const form of only.length ? only : FORM_IDS.filter((id) => FORMS[id].years.includes(Number(year)))) {
   const f = join(ROOT, "apps", "web", "public", "forms", year, form + ".pdf");
   const outPath = join(ROOT, "packages", "forms", "pdf", year, form + ".fields.json");
   const pdf = await PDFDocument.load(await readFile(f), { ignoreEncryption: true });
