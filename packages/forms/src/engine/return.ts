@@ -1,4 +1,6 @@
 import { FORMS } from "../forms/index.ts";
+import { PHASE_IN_RANGE } from "../forms/form8995a.ts";
+import { params } from "../params.ts";
 import { getFieldMap } from "../fieldmaps/index.ts";
 import type { Computation, FormId, ListRow, Rounding, TaxYear, ValidationIssue, Values } from "../types.ts";
 import { toPdfFields, type SummaryLine } from "./fill.ts";
@@ -113,6 +115,8 @@ export interface ReturnInput {
   schedule8812?: Values;
   /** Optional Form 8995 inputs: line3, line6, line7 carryforwards; businesses override. */
   form8995?: Values;
+  /** Optional Form 8995-A inputs (businesses rows with sstb/patron flags, w2_wages, ubia; line28, line29, line38, qbi_loss_carryforward). Used automatically instead of Form 8995 when taxable income is above the threshold; Schedules A, C, and D (Form 8995-A) are attached when they apply. */
+  form8995a?: Values;
   /** Optional Form 8829 inputs (home office, actual expenses), one per business: `business` (1-based) picks the Schedule C, default 1. */
   form8829?: Values | Values[];
   /** Optional Form 4562 inputs (depreciation), one per business: `business` (1-based) picks the Schedule C, default 1; line 22 replaces that Schedule C's line 13. */
@@ -848,14 +852,17 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
     f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
   }
 
-  // Form 8995: qualified business income deduction (1040 line 13) from the Schedule C businesses.
+  // Form 8995 (simplified) or Form 8995-A: the qualified business income deduction (1040 line 13) from the Schedule C and F businesses.
   let f8995: PreparedForm | undefined;
-  if (schedC.length > 0 || schedF.length > 0 || input.form8995) {
+  let f8995a: PreparedForm | undefined;
+  const qbiSchedules: PreparedForm[] = [];
+  if (schedC.length > 0 || schedF.length > 0 || input.form8995 || input.form8995a) {
     const extra = input.form8995 ?? {};
+    const extraA = input.form8995a ?? {};
     const adjustments = n(s1.values["line15"]) + n(s1.values["line16"]) + n(s1.values["line17"]);
     const trades = [
-      ...schedC.map((s, i) => ({ prepared: s.prepared, profit: n(s.prepared.values["line31"]), name: String(s.prepared.values["business_name"] || s.prepared.values["principal_business"] || `Schedule C business ${i + 1}`) })),
-      ...schedF.map((s, i) => ({ prepared: s.prepared, profit: n(s.prepared.values["line34"]), name: s.prepared.values["principal_crop"] ? `Farm: ${String(s.prepared.values["principal_crop"])}` : `Schedule F farm ${i + 1}` })),
+      ...schedC.map((s, i) => ({ prepared: s.prepared, profit: n(s.prepared.values["line31"]), name: String(s.prepared.values["business_name"] || s.prepared.values["principal_business"] || `Schedule C business ${i + 1}`), wages: n(s.prepared.values["line26"]), assets: asList(input.form4562).find((d) => businessOf(d) === i + 1)?.["assets"] as ListRow[] | undefined })),
+      ...schedF.map((s, i) => ({ prepared: s.prepared, profit: n(s.prepared.values["line34"]), name: s.prepared.values["principal_crop"] ? `Farm: ${String(s.prepared.values["principal_crop"])}` : `Schedule F farm ${i + 1}`, wages: n(s.prepared.values["line22"]), assets: undefined as ListRow[] | undefined })),
     ];
     const profits = trades.map((t) => t.profit);
     const totalPositive = profits.filter((p) => p > 0).reduce((a, b) => a + b, 0);
@@ -869,35 +876,87 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       };
     });
     const deductions = n(f1040.values["line12"]) + (year === 2025 ? n(f1040.values["line13b"]) : 0);
-    const v8995: Values = {
-      name: jointName,
-      ssn: tp["ssn"],
-      filing_status: tp["filing_status"],
-      businesses,
-      line11: Math.max(0, n(f1040.values["line11"]) - deductions),
-      line12: Math.max(0, n(tp["line7"])) + n(tp["line3a"]),
-      ...extra,
-    };
-    f8995 = prepareFormValues("f8995", year, v8995, rounding);
+    const tiBefore = Math.max(0, n(f1040.values["line11"]) - deductions);
+    const netGain = Math.max(0, n(tp["line7"])) + n(tp["line3a"]);
     const money = (x: unknown) => n(x).toLocaleString("en-US", { maximumFractionDigits: 0 });
-    statements.push({
-      id: "qbi",
-      title: "Qualified Business Income Computation Statement (supports Form 8995)",
-      header: [`${jointName}${tp["ssn"] ? `, SSN ${String(tp["ssn"]).replace(/\d(?=\d{4})/g, "x")}` : ""}`, `Tax year ${year}`],
-      columns: ["Business", "Net profit (Sch C line 31 / Sch F line 34)", "Less SE tax deduction, SE health insurance, and retirement (allocated)", "Qualified business income"],
-      rows: [
-        ...businesses.map((b, i) => [b.name, money(profits[i]), money(-(profits[i]! > 0 && totalPositive > 0 ? (adjustments * profits[i]!) / totalPositive : 0)), money(b.qbi)]),
-        ["Total qualified business income (Form 8995 line 2)", "", "", money(f8995.values["line2"])],
-        ["Qualified business income component, 20% (line 5)", "", "", money(f8995.values["line5"])],
-        ["Taxable income before the deduction (line 11)", "", "", money(v8995["line11"])],
-        ["Net capital gain (line 12)", "", "", money(v8995["line12"])],
-        ["Income limitation, 20% of line 13 (line 14)", "", "", money(f8995.values["line14"])],
-        ["Qualified business income deduction (line 15, Form 1040 line 13)", "", "", money(f8995.values["line15"])],
-      ],
-      notes: [`Schedule 1 adjustments allocated to each business in proportion to its positive net profit: deductible part of self-employment tax ${money(s1.values["line15"])}, self-employed SEP/SIMPLE/qualified plans ${money(s1.values["line16"])}, self-employed health insurance ${money(s1.values["line17"])}.`, "Qualified business income excludes capital gains, wages paid to you, and investment income. The simplified Form 8995 applies only below the taxable-income threshold; above it Form 8995-A is required."],
-    });
-    if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995 line 15.");
-    f1040Values["line13"] = f8995.values["line15"];
+    const thrA = tp["filing_status"] === "mfj" ? params(year).qbiThreshold.mfj : params(year).qbiThreshold.other;
+    const rangeA = tp["filing_status"] === "mfj" ? PHASE_IN_RANGE.mfj : PHASE_IN_RANGE.other;
+    const suppliedA = extraA["businesses"] as ListRow[] | undefined;
+    const useA = input.form8995a !== undefined || tiBefore > thrA || (suppliedA ?? []).some((b) => b["sstb"] === true || b["patron"] === true);
+    if (useA) {
+      // UBIA: the unadjusted basis of the business's Form 4562 assets still inside their depreciable period (the later of 10 years or the recovery period).
+      const ubiaOf = (assets: ListRow[] | undefined): number => {
+        let total = 0;
+        for (const a of assets ?? []) {
+          const m = /(\d{4})\s*$/.exec(String(a["date_placed"] ?? ""));
+          const placed = m ? Number(m[1]) : year;
+          const life = n(a["life"]) || 7;
+          const pct = a["business_pct"] === undefined ? 100 : Math.max(0, Math.min(100, n(a["business_pct"])));
+          if (year - placed < Math.max(10, life)) total += (n(a["cost"]) * pct) / 100;
+        }
+        return Math.round(total);
+      };
+      const rowsA: ListRow[] = suppliedA ?? trades.map((t, i) => ({ ...businesses[i]!, w2_wages: t.wages, ubia: ubiaOf(t.assets) }));
+      if (!suppliedA && trades.some((t) => t.wages === 0 && !t.assets)) warnings.push("Form 8995-A: a business has no W-2 wages (Schedule C line 26 or Schedule F line 22) and no Form 4562 assets, so above the threshold its deduction is limited to zero; supply form8995a.businesses with w2_wages and ubia if it has them.");
+      f8995a = prepareFormValues("f8995a", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line33: tiBefore, line34: netGain, ...extraA, businesses: rowsA }, rounding);
+      const outRows = (f8995a.values["businesses"] as ListRow[] | undefined) ?? [];
+      const over = tiBefore - thrA;
+      const sstbRows = rowsA.filter((r) => r["sstb"] === true);
+      if (sstbRows.length && over > 0 && over < rangeA) qbiSchedules.push(prepareFormValues("f8995aa", year, { name: jointName, ssn: tp["ssn"], filing_status: tp["filing_status"], line5: tiBefore, businesses: sstbRows.map((r) => ({ name: r["name"], tin: r["tin"], qbi: r["qbi"], w2_wages: r["w2_wages"], ubia: r["ubia"] })) }, rounding));
+      const carry = n(extraA["qbi_loss_carryforward"]);
+      if (rowsA.some((r) => n(r["qbi"]) < 0) || carry > 0) qbiSchedules.push(prepareFormValues("f8995ac", year, { name: jointName, ssn: tp["ssn"], businesses: rowsA.map((r) => ({ name: r["name"], qbi: r["qbi"] })), ...(carry ? { line2: carry } : {}) }, rounding));
+      const patrons = rowsA.filter((r) => r["patron"] === true);
+      if (patrons.length) qbiSchedules.push(prepareFormValues("f8995ad", year, { name: jointName, ssn: tp["ssn"], businesses: patrons.map((r) => ({ name: r["name"], tin: r["tin"], line2: r["patron_qbi"], line4: r["patron_wages"] })) }, rounding));
+      statements.push({
+        id: "qbi",
+        title: "Qualified Business Income Computation Statement (supports Form 8995-A)",
+        header: [`${jointName}${tp["ssn"] ? `, SSN ${String(tp["ssn"]).replace(/\d(?=\d{4})/g, "x")}` : ""}`, `Tax year ${year}`],
+        columns: ["Business", "Qualified business income (after loss netting and any SSTB percentage)", "W-2 wages", "UBIA of qualified property", "QBI component (line 15)"],
+        rows: [
+          ...outRows.map((r) => [String(r["name"] ?? ""), money(r["line2"]), money(r["line4"] ?? r["w2_wages"]), money(r["line7"] ?? r["ubia"]), money(r["line15"])]),
+          ["Total QBI component (line 16)", "", "", "", money(f8995a.values["line16"])],
+          ["REIT and PTP component (line 31)", "", "", "", money(f8995a.values["line31"])],
+          ["Taxable income before the deduction (line 33)", "", "", "", money(tiBefore)],
+          ["Income limitation, 20% of line 35 (line 36)", "", "", "", money(f8995a.values["line36"])],
+          ["Qualified business income deduction (line 39, Form 1040 line 13)", "", "", "", money(f8995a.values["line39"])],
+        ],
+        notes: [
+          `Form 8995-A applies because ${tiBefore > thrA ? `taxable income before the deduction (${money(tiBefore)}) is above the ${money(thrA)} threshold` : "a business is a specified service business or a cooperative patron (or form8995a was supplied)"}: each business's 20% of QBI is limited to the greater of 50% of its W-2 wages or 25% of wages plus 2.5% of UBIA${over > 0 && over < rangeA ? `, phased in over the first ${money(rangeA)} above the threshold` : ""}.`,
+          `Schedule 1 adjustments allocated to each business in proportion to its positive net profit: deductible part of self-employment tax ${money(s1.values["line15"])}, self-employed SEP/SIMPLE/qualified plans ${money(s1.values["line16"])}, self-employed health insurance ${money(s1.values["line17"])}. W-2 wages default from Schedule C line 26 (Schedule F line 22) and UBIA from the Form 4562 assets still in their depreciable period; override them with form8995a.businesses.`,
+        ],
+      });
+      if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995-A line 39.");
+      f1040Values["line13"] = f8995a.values["line39"];
+    } else {
+      const v8995: Values = {
+        name: jointName,
+        ssn: tp["ssn"],
+        filing_status: tp["filing_status"],
+        businesses,
+        line11: tiBefore,
+        line12: netGain,
+        ...extra,
+      };
+      f8995 = prepareFormValues("f8995", year, v8995, rounding);
+      statements.push({
+        id: "qbi",
+        title: "Qualified Business Income Computation Statement (supports Form 8995)",
+        header: [`${jointName}${tp["ssn"] ? `, SSN ${String(tp["ssn"]).replace(/\d(?=\d{4})/g, "x")}` : ""}`, `Tax year ${year}`],
+        columns: ["Business", "Net profit (Sch C line 31 / Sch F line 34)", "Less SE tax deduction, SE health insurance, and retirement (allocated)", "Qualified business income"],
+        rows: [
+          ...businesses.map((b, i) => [b.name, money(profits[i]), money(-(profits[i]! > 0 && totalPositive > 0 ? (adjustments * profits[i]!) / totalPositive : 0)), money(b.qbi)]),
+          ["Total qualified business income (Form 8995 line 2)", "", "", money(f8995.values["line2"])],
+          ["Qualified business income component, 20% (line 5)", "", "", money(f8995.values["line5"])],
+          ["Taxable income before the deduction (line 11)", "", "", money(v8995["line11"])],
+          ["Net capital gain (line 12)", "", "", money(v8995["line12"])],
+          ["Income limitation, 20% of line 13 (line 14)", "", "", money(f8995.values["line14"])],
+          ["Qualified business income deduction (line 15, Form 1040 line 13)", "", "", money(f8995.values["line15"])],
+        ],
+        notes: [`Schedule 1 adjustments allocated to each business in proportion to its positive net profit: deductible part of self-employment tax ${money(s1.values["line15"])}, self-employed SEP/SIMPLE/qualified plans ${money(s1.values["line16"])}, self-employed health insurance ${money(s1.values["line17"])}.`, "Qualified business income excludes capital gains, wages paid to you, and investment income. The simplified Form 8995 applies only below the taxable-income threshold; above it Form 8995-A is required."],
+      });
+      if (tp["line13"] !== undefined) warnings.push("form1040.line13 was supplied; it is replaced by Form 8995 line 15.");
+      f1040Values["line13"] = f8995.values["line15"];
+    }
     f1040 = prepareFormValues(mainId, year, f1040Values, rounding);
   }
 
@@ -1297,7 +1356,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       line2a: tp["line2a"], line2b: tp["line2b"], line3a: tp["line3a"], line3b: tp["line3b"], line4a: tp["line4a"], line4b: tp["line4b"], line5a: tp["line5a"], line5b: tp["line5b"], line7a: tp["line7"],
       line25a: tp["line25a"], line25b: tp["line25b"], line25c: tp["line25c"], line26: tp["line26"],
       line8: s1.values["line10"], line10: s1.values["line26"], line17: s2.values["line3"], line23b: s2.values["line21"],
-      line20: s3?.values["line8"], line31: s3?.values["line15"], line13a: f8995?.values["line15"], line19: s8?.values["line14"], line28: s8?.values["line27"],
+      line20: s3?.values["line8"], line31: s3?.values["line15"], line13a: f8995a ? f8995a.values["line39"] : f8995?.values["line15"], line19: s8?.values["line14"], line28: s8?.values["line27"],
     };
     for (const k of Object.keys(defaults)) if (defaults[k] === undefined || defaults[k] === 0) delete defaults[k];
     forms.push(prepareFormValues("f1040nr", year, { ...defaults, ...input.form1040nr }, rounding));
@@ -1311,6 +1370,8 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
   if (s8) forms.push(s8);
   if (sEIC) forms.push(sEIC);
   if (f8995) forms.push(f8995);
+  if (f8995a) forms.push(f8995a);
+  for (const p of qbiSchedules) forms.push(p);
   for (const p of f8889s) forms.push(p);
   if (f8959 && (n(f8959.values["line18"]) > 0 || n(f8959.values["line24"]) > 0 || input.form8959)) forms.push(f8959);
   if (f8960) forms.push(f8960);
@@ -1353,7 +1414,7 @@ export async function prepareReturn(input: ReturnInput, opts: PrepareOptions): P
       self_employment_tax: seTax,
       adjusted_gross_income: n(f1040.values["line11"]),
       taxable_income: n(f1040.values["line15"]),
-      qbi_deduction: f8995 ? n(f8995.values["line15"]) : 0,
+      qbi_deduction: f8995a ? n(f8995a.values["line39"]) : f8995 ? n(f8995.values["line15"]) : 0,
       hsa_deduction: sum8889("line13"),
       additional_medicare_tax: f8959 ? n(f8959.values["line18"]) : 0,
       net_investment_income_tax: f8960 ? n(f8960.values["line17"]) : 0,

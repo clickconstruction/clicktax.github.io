@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Pairs each PDF widget with the printed text on its row (needs `pdftotext` from poppler on PATH).
-// Usage: node tools/draft-labels.mjs 2025 -> packages/forms/pdf/2025/<form>.draft.json
+// Usage: node tools/draft-labels.mjs 2025 [f8995a ...] -> packages/forms/pdf/2025/<form>.draft.json (optional basenames limit the run)
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -10,7 +10,8 @@ const year = process.argv[2];
 if (!year) { console.error("usage: draft-labels.mjs <year>"); process.exit(1); }
 const ROOT = join(import.meta.dirname, "..");
 const tmp = mkdtempSync(join(tmpdir(), "clicktax-"));
-for (const form of FORM_IDS.filter((id) => FORMS[id].years.includes(Number(year)))) {
+const only = process.argv.slice(3); // optional: explicit PDF basenames (for forms not yet registered)
+for (const form of only.length ? only : FORM_IDS.filter((id) => FORMS[id].years.includes(Number(year)))) {
   const pdf = join(ROOT, "apps", "web", "public", "forms", year, form + ".pdf");
   const html = join(tmp, `${form}.html`);
   execFileSync("pdftotext", ["-bbox-layout", pdf, html]);
