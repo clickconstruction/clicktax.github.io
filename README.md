@@ -8,6 +8,10 @@ Supported: tax years **2024** and **2025**; Form **1040**, **Schedules 1, 2, 3, 
 
 Live: MCP at `https://mcp.clicktax.org/mcp` (Cloudflare Worker, free plan), renderer at `https://clicktax.org/fill` (GitHub Pages).
 
+## Working on it
+
+Start with [`CLAUDE.md`](CLAUDE.md) (requirements, commands, conventions), then [`docs/HANDOFF.md`](docs/HANDOFF.md) (architecture, accounts, the per-form pipeline, known gaps) and [`docs/NEW-TAX-YEAR.md`](docs/NEW-TAX-YEAR.md) (the yearly refresh runbook). `python3 tools/live-check.py` exercises the deployed service.
+
 ## How it stays free, stateless, and private
 
 | Concern | Mechanism |
